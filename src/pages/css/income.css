@@ -1,0 +1,128 @@
+.income-container {
+  width: 1140px;
+  height: 1024px;
+  background-color: var(--main-color);
+  border-radius: 10px;
+  margin-inline: 29px;
+}
+
+.income-form {
+  margin-top: 188px;
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-around;
+}
+
+.income-form div {
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.income-form label {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.income-form-input {
+  border-radius: 5px;
+  background-color: white;
+  border: none;
+  box-shadow: 0px 2px 3px gray;
+  height: 36px;
+}
+
+#income-date {
+  width: 154px;
+}
+
+#income-bajaj-list {
+  width: 180px;
+}
+
+#income-driver-list {
+  width: 200x;
+}
+
+#income-amount {
+  width: 212px;
+}
+
+#income-note {
+  width: 256px;
+}
+
+.income-list {
+  background-color: var(--secondary-color);
+  width: 1076px;
+  height: 436px;
+  border-radius: 10px;
+  margin-left: 30px;
+  margin-top: 30px;
+}
+
+.income-form-button {
+  background-color: var(--third-color);
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  width: 88px;
+  height: 35px;
+  box-shadow: 0px 2px 3px gray;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .income-container {
+    margin-inline: 10px;
+    width: 400px;
+    height: auto;
+    padding-bottom: 20px;
+  }
+
+  .income-form {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    gap: 0;
+  }
+
+  .income-form div {
+    width: 90%;
+    margin-bottom: 0.5em;
+  }
+
+  .income-form div.second-part {
+    margin-top: 1em;
+  }
+
+  .income-form-input {
+    width: 100%;
+    box-sizing: border-box; /* Assure que le padding n'augmente pas la largeur */
+  }
+
+  /* Plus besoin de largeurs spécifiques par ID sur mobile */
+  #income-date,
+  #income-bajaj-list,
+  #income-driver-list,
+  #income-amount,
+  #income-note {
+    width: 100%;
+  }
+
+  .income-form-button {
+    margin-top: 1em;
+    width: 100%;
+    height: 42px;
+    font-size: 1.1em;
+  }
+
+  .income-list {
+    width: auto;
+    margin-inline: 15px;
+    height: auto;
+    min-height: 400px;
+  }
+}
