@@ -1,6 +1,18 @@
 import "./css/bajaj.css";
+import AddBajaj from '../component/addBajaj';
+import { useState } from "react";
 
 const Bajaj = () => {
+  const [searchBajaj, setSearchBajaj] = useState("");
+  const [bajajList, setBajajList] = useState( JSON.parse(localStorage.getItem("bajajList")) || []);
+  const [popUpStatus, setPopUpStatus] = useState(localStorage.getItem("popupStatus") || "hide");
+
+  const handleSearchBajaj = (e) => {
+    setSearchBajaj(e.target.value);
+  }
+
+
+
   return (
     <div className="bajaj-container">
       <title>Bajaj</title>
@@ -12,6 +24,7 @@ const Bajaj = () => {
           name="search"
           id="search"
           placeholder="Rechercher un Bajaj"
+          onChange={handleSearchBajaj}
         />
         <i class="bx bx-search-alt"></i>
       </span>
@@ -21,6 +34,7 @@ const Bajaj = () => {
           <thead>
             <tr>
               <th>Identifiant</th>
+              <th>Nom</th>
               <th>Plaque d'immatriculation</th>
               <th>Chauffeur assigné</th>
               <th>Status</th>
@@ -28,77 +42,29 @@ const Bajaj = () => {
             </tr>
           </thead>
           <tbody>
+            {bajajList.map((bajaj) => (
+              
             <tr>
-              <td>1</td>
-              <td>ABC-123</td>
-              <td>John Doe</td>
-              <td>Disponible</td>
+              <td>{bajaj.id}</td>
+              <td>{bajaj.name}</td>
+              <td>{bajaj.plate_number}</td>
+              <td>{bajaj.driver}</td>
+              <td>{bajaj.status}</td>
               <td>
                 <button className="bajaj-list-button">
                   <i class="bx bx-edit-alt"></i>
                 </button>
               </td>
             </tr>
+            ))}
 
-            <tr>
-              <td>2</td>
-              <td>ABC-123</td>
-              <td>John Doe</td>
-              <td>Disponible</td>
-              <td>
-                <button className="bajaj-list-button">
-                  <i class="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>ABC-123</td>
-              <td>John Doe</td>
-              <td>Disponible</td>
-              <td>
-                <button className="bajaj-list-button">
-                  <i class="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>ABC-123</td>
-              <td>John Doe</td>
-              <td>Disponible</td>
-              <td>
-                <button className="bajaj-list-button">
-                  <i class="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>ABC-123</td>
-              <td>John Doe</td>
-              <td>Disponible</td>
-              <td>
-                <button className="bajaj-list-button">
-                  <i class="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>ABC-123</td>
-              <td>John Doe</td>
-              <td>Disponible</td>
-              <td>
-                <button className="bajaj-list-button">
-                  <i class="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
-      <button className="bajaj-add">Ajouter</button>
+      <button onClick={() => setPopUpStatus("show")} className="bajaj-add">Ajouter</button>
+      <div className={`bajaj-popup ${popUpStatus}`}>
+        <AddBajaj />
+      </div>
     </div>
   );
 };

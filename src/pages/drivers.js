@@ -1,6 +1,10 @@
 import './css/drivers.css';
+import AddDriver from '../component/addDriver';
+import { useState } from 'react';
 
 const Drivers = () => {
+  const [popUpStatus, setPopUpStatus] = useState(localStorage.getItem("popupStatus") || "hide");
+  const [driverList, setDriverList] = useState( JSON.parse(localStorage.getItem("driverList")) || []);
   return (
     <div className="driver-container">
       <title>Chauffeurs</title>
@@ -30,88 +34,29 @@ const Drivers = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>123456</td>
-              <td>Disponible</td>
-              <td>125.000Ar</td>
-              <td>10 Juin 2024</td>
+            {driverList.map((driver) => (
+              <tr>
+              <td> {driver.last_name} </td>
+              <td> {driver.first_name} </td>
+              <td> {driver.cin} </td>
+              <td> {driver.status} </td>
+              <td> {driver.debt} </td>
+              <td> {driver.last_activity} </td>
               <td>
                 <button className="driver-list-button">
                   <i className="bx bx-edit-alt"></i>
                 </button>
               </td>
             </tr>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>123456</td>
-              <td>Disponible</td>
-              <td>125.000Ar</td>
-              <td>10 Juin 2024</td>
-              <td>
-                <button className="driver-list-button">
-                  <i className="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>123456</td>
-              <td>Disponible</td>
-              <td>125.000Ar</td>
-              <td>10 Juin 2024</td>
-              <td>
-                <button className="driver-list-button">
-                  <i className="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>123456</td>
-              <td>Disponible</td>
-              <td>125.000Ar</td>
-              <td>10 Juin 2024</td>
-              <td>
-                <button className="driver-list-button">
-                  <i className="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>123456</td>
-              <td>Disponible</td>
-              <td>125.000Ar</td>
-              <td>10 Juin 2024</td>
-              <td>
-                <button className="driver-list-button">
-                  <i className="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>John</td>
-              <td>Doe</td>
-              <td>123456</td>
-              <td>Disponible</td>
-              <td>125.000Ar</td>
-              <td>10 Juin 2024</td>
-              <td>
-                <button className="driver-list-button">
-                  <i className="bx bx-edit-alt"></i>
-                </button>
-              </td>
-            </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <button className="driver-add">Ajouter</button>
+      <button onClick={()=>{setPopUpStatus("show")}} className="driver-add">Ajouter</button>
+
+      <div className={`add-driver-popup ${popUpStatus}`}>
+        <AddDriver />
+      </div>
     </div>
   );
 };
