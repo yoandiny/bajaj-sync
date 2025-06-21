@@ -1,46 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
 
-// Enregistrer les composants nécessaires de Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const IncomeGraph = () => {
-  const [incomeData, setIncomeData] = useState(JSON.parse(localStorage.getItem('incomeData')) || []);
+  const [incomeData, setIncomeData] = useState([]);
 
-  // Définir les labels (jours de la semaine)
-  const labels = ['Lundi', 'Mercredi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  const labels = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-  // Mettre à jour les données si localStorage change (optionnel)
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('incomeData')) || [];
+    const storedData = JSON.parse(localStorage.getItem('incomeList')) || [];
     setIncomeData(storedData);
   }, []);
 
-  // Préparer les données pour le graphique
-  const chartData = {
+  // Initialiser un total par jour
+  const totals = {
+    Lundi: 0,
+    Mardi: 0,
+    Mercredi: 0,
+    Jeudi: 0,
+    Vendredi: 0,
+    Samedi: 0,
+    Dimanche: 0
+  };
+
+  incomeData.forEach(item => {
+    const date = new Date(item.date);
+    const dayIndex = date.getDay(); // 0 (Dimanche) → 6 (Samedi)
+    const dayName = jours[dayIndex];
+    const amount = parseFloat(item.amount) || 0;
+    totals[dayName] += amount;
+  });
+
+  const data = {
     labels,
     datasets: [
       {
-        label: 'Revenus Quotidiens (Ar)',
-        data: incomeData.length > 0 ? incomeData : Array(labels.length).fill(0), // Données ou zéros par défaut
-        fill: false,
+        label: 'Versements par jour de la semaine',
+        data: labels.map(day => totals[day]), // Lundi → Dimanche
         borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
+        backgroundColor: 'rgba(75, 192, 192, 0.3)',
+        fill: false,
+        tension: 0.2,
       },
     ],
   };
 
-  // Options de configuration
   const options = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top',
-      },
       title: {
         display: true,
-        text: 'Revenus Hebdomadaires (21 Juin 2025)',
+        text: 'Totaux de versements par jour de la semaine',
+      },
+      legend: {
+        display: false,
       },
     },
     scales: {
@@ -54,16 +79,15 @@ const IncomeGraph = () => {
       x: {
         title: {
           display: true,
-          text: 'Jours',
+          text: 'Jour',
         },
       },
     },
   };
 
   return (
-    <div style={{ width: '80%', margin: '0 auto', padding: '20px' }}>
-      <h2>Graphique des Revenus</h2>
-      <Line data={chartData} options={options} />
+    <div style={{ width: '100%', padding: '20px' }}>
+      <Line data={data} options={options} />
     </div>
   );
 };
