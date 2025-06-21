@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import "./css/dashboard.css";
+import IncomeGraph from "../component/graph/incomeGraph";
+
+
 
 
 const Dashboard = () => {
@@ -31,11 +34,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     formatDate();
+    
   }, []);
 
   return (
     <div className="dash-container">
       <title>Tableau de bord</title>
+      
       <section className="info-card-container">
         <div className="info-card" id="date-card">
           <i class="bx bxs-calendar"></i>
@@ -54,7 +59,10 @@ const Dashboard = () => {
       </section>
       <section className="content-container">
         <div className="line-section">
-          <span className="graph-container"></span>
+          <span className="graph-container">
+            
+            <IncomeGraph />
+          </span>
           <span className="income-entry-container">
             <h3 className="title">Versement</h3>
             <p className="income-entry-text">Veuillez saisir le montant du versement journalier en Ariary</p>
