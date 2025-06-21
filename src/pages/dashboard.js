@@ -8,9 +8,10 @@ import IncomeGraph from "../component/graph/incomeGraph";
 const Dashboard = () => {
   const [date, setDate] = useState("");
   const [dailyIncome, setDailyIncome] = useState(localStorage.getItem("dailyIncome") || 0);
-  const [workingBajaj, setWorkingBajaj] = useState(localStorage.getItem("workingBajaj") || 0);
-  const [balance, setBalance] = useState(localStorage.getItem("balance") || 0);
-  const [bajajList, setBajajList] = useState( JSON.parse(localStorage.getItem("bajajList")) || []);
+  const [workingBajaj] = useState(localStorage.getItem("workingBajaj") || 0);
+  const [balance, setBalance] = useState(parseFloat(localStorage.getItem("balance")) || 0);
+  const [bajajList] = useState( JSON.parse(localStorage.getItem("bajajList")) || []);
+  const [symbol, setSymbol] = useState("Ar");
 
   const formatDate = () => {
     const date = new Date();
@@ -30,6 +31,19 @@ const Dashboard = () => {
     localStorage.setItem("dailyIncome", dailyIncome);
     console.log('dailyIncome', dailyIncome);
     window.location.reload();
+  };
+
+  const fmgConvert = () => {
+    if (symbol === "Ar") {
+      setBalance((balance * 5).toFixed(2));
+      setSymbol("FMG");
+    } else {
+      setBalance((balance / 5).toFixed(2));
+      setSymbol("Ar");
+    }
+    localStorage.setItem("balance", balance);
+    localStorage.setItem("symbol", symbol);
+    
   };
 
   useEffect(() => {
@@ -54,7 +68,7 @@ const Dashboard = () => {
 
         <div className="info-card" id="balance-card">
           <i class="bx bx-wallet"></i>
-          <p>{balance} Ar</p>
+          <p onClick={fmgConvert}>{balance} {symbol}</p>
         </div>
       </section>
       <section className="content-container">
