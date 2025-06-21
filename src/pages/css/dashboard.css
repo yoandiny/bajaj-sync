@@ -35,6 +35,7 @@
   margin-left: 40px;
 }
 
+
 .content-container {
   display: flex;
   flex-direction: row;
@@ -180,6 +181,8 @@
   #balance-card {
     margin-left: 122px;
   }
+
+  
 
   .content-container {
     margin-left: 14px;

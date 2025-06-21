@@ -5,13 +5,15 @@ import IncomeGraph from "../component/graph/incomeGraph";
 
 
 
+
 const Dashboard = () => {
   const [date, setDate] = useState("");
   const [dailyIncome, setDailyIncome] = useState(localStorage.getItem("dailyIncome") || 0);
   const [workingBajaj] = useState(localStorage.getItem("workingBajaj") || 0);
-  const [balance, setBalance] = useState(parseFloat(localStorage.getItem("balance")) || 0);
+  const [balance, setBalance] = useState(parseInt(localStorage.getItem("balance")) || 0);
   const [bajajList] = useState( JSON.parse(localStorage.getItem("bajajList")) || []);
   const [symbol, setSymbol] = useState("Ar");
+  const [isFmg, setIsFmg] = useState("");
 
   const formatDate = () => {
     const date = new Date();
@@ -35,19 +37,29 @@ const Dashboard = () => {
 
   const fmgConvert = () => {
     if (symbol === "Ar") {
+      setIsFmg("fmg-text");
       setBalance((balance * 5).toFixed(2));
-      setSymbol("FMG");
+      setSymbol("Fmg");
     } else {
       setBalance((balance / 5).toFixed(2));
       setSymbol("Ar");
     }
-    localStorage.setItem("balance", balance);
-    localStorage.setItem("symbol", symbol);
-    
+  };
+
+  const getBalance = () => {
+    const incomeList = JSON.parse(localStorage.getItem("incomeList")) || [];
+    const expensesList = JSON.parse(localStorage.getItem("expenseList")) || [];
+
+    const totalIncome = incomeList.reduce((acc, income) => acc + parseFloat(income.amount || 0), 0);
+    const totalExpenses = expensesList.reduce((acc, expense) => acc + parseFloat(expense.amount || 0), 0);
+    const totalBalance = totalIncome - totalExpenses;
+    localStorage.setItem("balance", totalBalance.toFixed(2));
+    setBalance(totalBalance.toFixed(2));
   };
 
   useEffect(() => {
     formatDate();
+    getBalance();
     
   }, []);
 
@@ -68,7 +80,7 @@ const Dashboard = () => {
 
         <div className="info-card" id="balance-card">
           <i class="bx bx-wallet"></i>
-          <p onClick={fmgConvert}>{balance} {symbol}</p>
+          <p className={`${isFmg}`} onClick={fmgConvert}>{balance} {symbol}</p>
         </div>
       </section>
       <section className="content-container">
@@ -102,30 +114,22 @@ const Dashboard = () => {
         <tr>
             <th>Bajaj</th>
             <th>Numéro de plaque</th>
+            <th>Chauffeur</th>
             <th>Status</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Bajaj 001</td>
-            <td>1234 TAA</td>
-            <td><span class="status actif">Actif</span></td>
-        </tr>
-        <tr>
-            <td>Bajaj 002</td>
-            <td>5678 TAA</td>
-            <td><span class="status inactif">Inactif</span></td>
-        </tr>
-        <tr>
-            <td>Bajaj 003</td>
-            <td>9101 TAA</td>
-            <td><span class="status en-panne">En panne</span></td>
-        </tr>
-        <tr>
-            <td>Bajaj 004</td>
-            <td>1121 TAA</td>
-            <td><span class="status actif">Actif</span></td>
-        </tr>
+        {bajajList.map((bajaj) => (
+              
+            <tr>
+              <td>{bajaj.name}</td>
+              <td>{bajaj.plate_number}</td>
+              <td>{bajaj.driver}</td>
+              <td>{bajaj.status}</td>
+             
+            </tr>
+            ))}
+
     </tbody>
 </table>
         </div>
