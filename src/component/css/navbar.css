@@ -71,11 +71,11 @@ a {
   .sidebar {
     transform: translateX(-100%);
     position: absolute;
-    transition: all ease-in 0.5s;
+    transition: all ease-in 0.25s;
   }
 
   .enable {
     transform: translateX(0);
-    transition: all ease-in 0.5s;
+    transition: all ease-in 0.25s;
   }
 }
