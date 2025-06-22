@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./css/dashboard.css";
 import IncomeGraph from "../component/graph/incomeGraph";
-
+import Animation from "../component/animation";
 
 
 
@@ -64,7 +64,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="dash-container">
+    <Animation >
+      <div className="dash-container">
       <title>Tableau de bord</title>
       
       <section className="info-card-container">
@@ -135,6 +136,7 @@ const Dashboard = () => {
         </div>
       </section>
     </div>
+    </Animation>
   );
 };
 

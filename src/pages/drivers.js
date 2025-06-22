@@ -1,11 +1,13 @@
 import './css/drivers.css';
 import AddDriver from '../component/addDriver';
 import { useState } from 'react';
+import Animation from '../component/animation';
 
 const Drivers = () => {
   const [popUpStatus, setPopUpStatus] = useState(localStorage.getItem("popupStatus") || "hide");
   const [driverList, setDriverList] = useState( JSON.parse(localStorage.getItem("driverList")) || []);
   return (
+    <Animation>
     <div className="driver-container">
       <title>Chauffeurs</title>
       <h3 className="title">Gestion des chauffeurs</h3>
@@ -58,6 +60,7 @@ const Drivers = () => {
         <AddDriver />
       </div>
     </div>
+    </Animation>
   );
 };
 

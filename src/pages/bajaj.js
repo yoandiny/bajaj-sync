@@ -1,6 +1,7 @@
 import "./css/bajaj.css";
 import AddBajaj from '../component/addBajaj';
 import { useState } from "react";
+import Animation from "../component/animation";
 
 const Bajaj = () => {
   const [searchBajaj, setSearchBajaj] = useState("");
@@ -14,7 +15,8 @@ const Bajaj = () => {
 
 
   return (
-    <div className="bajaj-container">
+    <Animation>
+      <div className="bajaj-container">
       <title>Bajaj</title>
       <h3 className="title">Gestion des Bajaj</h3>
       <span className="search-bajaj">
@@ -66,6 +68,7 @@ const Bajaj = () => {
         <AddBajaj />
       </div>
     </div>
+      </Animation>
   );
 };
 

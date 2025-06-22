@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './css/expenses.css';
+import Animation from '../component/animation';
 
 const Expenses = () => {
     const [expenseList, setExpenseList] = useState(JSON.parse(localStorage.getItem('expenseList')) || []);
@@ -68,7 +69,8 @@ const Expenses = () => {
   }, []);
 
     return (
-        <div className="expense-container">
+        <Animation>
+            <div className="expense-container">
             <title>Charges</title>
             <h3 className='title'>
                 Gestion des Charges
@@ -145,6 +147,7 @@ const Expenses = () => {
 
             </section>
         </div>
+        </Animation>
     );
 }
 
