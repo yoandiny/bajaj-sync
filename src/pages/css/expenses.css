@@ -62,6 +62,62 @@
   margin-top: 30px;
 }
 
+/* expenseList.css */
+.expense-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.expense-list-table th,
+.expense-list-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.expense-list-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.expense-list-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.expense-list-table tr:hover {
+  background-color: #e9ecef;
+  transition: background-color 0.3s ease;
+}
+
+.expense-list-table td button {
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.expense-list-table td button:hover {
+  background-color: #c82333;
+  transition: background-color 0.3s ease;
+}
+
+.expense-list-table tr td[colSpan="5"] {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+  font-style: italic;
+}
+
 /* Styles pour le bouton et le tableau (présents dans le JSX mais pas dans le CSS d'origine) */
 .expense-form-button {
   margin-top: auto;
