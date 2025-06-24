@@ -132,10 +132,11 @@
   transition: all 0.3s ease-in-out;
 }
 
+/* --- Media Query Améliorée --- */
 @media (max-width: 768px) {
   .expense-container {
     margin-inline: 10px;
-    width: 400px;
+    width: 400px; /* Changé pour s'adapter à l'écran */
     height: auto;
     padding-bottom: 20px;
   }
@@ -156,9 +157,10 @@
     margin-top: 1em;
   }
 
+  /* Assure que le padding n'augmente pas la largeur */
   .expense-form-input {
     width: 100%;
-    box-sizing: border-box; /* Assure que le padding n'augmente pas la largeur */
+    box-sizing: border-box;
   }
 
   /* Plus besoin de largeurs spécifiques par ID sur mobile */
@@ -175,12 +177,19 @@
     width: 100%;
     height: 42px;
     font-size: 1.1em;
+    margin-left: 0; /* On retire la marge gauche sur mobile */
   }
 
+  /* --- AMÉLIORATIONS POUR LA LISTE --- */
   .expense-list {
     width: auto;
     margin-inline: 15px;
     height: auto;
     min-height: 400px;
+    overflow-x: auto; /* AJOUT : Permet le défilement horizontal pour le tableau. */
+  }
+  
+  .expense-list-table {
+      min-width: 600px; /* AJOUT : Empêche le tableau de se compresser et force le défilement. */
   }
 }

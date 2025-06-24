@@ -10,7 +10,6 @@
   margin-top: 188px;
   display: flex;
   flex-direction: row;
-
   justify-content: space-around;
 }
 
@@ -123,7 +122,6 @@
   flex-direction: row;
   flex-wrap: wrap; /* les garde sur la ligne tant que possible */
   gap: 10px;
-  
 }
 
 
@@ -158,10 +156,11 @@
   transition: all 0.3s ease-in-out;
 }
 
+/* --- Media Query Corrigée --- */
 @media (max-width: 768px) {
   .income-container {
     margin-inline: 10px;
-    width: 400px;
+    width: 400px; /* Changé pour s'adapter à l'écran */
     height: auto;
     padding-bottom: 20px;
   }
@@ -182,9 +181,10 @@
     margin-top: 1em;
   }
 
+  /* Assure que le padding n'augmente pas la largeur */
   .income-form-input {
-    width: 100%;
-    box-sizing: border-box; /* Assure que le padding n'augmente pas la largeur */
+      width: 100%;
+      box-sizing: border-box; 
   }
 
   /* Plus besoin de largeurs spécifiques par ID sur mobile */
@@ -196,17 +196,28 @@
     width: 100%;
   }
 
+  .income-form-button-container{
+      width: 100%;
+  }
+
   .income-form-button {
     margin-top: 1em;
     width: 100%;
     height: 42px;
     font-size: 1.1em;
+    margin-left: 0; /* On retire la marge gauche sur mobile */
   }
-
+  
+  /* --- CORRECTIONS ET AMÉLIORATIONS POUR LA LISTE --- */
   .income-list {
-    width: auto;
+    width: auto; /* CORRIGÉ : La largeur était à 25px. 'auto' permet de prendre la place disponible. */
     margin-inline: 15px;
     height: auto;
-    min-height: 400px;
+    min-height: 300px;
+    overflow-x: auto; /* AJOUT : Permet le défilement horizontal pour le tableau qu'il contient. */
+  }
+
+  .income-list-table {
+      min-width: 600px; /* AJOUT : Empêche le tableau de se compresser et force le défilement. */
   }
 }

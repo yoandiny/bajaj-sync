@@ -1,3 +1,4 @@
+import '../css/incomeGraph.css';
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -110,7 +111,7 @@ const IncomeGraph = () => {
   };
 
   return (
-    <div style={{ width: "350px", padding: "20px" }}>
+    <div className='income-graph'>
       <Line data={data} options={options} />
     </div>
   );
