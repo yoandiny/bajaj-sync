@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,19 +8,43 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
-} from 'chart.js';
+  Legend,
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const IncomeGraph = () => {
   const [incomeData, setIncomeData] = useState([]);
 
-  const jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-  const labels = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  const jours = [
+    "Dimanche",
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+  ];
+  const labels = [
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+    "Dimanche",
+  ];
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('incomeList')) || [];
+    const storedData = JSON.parse(localStorage.getItem("incomeList")) || [];
     setIncomeData(storedData);
   }, []);
 
@@ -32,10 +56,10 @@ const IncomeGraph = () => {
     Jeudi: 0,
     Vendredi: 0,
     Samedi: 0,
-    Dimanche: 0
+    Dimanche: 0,
   };
 
-  incomeData.forEach(item => {
+  incomeData.forEach((item) => {
     const date = new Date(item.date);
     const dayIndex = date.getDay(); // 0 (Dimanche) → 6 (Samedi)
     const dayName = jours[dayIndex];
@@ -47,10 +71,10 @@ const IncomeGraph = () => {
     labels,
     datasets: [
       {
-        label: 'Versements par jour de la semaine',
-        data: labels.map(day => totals[day]), // Lundi → Dimanche
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.3)',
+        label: "Versements par jour de la semaine",
+        data: labels.map((day) => totals[day]), // Lundi → Dimanche
+        borderColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgba(75, 192, 192, 0.3)",
         fill: false,
         tension: 0.2,
       },
@@ -62,7 +86,7 @@ const IncomeGraph = () => {
     plugins: {
       title: {
         display: true,
-        text: 'Totaux de versements par jour de la semaine',
+        text: "Totaux de versements par jour de la semaine",
       },
       legend: {
         display: false,
@@ -73,20 +97,20 @@ const IncomeGraph = () => {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Montant (Ar)',
+          text: "Montant (Ar)",
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Jour',
+          text: "Jour",
         },
       },
     },
   };
 
   return (
-    <div style={{ width: '100%', padding: '20px' }}>
+    <div style={{ width: "350px", padding: "20px" }}>
       <Line data={data} options={options} />
     </div>
   );

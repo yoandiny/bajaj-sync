@@ -35,7 +35,6 @@
   margin-left: 40px;
 }
 
-
 .content-container {
   display: flex;
   flex-direction: row;
@@ -113,7 +112,7 @@
   transition: all 0.3s ease-in-out;
 }
 
-.income-entry-shows{
+.income-entry-shows {
   margin: 1em;
   display: flex;
   flex-direction: row;
@@ -182,8 +181,6 @@
     margin-left: 122px;
   }
 
-  
-
   .content-container {
     margin-left: 14px;
     display: flex;
@@ -193,7 +190,7 @@
 
   .graph-container,
   .income-entry-container {
-    width: 368px;
+    width: 400px;
     height: 256px;
     margin-left: 22px;
   }
