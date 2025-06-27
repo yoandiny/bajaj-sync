@@ -12,6 +12,18 @@ const Bajaj = () => {
     setSearchBajaj(e.target.value);
   }
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchBajaj){
+      const filteredBajaj = bajajList.filter((bajaj) =>
+        bajaj.name.toLowerCase().includes(searchBajaj.toLowerCase())
+      );
+      setBajajList(filteredBajaj);
+    }else{
+      setBajajList(JSON.parse(localStorage.getItem("bajajList")) || []);
+    }
+  };
+
 
 
   return (
@@ -21,6 +33,7 @@ const Bajaj = () => {
       <h3 className="title">Gestion des Bajaj</h3>
       <span className="search-bajaj">
         <input
+        onSubmit={handleSearch}
           className="search-bajaj-input"
           type="text"
           name="search"
@@ -28,7 +41,7 @@ const Bajaj = () => {
           placeholder="Rechercher un Bajaj"
           onChange={handleSearchBajaj}
         />
-        <i class="bx bx-search-alt"></i>
+        <i onClick={handleSearch} class="bx bx-search-alt"></i>
       </span>
 
       <div className="bajaj-list-container">
