@@ -52,6 +52,18 @@ a {
   margin-top: 37px;
 }
 
+
+.sidebar ul li a{
+
+  transition: all ease 0.1s;
+}
+
+.sidebar ul li a:hover {
+  text-decoration: none;
+  color: var(--third-color);
+  transition: all ease 0.1s;
+}
+
 @media (max-width: 768px) {
   .top-nav {
     display: flex;
