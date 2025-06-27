@@ -41,7 +41,7 @@ const AddBajaj = () => {
                 <select name="driver" onChange={handleFormChange}  id="driver-list">
                     <option value="">-- Sélectionnez un chauffeur --</option>
                     {driverList.map((driver) => (
-                        <option value={driver.name}>{driver.name}</option>
+                        <option value={driver.id}>{driver.last_name} {driver.first_name} </option>
                     ))}
                 </select>
 
