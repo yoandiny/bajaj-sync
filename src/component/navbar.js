@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(localStorage.getItem("isLogged") || "false");
+  const [profileShow, setProfileShow] = useState("hide");
   const navigate = useNavigate();
  
 
@@ -14,9 +16,15 @@ const Navbar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const showProfile = () => {
+    if(isLogged === "true"){
+      setProfileShow("show");
+    }
+  }
+
   useEffect(()=>{
-    
-  },[]);
+    showProfile();
+  },[isLogged]);
 
   return (
     <div className="nav-container">
@@ -36,8 +44,8 @@ const Navbar = () => {
         <section className="nav-right">
           <div className="profile">
 
-            <img onClick={()=>{ navigate('/profile')}} src={Profile} alt="profile-picture" />
-            <div className="status"></div>
+            <img className={`${profileShow}`} onClick={()=>{ navigate('/profile')}} src={Profile} alt="profile-picture" />
+            <div className={`${profileShow} status`} ></div>
           </div>
           
         </section>
