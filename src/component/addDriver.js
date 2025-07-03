@@ -44,6 +44,7 @@ const AddDriver = () => {
                 <input type="text" onChange={handleFormChange} name='firstName' placeholder='Prénom' />
                 <label htmlFor="">Numéro de CIN</label>
                 <input type="text" onChange={handleFormChange}  name='cin' placeholder="CIN " />
+                <a href="/">test</a>
                 
 
                 <button onClick={handleAdd} className='add-bajaj-button' type='submit'>Ajouter</button>
