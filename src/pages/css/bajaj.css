@@ -1,0 +1,195 @@
+.bajaj-container {
+  margin-inline: 30px;
+  margin-top: 18px;
+  background-color: var(--main-color);
+  width: 1091px;
+  height: 850px;
+  border-radius: 10px;
+}
+
+.search-bajaj {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 10px;
+  margin-top: 70px;
+  width: 282px;
+  height: 46px;
+}
+
+.search-bajaj-input {
+  border: none;
+  box-shadow: 0px 2px 3px gray;
+  border-radius: 5px;
+  margin-inline: inherit;
+  width: inherit;
+  height: inherit;
+  border-radius: 20px;
+  font-size: 1.1em;
+}
+
+.search-bajaj-input:focus {
+  outline: none;
+}
+
+.search-bajaj-input::placeholder {
+  padding-left: 10px;
+}
+
+.search-bajaj i {
+  font-size: 30px;
+  position: absolute;
+  right: 4.5em;
+  cursor: pointer;
+}
+
+.bajaj-list-container {
+  width: 1076px;
+  height: 570px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  background-color: var(--secondary-color);
+  margin-inline: auto;
+  border-radius: 10px;
+  padding-top: 1em;
+  margin-top: 20px;
+}
+
+.bajaj-list {
+  border-collapse: collapse;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  width: 1050px;
+  overflow: hidden;
+  margin-inline: inherit;
+}
+
+.bajaj-list thead tr th {
+  border-bottom: solid 1px black;
+  border-top: solid 1px black;
+  padding-bottom: 0.5em;
+  border-inline: solid 1px black;
+}
+
+.bajaj-list tbody tr td {
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 600;
+  border: solid 1px black;
+  padding: 0.5em;
+}
+
+.bajaj-list-button {
+  background-color: blue;
+  border: none;
+  border-radius: 5px;
+  width: 45px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+}
+
+.bajaj-list-button i {
+  font-size: 30px;
+}
+
+.bajaj-add {
+  border: none;
+  background-color: green;
+  color: white;
+  width: 154px;
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-left: 69em;
+  margin-right: 10px;
+  margin-top: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.bajaj-add:hover {
+  border: none;
+  background-color: rgb(0, 104, 0);
+  transition: all 0.3s ease-in-out;
+}
+
+.bajaj-popup{
+  position: fixed;
+  top:20%;
+  left: 25%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.show{
+  display: block;
+}
+
+.hide{
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .bajaj-container {
+    margin-inline: 12px;
+    width: 400px;
+    height: 702px;
+  }
+
+  .search-bajaj {
+    width: 186px;
+    height: 31px;
+  }
+
+  .search-bajaj-input {
+    font-size: 0.75em;
+  }
+
+  .search-bajaj i {
+    align-items: center;
+    right: 1.8em;
+    font-size: 20px;
+  }
+
+  .bajaj-list-container {
+    width: 371px;
+    height: 350px;
+  }
+
+  .bajaj-list {
+    width: 360px;
+    font-size: 8px;
+  }
+
+  .bajaj-list-button,
+  .bajaj-list-button i {
+    width: 25px;
+    aspect-ratio: 1/1;
+    font-size: 24px;
+  }
+
+  .bajaj-add {
+    margin-left: 11em;
+    margin-top: 1em;
+    margin-right: auto;
+    width: 101px;
+    height: 34px;
+  }
+
+  .bajaj-popup{
+  position: fixed;
+  top:25%;
+  left: 10%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+}

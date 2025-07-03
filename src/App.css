@@ -1,0 +1,19 @@
+:root{
+  --main-color: #D9D9D9;
+  --secondary-color: #ECE4E4;
+  --third-color : #FFD700;
+  --sidebar-back : #95A5A6;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+}
+
+a{
+  text-decoration: none;
+}
+
+li{
+  list-style: none;
+}

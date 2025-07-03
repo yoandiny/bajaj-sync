@@ -1,0 +1,117 @@
+.add-bajaj-container{
+    position: absolute;
+    margin: auto;
+    background-color: white;
+    width: 900px;
+    height: 400px;
+    border-radius: 10px;
+}
+
+.close-button{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+}
+
+.add-bajaj-title{
+    text-align: center;
+    margin-top: 1.5em;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.add-bajaj-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+}
+
+.add-bajaj-form input, .add-bajaj-form select{
+    width: 80%;
+    height: 2em;
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin-bottom: 1em;
+}
+
+.add-bajaj-form button{
+    width: 80%;
+    height: 2em;
+    border-radius: 5px;
+    border: none;
+    background-color: green;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+}
+
+.add-bajaj-form button:hover{
+    background-color: var(--secondary-color);
+    transition: all ease-in-out 0.3s;
+}
+
+@media (max-width: 768px){
+    .add-bajaj-container{
+    position: absolute;
+    margin: auto;
+    background-color: white;
+    width: 350px;
+    height: 400px;
+    border-radius: 10px;
+}
+
+.close-button{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+}
+
+.add-bajaj-title{
+    text-align: center;
+    margin-top: 1.5em;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.add-bajaj-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+}
+
+.add-bajaj-form input, .add-bajaj-form select{
+    width: 80%;
+    height: 2em;
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin-bottom: 1em;
+}
+
+.add-bajaj-form button{
+    width: 80%;
+    height: 2em;
+    border-radius: 5px;
+    border: none;
+    background-color: green;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+}
+
+.add-bajaj-form button:hover{
+    background-color: var(--secondary-color);
+    transition: all ease-in-out 0.3s;
+}
+}

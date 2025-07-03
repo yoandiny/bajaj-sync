@@ -1,0 +1,204 @@
+.dash-container {
+  height: auto;
+}
+
+.info-card-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  margin-left: 75px;
+}
+
+.info-card {
+  width: 276px;
+  height: 96px;
+  margin-right: 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: var(--secondary-color);
+}
+
+.info-card i {
+  font-size: 60px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.info-card p {
+  font-size: 25px;
+}
+
+#working-card p {
+  margin-left: 40px;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: row;
+  margin-left: 75px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  justify-content: space-between;
+}
+
+.line-section {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.graph-container {
+  width: 604px;
+  height: 375px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.income-entry-container {
+  margin-top: 20px;
+  width: 600px;
+  height: 283px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.status-container {
+  margin-left: 12px;
+  width: 470px;
+  height: 520px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+  margin: 1em;
+  font-size: 20px;
+  text-align: center;
+}
+
+.income-entry-text {
+  margin-left: 1em;
+  margin-bottom: 21px;
+}
+
+.income-entry-form {
+  margin-left: 1em;
+}
+
+.income-entry-form input {
+  width: 256px;
+  height: 35px;
+  border-radius: 10px;
+}
+
+.income-entry-button {
+  background-color: var(--third-color);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  width: 88px;
+  height: 35px;
+  transition: all 0.3s ease-in-out;
+}
+
+.income-entry-button:hover {
+  background-color: var(--secondary-color);
+  box-shadow: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.income-entry-shows {
+  margin: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.status-table {
+  width: 100%; /* Le tableau prend toute la largeur de son conteneur */
+  border-collapse: collapse; /* Fusionne les bordures des cellules pour un look net */
+  margin: 25px 0; /* Ajoute un peu d'espace au-dessus et en-dessous */
+  font-size: 0.9em;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Une police propre et lisible */
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); /* Une ombre discrète pour un effet de "carte" */
+  border-radius: 8px; /* Des coins arrondis */
+  overflow: hidden; /* Assure que les coins arrondis s'appliquent bien à l'en-tête */
+}
+
+.status-table thead tr {
+  background-color: #009879; /* Une couleur d'accentuation pour l'en-tête */
+  color: #ffffff; /* Texte blanc pour contraster */
+  text-align: left; /* Aligne le texte à gauche */
+  font-weight: bold;
+}
+
+.status-table th,
+.status-table td {
+  padding: 12px 15px; /* L'espacement à l'intérieur des cellules est crucial pour la lisibilité */
+}
+
+.status-table tbody tr {
+  border-bottom: 1px solid #dddddd; /* Une ligne fine sépare chaque ligne */
+}
+
+.status-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879; /* Une bordure plus épaisse pour marquer la fin */
+}
+
+@media (max-width: 768px) {
+  .info-card-container {
+    margin-left: 14px;
+    width: 400px; /* Réduit pour forcer le retour à la ligne */
+    height: auto;
+    flex-wrap: wrap;
+  }
+  .info-card {
+    width: 168px;
+    height: 74px;
+    margin-right: 10px; /* Réduit la marge */
+    margin-bottom: 10px;
+  }
+
+  .info-card p {
+    font-size: 19px;
+  }
+
+  .info-card i {
+    font-size: 30px;
+  }
+
+  #working-card {
+    margin-left: 43px;
+  }
+
+  #balance-card {
+    margin-left: 122px;
+  }
+
+  .content-container {
+    margin-left: 14px;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+  }
+
+  .graph-container,
+  .income-entry-container {
+    width: 400px;
+    height: 256px;
+    margin-left: 22px;
+  }
+
+  .status-container {
+    width: 400px;
+    height: auto;
+    margin-left: 22px;
+    border-radius: 10px;
+  }
+}
