@@ -1,11 +1,13 @@
 import "./css/navbar.css";
 import Logo from "../assets/logo.png";
+import Profile from "../assets/profile.png";
 import menuLogo from "../assets/menu.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
  
 
   const toggleSidebar = () => {
@@ -29,10 +31,15 @@ const Navbar = () => {
           </button>
         </section>
         <div className="nav-brand">
-          <img src={Logo} alt="BajajSync Logo" className="nav-logo" />
+          <img onClick={()=>{ navigate('/')}} src={Logo} alt="BajajSync Logo" className="nav-logo" />
         </div>
         <section className="nav-right">
-          <div className="status"></div>
+          <div className="profile">
+
+            <img onClick={()=>{ navigate('/profile')}} src={Profile} alt="profile-picture" />
+            <div className="status"></div>
+          </div>
+          
         </section>
       </div>
       <section className="main-content">
