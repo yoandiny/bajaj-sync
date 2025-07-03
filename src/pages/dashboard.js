@@ -3,16 +3,18 @@ import "./css/dashboard.css";
 import IncomeGraph from "../component/graph/incomeGraph";
 import Animation from "../component/animation";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 
 
 
 const Dashboard = () => {
+  const [userInfo] = useState(JSON.parse(localStorage.getItem("userInfo")) || {});
   const [date, setDate] = useState("");
   const [dailyIncome, setDailyIncome] = useState(localStorage.getItem("dailyIncome") || 0);
   const [workingBajaj] = useState(localStorage.getItem("workingBajaj") || 0);
   const [balance, setBalance] = useState(parseInt(localStorage.getItem("balance")) || 0);
-  const [bajajList] = useState( JSON.parse(localStorage.getItem("bajajList")) || []);
+  const [bajajList, setBajajList] = useState( JSON.parse(localStorage.getItem("bajajList")) || []);
   const [symbol, setSymbol] = useState("Ar");
   const [isFmg, setIsFmg] = useState("");
   
@@ -50,7 +52,7 @@ const Dashboard = () => {
 
   const getBalance = () => {
     const incomeList = JSON.parse(localStorage.getItem("incomeList")) || [];
-    const expensesList = JSON.parse(localStorage.getItem("expenseList")) || [];
+    const expensesList = JSON.parse(localStorage.getItem("expenseList")) || [{plate_number: "Aucun Bajaj enregistré"}];
 
     const totalIncome = incomeList.reduce((acc, income) => acc + parseFloat(income.amount || 0), 0);
     const totalExpenses = expensesList.reduce((acc, expense) => acc + parseFloat(expense.amount || 0), 0);
@@ -65,14 +67,40 @@ const Dashboard = () => {
         const verifyLog = () =>{
             if(isLogged === "false"){
                 navigate("/login");
+
                 
-            }
+              }
+              
         }
+
+    const getBajajList = async() => {
+      try {
+          const getBajaj = await axios.get(`https://bajaj-sync-backend.glitch.me/bajaj-list?company_id=${userInfo.company_id}`);
+      if(getBajaj.status === 200){
+        localStorage.setItem("bajajList", JSON.stringify(getBajaj.data));
+        setBajajList(getBajaj.data);
+        
+      }else{
+        if(getBajaj.status === 404){
+          localStorage.setItem("bajajList", JSON.stringify([]));
+          setBajajList([]);
+      }
+      
+    }} catch (error) {
+        if(error.response){
+          if(error.response.status === 500 ){
+            localStorage.setItem("bajajList", JSON.stringify([]));
+            setBajajList([]);
+          }
+        }
+      }
+      };
 
   useEffect(() => {
     formatDate();
     getBalance();
     verifyLog();
+    getBajajList();
     
     
   }, []);

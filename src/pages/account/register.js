@@ -32,8 +32,7 @@ const Register = () => {
                         const registerUser = await axios.post("https://bajaj-sync-backend.glitch.me/register", registerForm)
                         if(registerUser.status === 200){
                             localStorage.setItem("isLogged", "true");
-                            localStorage.setItem("userId", registerUser.data.userId);
-                            localStorage.setItem("companyId", registerUser.data.companyId);
+                            localStorage.setItem("userInfo", JSON.stringify(registerUser.data));
                             navigate("/profile");
                         }
                     

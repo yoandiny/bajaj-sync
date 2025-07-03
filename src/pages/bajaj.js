@@ -3,6 +3,7 @@ import AddBajaj from '../component/addBajaj';
 import { useEffect, useState } from "react";
 import Animation from "../component/animation";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Bajaj = () => {
   const [searchBajaj, setSearchBajaj] = useState("");
@@ -35,8 +36,28 @@ const Bajaj = () => {
               }
           }
 
+    const handleBajajList = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    try {
+        const getBajajList = await axios.get(`https://bajaj-sync-backend.glitch.me/bajaj-list?company_id=${userInfo.company_id}`);
+        if(getBajajList.status === 200){
+            setBajajList(getBajajList.data);
+            localStorage.setItem("bajajList", JSON.stringify(getBajajList.data));
+        }
+    }
+    catch (error) {
+        if(error.response){
+          if(error.response.status === 404){
+            setBajajList([]);
+            localStorage.setItem("bajajList", JSON.stringify([]));
+          }
+        }
+    }
+    };
+
   useEffect(() => {
     verifyLog();
+    handleBajajList();
   },[])
 
 
@@ -78,7 +99,7 @@ const Bajaj = () => {
               <td>{bajaj.id}</td>
               <td>{bajaj.name}</td>
               <td>{bajaj.plate_number}</td>
-              <td>{bajaj.driver}</td>
+              <td>{bajaj.last_name} {bajaj.first_name}</td>
               <td>{bajaj.status}</td>
               <td>
                 <button className="bajaj-list-button">

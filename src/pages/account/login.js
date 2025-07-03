@@ -38,8 +38,7 @@ const Login = () =>{
 
                 if(logUser.status === 200){
                     localStorage.setItem("isLogged", "true");
-                    localStorage.setItem("userId", logUser.data.userId);
-                    localStorage.setItem("companyId", logUser.data.companyId);
+                    localStorage.setItem("userInfo", JSON.stringify(logUser.data));
                     navigate("/profile");
                 }
             

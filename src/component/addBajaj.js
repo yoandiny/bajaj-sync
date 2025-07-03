@@ -1,21 +1,28 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 import './css/addBajaj.css';
+import axios from 'axios';
 
 
 const AddBajaj = () => {
-    const [tempList, setTempList] = useState(JSON.parse(localStorage.getItem('bajajList')) || []);
+    
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const [bajajForm, setBajajForm] = useState({
+        companyId : userInfo.company_id,
         name:'',
-        plate_number: '',
-        driver: ''
+        plateNumber: '',
+        driverId: ''
     });
     const [driverList] = useState(JSON.parse(localStorage.getItem('driverList')) || []);
 
-    const handleAdd = (e) =>{
+    const handleAdd = async (e) =>{
         e.preventDefault();
-        if(bajajForm.name !== '' && bajajForm.plate_number !== '' && bajajForm.driver !== ''){
-            localStorage.setItem('bajajList', JSON.stringify([...tempList, bajajForm]));
-            window.location.href = '/bajaj';
+        console.log('bajajForm', bajajForm);
+        if(bajajForm.name !== '' && bajajForm.plateNumber !== '' && bajajForm.driver !== ''){
+           const addBajaj = await axios.post('https://bajaj-sync-backend.glitch.me/add-bajaj', bajajForm);
+           if(addBajaj.status === 200){
+                alert('Bajaj ajouté avec succès');
+                window.location.href = '/bajaj';
+            }
         }else{
             alert('Veuillez remplir tous les champs');
         }
@@ -36,9 +43,9 @@ const AddBajaj = () => {
                 <label htmlFor="">Nom du Bajaj</label>
                 <input type="text" onChange={handleFormChange} name='name' placeholder='Nom du Bajaj' />
                 <label htmlFor="">Plaque d'immatriculation</label>
-                <input type="text" onChange={handleFormChange}  name='plate_number' placeholder="Plaque d'immatriculation " />
+                <input type="text" onChange={handleFormChange}  name='plateNumber' placeholder="Plaque d'immatriculation " />
                 <label htmlFor="">Chauffeur assigné</label>
-                <select name="driver" onChange={handleFormChange}  id="driver-list">
+                <select name="driverId" onChange={handleFormChange}  id="driver-list">
                     <option value="">-- Sélectionnez un chauffeur --</option>
                     {driverList.map((driver) => (
                         <option value={driver.id}>{driver.last_name} {driver.first_name} </option>

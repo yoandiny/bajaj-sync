@@ -59,15 +59,17 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/bajaj" onClick={() => setIsSidebarOpen(false)}>
-                <i className="bx bxs-taxi"></i> Bajaj
-              </Link>
-            </li>
-            <li>
               <Link to="/drivers" onClick={() => setIsSidebarOpen(false)}>
                 <i className="bx bxs-id-card"></i> Chauffeurs
               </Link>
             </li>
+            
+            <li>
+              <Link to="/bajaj" onClick={() => setIsSidebarOpen(false)}>
+                <i className="bx bxs-taxi"></i> Bajaj
+              </Link>
+            </li>
+            
             <li>
               <Link to="/income" onClick={() => setIsSidebarOpen(false)}>
                 <i className="bx bx-wallet-alt"></i> Versements

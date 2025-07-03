@@ -3,6 +3,7 @@ import AddDriver from '../component/addDriver';
 import { useState, useEffect } from 'react';
 import Animation from '../component/animation';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 const Drivers = () => {
@@ -16,10 +17,29 @@ const Drivers = () => {
                 navigate("/login");
                 
             }
+        };
+
+  const handleDriverList = async () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    try {
+      const getDriverList = await axios.get(`https://bajaj-sync-backend.glitch.me/driver-list?company_id=${userInfo.company_id}`);
+      if (getDriverList.status === 200) {
+        setDriverList(getDriverList.data);
+        localStorage.setItem("driverList", JSON.stringify(getDriverList.data));
+      }
+    } catch (error) {
+      if(error.response){
+        if(error.response.status === 404){
+          setDriverList([]);
+          localStorage.setItem("driverList", JSON.stringify([]));
         }
+      }
+    }
+  };
 
   useEffect(() => {
     verifyLog();
+    handleDriverList();
   }, []);
 
 
@@ -60,7 +80,7 @@ const Drivers = () => {
               <td> {driver.first_name} </td>
               <td> {driver.cin} </td>
               <td> {driver.status} </td>
-              <td> {driver.debt} </td>
+              <td> {driver.debt} Ar </td>
               <td> {driver.last_activity} </td>
               <td>
                 <button className="driver-list-button">
