@@ -64,8 +64,8 @@ const Drivers = () => {
         <table className="driver-list">
           <thead>
             <tr>
-              <th>Nom</th>
-              <th>Prénom</th>
+              <th>Identifiant</th>
+              <th>Nom et Prénom</th>
               <th>Numéro CIN</th>
               <th>Status</th>
               <th>Dette</th>
@@ -76,8 +76,8 @@ const Drivers = () => {
           <tbody>
             {driverList.map((driver) => (
               <tr>
-              <td> {driver.last_name} </td>
-              <td> {driver.first_name} </td>
+              <td>{driver.id}  </td>
+              <td> {driver.last_name} {driver.first_name} </td>
               <td> {driver.cin} </td>
               <td> {driver.status} </td>
               <td> {driver.debt} Ar </td>
