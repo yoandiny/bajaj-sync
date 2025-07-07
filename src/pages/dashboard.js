@@ -167,7 +167,7 @@ const Dashboard = () => {
             <tr>
               <td>{bajaj.name}</td>
               <td>{bajaj.plate_number}</td>
-              <td>{bajaj.driver}</td>
+              <td>{bajaj.last_name} {bajaj.first_name}</td>
               <td>{bajaj.status}</td>
              
             </tr>
