@@ -39,7 +39,7 @@ const Bajaj = () => {
     const handleBajajList = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     try {
-        const getBajajList = await axios.get(`https://bajaj-sync-backend.glitch.me/bajaj-list?company_id=${userInfo.company_id}`);
+        const getBajajList = await axios.get(`https://bajaj-sync-backend.onrender.com/bajaj-list?company_id=${userInfo.company_id}`);
         if(getBajajList.status === 200){
             setBajajList(getBajajList.data);
             localStorage.setItem("bajajList", JSON.stringify(getBajajList.data));

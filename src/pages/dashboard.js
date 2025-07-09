@@ -75,7 +75,7 @@ const Dashboard = () => {
 
     const getBajajList = async() => {
       try {
-          const getBajaj = await axios.get(`https://bajaj-sync-backend.glitch.me/bajaj-list?company_id=${userInfo.company_id}`);
+          const getBajaj = await axios.get(`https://bajaj-sync-backend.onrender.com/bajaj-list?company_id=${userInfo.company_id}`);
       if(getBajaj.status === 200){
         localStorage.setItem("bajajList", JSON.stringify(getBajaj.data));
         setBajajList(getBajaj.data);
@@ -167,7 +167,7 @@ const Dashboard = () => {
             <tr>
               <td>{bajaj.name}</td>
               <td>{bajaj.plate_number}</td>
-              <td>{bajaj.driver}</td>
+              <td>{bajaj.last_name} {bajaj.first_name}</td>
               <td>{bajaj.status}</td>
              
             </tr>

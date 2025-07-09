@@ -17,14 +17,28 @@ const AddBajaj = () => {
     const handleAdd = async (e) =>{
         e.preventDefault();
         console.log('bajajForm', bajajForm);
-        if(bajajForm.name !== '' && bajajForm.plateNumber !== '' && bajajForm.driver !== ''){
-           const addBajaj = await axios.post('https://bajaj-sync-backend.glitch.me/add-bajaj', bajajForm);
+        try {
+            if(bajajForm.name !== '' && bajajForm.plateNumber !== '' && bajajForm.driver !== ''){
+           const addBajaj = await axios.post('https://bajaj-sync-backend.onrender.com/add-bajaj', bajajForm);
            if(addBajaj.status === 200){
                 alert('Bajaj ajouté avec succès');
                 window.location.href = '/bajaj';
+            
             }
         }else{
             alert('Veuillez remplir tous les champs');
+        }
+        } catch (error) {
+            if(error.response){
+                if(error.response.status === 400){
+                    alert("Veuillez remplir tous les champs");
+                }else if(error.response.status === 500){
+                    alert("Une erreur est survenue, veuillez réessayer plus tard");
+                }
+            }else{
+                alert("Une erreur est survenue, veuillez vérifier votre connexion internet");
+            }
+            
         }
     }
 

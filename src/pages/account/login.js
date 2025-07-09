@@ -34,7 +34,7 @@ const Login = () =>{
         try {
 
             if(loginForm.phone && loginForm.password){
-             const logUser = await axios.post("https://bajaj-sync-backend.glitch.me/login", loginForm)
+             const logUser = await axios.post("https://bajaj-sync-backend.onrender.com/login", loginForm)
 
                 if(logUser.status === 200){
                     localStorage.setItem("isLogged", "true");

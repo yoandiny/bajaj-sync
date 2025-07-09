@@ -16,7 +16,7 @@ const AddDriver = () => {
     const handleAdd = async(e) =>{
         e.preventDefault();
         if(driverForm.lastName !== '' && driverForm.firstName !== '' && driverForm.cin !== ''){
-            const addDrriver = await axios.post('https://bajaj-sync-backend.glitch.me/add-driver', driverForm);
+            const addDrriver = await axios.post('https://bajaj-sync-backend.onrender.com/add-driver', driverForm);
             if(addDrriver.status === 200){
                 alert('Chauffeur ajouté avec succès');
                 window.location.href = '/drivers';
