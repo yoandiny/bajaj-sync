@@ -29,7 +29,7 @@ const Register = () => {
              if (registerForm.lastName && registerForm.firstName && registerForm.companyName && registerForm.password && registerForm.phone) {
                 if (registerForm.phone.length === 10) {
                     if(registerForm.password.length >= 6){
-                        const registerUser = await axios.post("https://bajaj-sync-backend.glitch.me/register", registerForm)
+                        const registerUser = await axios.post("https://bajaj-sync-backend.onrender.com/register", registerForm)
                         if(registerUser.status === 200){
                             localStorage.setItem("isLogged", "true");
                             localStorage.setItem("userInfo", JSON.stringify(registerUser.data));

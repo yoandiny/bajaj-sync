@@ -19,7 +19,7 @@ const AddBajaj = () => {
         console.log('bajajForm', bajajForm);
         try {
             if(bajajForm.name !== '' && bajajForm.plateNumber !== '' && bajajForm.driver !== ''){
-           const addBajaj = await axios.post('https://bajaj-sync-backend.glitch.me/add-bajaj', bajajForm);
+           const addBajaj = await axios.post('https://bajaj-sync-backend.onrender.com/add-bajaj', bajajForm);
            if(addBajaj.status === 200){
                 alert('Bajaj ajouté avec succès');
                 window.location.href = '/bajaj';

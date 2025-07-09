@@ -22,7 +22,7 @@ const Drivers = () => {
   const handleDriverList = async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     try {
-      const getDriverList = await axios.get(`https://bajaj-sync-backend.glitch.me/driver-list?company_id=${userInfo.company_id}`);
+      const getDriverList = await axios.get(`https://bajaj-sync-backend.onrender.com/driver-list?company_id=${userInfo.company_id}`);
       if (getDriverList.status === 200) {
         setDriverList(getDriverList.data);
         localStorage.setItem("driverList", JSON.stringify(getDriverList.data));
