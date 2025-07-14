@@ -11,6 +11,9 @@ import Expenses from "./pages/expenses";
 import Register from "./pages/account/register";
 import Login from "./pages/account/login";
 import Profile from "./pages/account/profile";
+import LandingNav from "./component/LandingNav";
+import Landing from "./landing/Landing";
+import VersionChoose from "./order/VersionChoose";
 
 
 function AnimatedRoutes() {
@@ -20,15 +23,20 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Navbar />}>
-          <Route index element={<Dashboard />} />
+        <Route element={<Navbar />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bajaj" element={<Bajaj />} />
           <Route path="/drivers" element={<Drivers />} />
           <Route path="/income" element={<Income />} />
           <Route path="/expenses" element={<Expenses />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route path="/" element={<LandingNav />}>
+        <Route index element={<Landing />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/version-choose" element={<VersionChoose />} />
+
         </Route>
       </Routes>
     </AnimatePresence>

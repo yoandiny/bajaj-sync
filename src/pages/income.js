@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './css/income.css';
 import Animation from '../component/animation';
 import { useNavigate } from 'react-router-dom';

@@ -1,0 +1,42 @@
+.version-choose{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    justify-content: center;
+
+}
+
+.version-choose h1{
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.version-choose-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.version-choose-button a{
+    text-decoration: none;
+    color: white;
+}
+
+.version-choose-button{
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin-top: 8px;
+    margin-inline: 10px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.version-choose-button:hover {
+    background-color: #45a049;
+}
