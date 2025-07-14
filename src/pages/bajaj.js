@@ -30,7 +30,7 @@ const Bajaj = () => {
     <Animation>
       <div className="bajaj-container">
       <title>Bajaj</title>
-      <h3 className="title">Gestion des Bajaj</h3>
+      <h3 className="title">Gestion des Bajaj </h3>
       <span className="search-bajaj">
         <input
         onSubmit={handleSearch}
