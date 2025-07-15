@@ -1,4 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import Finance from '../assets/finance.jpg';
+import Driver from '../assets/driver.png';
+import Bajaj from '../assets/bajaj.png';
 import './css/landing.css';
 
 export default function Landing() {
@@ -11,9 +14,16 @@ export default function Landing() {
 
       <section id='features'>
         <span className="feature-card-container">
-          <div className="feature-card"></div>
-          <div className="feature-card"></div>
-          <div className="feature-card"></div>
+          <div className="feature-card">
+            <img className='feature-card-image' src={Finance} alt="" />
+          </div>
+          <div className="feature-card">
+            <img className='feature-card-image' src={Driver} alt="" />
+          </div>
+          
+          <div className="feature-card">
+            <img className='feature-card-image' src={Bajaj} alt="" />
+          </div>
         </span>
       </section>
 
