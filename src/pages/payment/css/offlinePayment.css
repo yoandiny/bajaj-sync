@@ -1,0 +1,237 @@
+.payment-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.payment-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.payment-header {
+    background: var(--third-color);
+    padding: 30px;
+    text-align: center;
+    color: white;
+}
+
+.payment-header h2 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.payment-subtitle {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.payment-details {
+    padding: 30px;
+}
+
+.price-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.price-section h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.price-item:last-child {
+    border-bottom: none;
+}
+
+.price-item.total {
+    border-top: 2px solid var(--third-color);
+    margin-top: 10px;
+    padding-top: 15px;
+    font-size: 1.1rem;
+}
+
+.price {
+    color: var(--third-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.payment-instructions {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+}
+
+.payment-instructions h4 {
+    margin: 0 0 15px 0;
+    color: #1976d2;
+}
+
+.payment-instructions ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.payment-instructions li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.payment-input {
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.payment-input:focus {
+    outline: none;
+    border-color: var(--third-color);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.form-group small {
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.payment-button {
+    background: var(--third-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.payment-button:hover:not(:disabled) {
+    background: #e6c200;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.payment-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.payment-button.processing {
+    background: #6c757d;
+}
+
+.payment-footer {
+    margin-top: 30px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.payment-footer p {
+    margin: 0 0 15px 0;
+    color: #28a745;
+    font-weight: 500;
+}
+
+.payment-footer i {
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+.back-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--third-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-container {
+        padding: 10px;
+    }
+    
+    .payment-card {
+        margin: 0;
+    }
+    
+    .payment-header {
+        padding: 20px;
+    }
+    
+    .payment-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .payment-details {
+        padding: 20px;
+    }
+    
+    .price-section,
+    .payment-instructions {
+        padding: 15px;
+    }
+    
+    .payment-instructions ol {
+        padding-left: 15px;
+    }
+    
+    .payment-input {
+        padding: 10px 12px;
+    }
+    
+    .payment-button {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}

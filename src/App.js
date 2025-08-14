@@ -14,6 +14,9 @@ import Profile from "./pages/account/profile";
 import LandingNav from "./component/LandingNav";
 import Landing from "./landing/Landing";
 import VersionChoose from "./order/VersionChoose";
+import OfflineLogin from "./pages/account/offlineLogin";
+import OfflinePayment from "./pages/payment/offlinePayment";
+import PaymentConfirmation from "./pages/payment/paymentConfirmation";
 
 
 function AnimatedRoutes() {
@@ -36,6 +39,9 @@ function AnimatedRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/version-choose" element={<VersionChoose />} />
+        <Route path="/offline-login" element={<OfflineLogin />} />
+        <Route path="/offline-payment" element={<OfflinePayment />} />
+        <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
 
         </Route>
       </Routes>
