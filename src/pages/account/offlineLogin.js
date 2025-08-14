@@ -51,6 +51,7 @@ const OfflineLogin = () => {
     }
 
     useEffect(() => {
+      localStorage.setItem("isLogged", "true")
         verifyLog();
     }, [])
 
