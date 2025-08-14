@@ -112,17 +112,17 @@ const Dashboard = () => {
       
       <section className="info-card-container">
         <div className="info-card" id="date-card">
-          <i class="bx bxs-calendar"></i>
+          <i className="bx bxs-calendar"></i>
           <p>{date}</p>
         </div>
 
         <div className="info-card" id="working-card">
-          <i class="bx bx-stopwatch"></i>
+          <i className="bx bx-stopwatch"></i>
           <p> {workingBajaj} / {bajajList.length} </p>
         </div>
 
         <div className="info-card" id="balance-card">
-          <i class="bx bx-wallet"></i>
+          <i className="bx bx-wallet"></i>
           <p className={`${isFmg}`} onClick={fmgConvert}>{balance} {symbol}</p>
         </div>
       </section>
@@ -152,7 +152,7 @@ const Dashboard = () => {
           <h3 className="title">
             Status Bajaj
           </h3>
-          <table class="status-table">
+          <table className="status-table">
     <thead>
         <tr>
             <th>Bajaj</th>

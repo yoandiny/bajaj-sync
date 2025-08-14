@@ -77,7 +77,7 @@ const Bajaj = () => {
           placeholder="Rechercher un Bajaj"
           onChange={handleSearchBajaj}
         />
-        <i onClick={handleSearch} class="bx bx-search-alt"></i>
+        <i onClick={handleSearch} className="bx bx-search-alt"></i>
       </span>
 
       <div className="bajaj-list-container">
@@ -103,7 +103,7 @@ const Bajaj = () => {
               <td>{bajaj.status}</td>
               <td>
                 <button className="bajaj-list-button">
-                  <i class="bx bx-edit-alt"></i>
+                  <i className="bx bx-edit-alt"></i>
                 </button>
               </td>
             </tr>
