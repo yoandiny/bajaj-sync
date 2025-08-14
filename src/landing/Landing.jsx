@@ -35,7 +35,6 @@ export default function Landing() {
             <h2>Free</h2>
             <p>Basic features for free users.</p>
             <p>--------</p>
-<<<<<<< HEAD
             <p><i class='bx bx-check-circle'></i> Online mode</p>
             <p><i class='bx bx-check-circle'></i> Gestion des Bajaj</p>
             <p><i class='bx bx-check-circle'></i> Gestion des chauffeurs</p>
@@ -60,15 +59,6 @@ export default function Landing() {
             <p><i class='bx bx-x-circle'></i> Gestion automatique</p>
             <p><i class='bx bx-x-circle'></i> Sauvegarde Cloud</p>
             <p><i class='bx bx-x-circle'></i> Service SMS</p>
-=======
-            <p><i className='bx bx-x-circle'></i> Online mode</p>
-            <p><i className='bx bx-check-circle'></i> Gestion des Bajaj</p>
-            <p><i className='bx bx-check-circle'></i> Gestion des chauffeurs</p>
-            <p><i className='bx bx-check-circle'></i> Gestion des Versements</p>
-            <p><i className='bx bx-check-circle'></i> Gestion des dépenses</p>
-            <p><i className='bx bx-x-circle'></i> Gestion automatique</p>
-            <p><i className='bx bx-x-circle'></i> Service SMS</p>
->>>>>>> e01540fac123fbb6245fb7c38611f886b2b03ab0
             <button onClick={()=> navigate('/offline')} className='pricing-card-button'>
               Commander
             </button>
