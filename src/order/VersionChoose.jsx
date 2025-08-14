@@ -15,7 +15,7 @@ const VersionChoose = () => {
                 
                 
                     <button className="version-choose-button">
-                        <Link to="/offline">
+                        <Link to="/offline-login">
                         Version offline
                         </Link>
                         </button>

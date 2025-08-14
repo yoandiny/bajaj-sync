@@ -9,6 +9,7 @@
 
 .landing-title {
   font-size: 2.5rem;
+  font-family: 'Arial', sans-serif;
   color: var(--primary-color);
   text-align: center;
   margin-top: 1em;
@@ -75,7 +76,7 @@
   margin-top: 20px;
 }
 
-#first-offer {
+#first-offer, #second-offer {
   background-color: var(--primary-color);
 }
 

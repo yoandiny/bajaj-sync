@@ -35,18 +35,34 @@ export default function Landing() {
             <h2>Free</h2>
             <p>Basic features for free users.</p>
             <p>--------</p>
+            <p><i class='bx bx-check-circle'></i> Online mode</p>
+            <p><i class='bx bx-check-circle'></i> Gestion des Bajaj</p>
+            <p><i class='bx bx-check-circle'></i> Gestion des chauffeurs</p>
+            <p><i class='bx bx-check-circle'></i> Gestion des Versements</p>
+            <p><i class='bx bx-check-circle'></i> Gestion des dépenses</p>
+            <p><i class='bx bx-x-circle'></i> Gestion automatique</p>
+            <p><i class='bx bx-x-circle'></i> Sauvegarde Cloud</p>
+            <p><i class='bx bx-x-circle'></i> Service SMS</p>
+            <button onClick={()=> navigate('/offline')} className='pricing-card-button'>
+              Commander
+            </button>
+          </div>
+          <div id='second-offer' className="pricing-card">
+            <h2>Offline</h2>
+            <p>Basic features for free users.</p>
+            <p>--------</p>
             <p><i class='bx bx-x-circle'></i> Online mode</p>
             <p><i class='bx bx-check-circle'></i> Gestion des Bajaj</p>
             <p><i class='bx bx-check-circle'></i> Gestion des chauffeurs</p>
             <p><i class='bx bx-check-circle'></i> Gestion des Versements</p>
             <p><i class='bx bx-check-circle'></i> Gestion des dépenses</p>
             <p><i class='bx bx-x-circle'></i> Gestion automatique</p>
+            <p><i class='bx bx-x-circle'></i> Sauvegarde Cloud</p>
             <p><i class='bx bx-x-circle'></i> Service SMS</p>
             <button onClick={()=> navigate('/offline')} className='pricing-card-button'>
               Commander
             </button>
           </div>
-          <div className="pricing-card"></div>
           <div className="pricing-card"></div>
         </span>
       </section>
