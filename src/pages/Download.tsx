@@ -1,9 +1,10 @@
-import React from 'react';
 import { Download, AlertTriangle, CreditCard, Smartphone, ArrowLeft, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const DownloadPage = () => {
+  const githubURL = "https://github.com/yoandiny/bajaj-sync-app/releases/download/v1.0.2/BajajSync.apk";
+
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-3xl mx-auto">
@@ -37,10 +38,12 @@ const DownloadPage = () => {
             
             {/* Download Action */}
             <div className="text-center">
-              <button className="w-full sm:w-auto px-10 py-4 bg-gray-900 text-white rounded-xl font-bold text-lg shadow-xl hover:bg-gray-800 transition-all transform hover:-translate-y-1 flex items-center justify-center mx-auto gap-3">
+              <a href={githubURL}>
+                <button className="w-full sm:w-auto px-10 py-4 bg-gray-900 text-white rounded-xl font-bold text-lg shadow-xl hover:bg-gray-800 transition-all transform hover:-translate-y-1 flex items-center justify-center mx-auto gap-3">
                 <Download className="h-6 w-6" />
                 Télécharger l'APK
               </button>
+              </a>
               <p className="mt-4 text-sm text-gray-500">
                 Compatible avec Android 8.0 et versions ultérieures
               </p>
@@ -107,7 +110,7 @@ const DownloadPage = () => {
                     </div>
                     <div className="flex items-center text-gray-600">
                         <Smartphone className="h-5 w-5 mr-3 text-gray-400" />
-                        <span>Support: +261 34 00 000 00</span>
+                        <span>Support: +261 38 22 093 67</span>
                     </div>
                 </div>
             </div>
