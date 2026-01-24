@@ -3,6 +3,12 @@ import { useLocation, Link } from 'react-router-dom';
 import { Users, Truck, Wallet, BarChart3, Mail, Phone, MapPin, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import FeatureCard from '../components/FeatureCard';
+import Logo from '../assets/logo.png';
+import Drivers from '../assets/drivers.png';
+import Bajaj from '../assets/bajaj.png';
+import Income from '../assets/income.png';
+import Dashboard from '../assets/dashboard.png';
+import Expense from '../assets/expense.png';
 
 const Home = () => {
   const location = useLocation();
@@ -21,29 +27,36 @@ const Home = () => {
       title: "Gestion des Chauffeurs",
       description: "Suivez et gérez facilement votre flotte de chauffeurs. Accédez à leurs profils, historiques de courses et performances en temps réel.",
       icon: Users,
-      imageSrc: "https://img-wrapper.vercel.app/image?url=https://placehold.co/300x600/f3f4f6/d97706?text=Chauffeurs+App",
+      imageSrc: Drivers,
       delay: 0.1
     },
     {
       title: "Gestion des Bajaj",
       description: "Gardez un œil sur l'état de vos véhicules. Maintenance, disponibilité et assignation des Bajaj simplifiées.",
       icon: Truck,
-      imageSrc: "https://img-wrapper.vercel.app/image?url=https://placehold.co/300x600/f3f4f6/d97706?text=Bajaj+Status",
+      imageSrc: Bajaj,
       delay: 0.2
     },
     {
-      title: "Gestion des Transactions",
-      description: "Une transparence totale sur vos revenus. Suivez chaque transaction, les recettes journalières et les paiements en attente.",
+      title: "Gestion des Versements",
+      description: "Une transparence totale sur vos revenus. Suivez chaque versements, les recettes journalières et les paiements en attente.",
       icon: Wallet,
-      imageSrc: "https://img-wrapper.vercel.app/image?url=https://placehold.co/300x600/f3f4f6/d97706?text=Transactions",
+      imageSrc: Income,
       delay: 0.3
+    },
+    {
+    title: "Gestion des Dépenses",
+      description: "Une transparence totale sur vos dépenses. Suivez chaque transaction, les dépenses journalières .",
+      icon: Wallet,
+      imageSrc: Expense,
+      delay: 0.4
     },
     {
       title: "Statistiques Générales",
       description: "Des tableaux de bord détaillés pour analyser la croissance de votre activité. Prenez les bonnes décisions basées sur des données fiables.",
       icon: BarChart3,
-      imageSrc: "https://img-wrapper.vercel.app/image?url=https://placehold.co/300x600/f3f4f6/d97706?text=Statistiques",
-      delay: 0.4
+      imageSrc: Dashboard,
+      delay: 0.5
     }
   ];
 
@@ -58,7 +71,7 @@ const Home = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="inline-block p-4 rounded-full bg-yellow-50 mb-6">
-                <Truck className="h-12 w-12 text-yellow-500 mx-auto" />
+                <img className="h-20 w-20 md:h-24 md:w-24" src={Logo} alt="BajajSync Logo" />
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6">
               Bajaj<span className="text-yellow-500">Sync</span>
@@ -123,9 +136,9 @@ const Home = () => {
             </div>
             <div className="px-6 py-8">
               <div className="flex justify-center items-baseline">
-                <span className="text-5xl font-extrabold text-gray-900">Contactez-nous</span>
+                <span className="text-5xl font-extrabold text-gray-900">50.000 Ar</span>
               </div>
-              <p className="mt-2 text-center text-gray-500">pour obtenir un devis personnalisé</p>
+             
               
               <ul className="mt-8 space-y-4">
                 {['Gestion illimitée de chauffeurs', 'Suivi en temps réel', 'Support prioritaire 7j/7', 'Mises à jour gratuites'].map((item) => (
@@ -194,19 +207,19 @@ const Home = () => {
             <div className="bg-gray-800 p-8 rounded-2xl text-center hover:bg-gray-750 transition-colors">
               <Mail className="h-10 w-10 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">Email</h3>
-              <a href="mailto:contact@yotech.mg" className="text-gray-300 hover:text-white">contact@yotech.mg</a>
+              <a href="mailto:contact@yotech.mg" className="text-gray-300 hover:text-white">yoan@yotech.mg</a>
             </div>
             
             <div className="bg-gray-800 p-8 rounded-2xl text-center hover:bg-gray-750 transition-colors">
               <Phone className="h-10 w-10 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">Téléphone 1</h3>
-              <p className="text-gray-300">+261 34 00 000 00</p>
+              <p className="text-gray-300">+261 37 68 727 82</p>
             </div>
 
             <div className="bg-gray-800 p-8 rounded-2xl text-center hover:bg-gray-750 transition-colors">
               <Phone className="h-10 w-10 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">Téléphone 2</h3>
-              <p className="text-gray-300">+261 32 00 000 00</p>
+              <p className="text-gray-300">+261 38 22 093 67</p>
             </div>
           </div>
         </div>

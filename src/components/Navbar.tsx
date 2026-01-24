@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Truck } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,12 +36,10 @@ const Navbar = () => {
         <div className="flex justify-between h-20 items-center">
           {/* Logo */}
           <div 
-            className="flex-shrink-0 flex items-center cursor-pointer gap-2" 
+            className="flex-shrink-0 flex items-center align-middle cursor-pointer gap-2" 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="bg-yellow-500 p-2 rounded-lg">
-                <Truck className="h-6 w-6 text-white" />
-            </div>
+           <img className="h-11 w-11" src={Logo} alt="BajajSync Logo" />
             <span className="font-bold text-2xl tracking-tight text-gray-900">BajajSync</span>
           </div>
 
