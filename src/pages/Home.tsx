@@ -117,50 +117,75 @@ const Home = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-yellow-50 skew-y-3 transform origin-bottom-left -z-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-              Tarification Simple
-            </h2>
-            <p className="mt-4 text-xl text-gray-500">
-              Choisissez la licence qui correspond à vos besoins.
-            </p>
-          </div>
+<section id="pricing" className="py-24 bg-white relative overflow-hidden">
+  <div className="absolute inset-0 bg-yellow-50 skew-y-3 transform origin-bottom-left -z-10"></div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-16">
+      <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        Offre de Lancement Exclusive
+      </h2>
+      <p className="mt-4 text-xl text-gray-500 max-w-2xl mx-auto">
+        Rejoignez la révolution <span className="text-yellow-600 font-bold">BajajSync</span> dès aujourd'hui et profitez de notre tarif préférentiel.
+      </p>
+    </div>
 
-          <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
-            <div className="px-6 py-8 bg-gray-900 text-center">
-              <h3 className="text-2xl font-bold text-white">Licence Pro</h3>
-              <p className="mt-4 text-gray-400">Accès complet à toutes les fonctionnalités</p>
-            </div>
-            <div className="px-6 py-8">
-              <div className="flex justify-center items-baseline">
-                <span className="text-5xl font-extrabold text-gray-900">50.000 Ar</span>
-              </div>
-             
-              
-              <ul className="mt-8 space-y-4">
-                {['Gestion illimitée de chauffeurs', 'Suivi en temps réel', 'Support prioritaire 7j/7', 'Mises à jour gratuites'].map((item) => (
-                  <li key={item} className="flex items-center">
-                    <CheckCircle2 className="h-5 w-5 text-yellow-500 mr-3" />
-                    <span className="text-gray-600">{item}</span>
-                  </li>
-                ))}
-              </ul>
+    <div className="max-w-lg mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-yellow-500 relative">
+      {/* Badge Temps Limité */}
+      <div className="absolute top-5 right-[-35px] bg-red-600 text-white font-bold py-1 px-12 rotate-45 shadow-md">
+        OFFRE LIMITÉE
+      </div>
 
-              <div className="mt-8">
-                <Link
-                  to="/download"
-                  className="block w-full bg-yellow-500 hover:bg-yellow-600 text-white text-center font-bold py-4 rounded-xl transition-colors shadow-lg"
-                >
-                  Télécharger l'application
-                </Link>
-              </div>
-            </div>
+      <div className="px-6 py-10 bg-gray-900 text-center">
+        <span className="px-4 py-1 bg-yellow-500 text-gray-900 text-xs font-black rounded-full uppercase tracking-widest">
+          Lancement YoTech
+        </span>
+        <h3 className="text-3xl font-bold text-white mt-4">Licence Complète</h3>
+        <p className="mt-2 text-gray-400">Accès illimité à tous les outils de gestion</p>
+      </div>
+
+      <div className="px-6 py-10">
+        <div className="text-center mb-8">
+          <div className="inline-block bg-red-50 text-red-700 text-sm font-bold px-4 py-2 rounded-lg mb-4 border border-red-100">
+            ⏱️ Expire dans les 15 prochains jours
           </div>
+          <div className="flex justify-center items-center">
+            <span className="text-6xl font-extrabold text-gray-900">50.000 Ar</span>
+          </div>
+          <p className="text-gray-500 mt-4 italic">
+            Tarif unique sans abonnement mensuel
+          </p>
         </div>
-      </section>
+        
+        <ul className="space-y-4 mb-10">
+          {[
+            'Gestion illimitée de chauffeurs',
+            'Suivi précis des versements',
+            'Contrôle total des dépenses Bajaj',
+            'Tableaux de bord et Statistiques',
+            'Support prioritaire YoTech 7j/7',
+            'Mises à jour incluses'
+          ].map((item) => (
+            <li key={item} className="flex items-center">
+              <CheckCircle2 className="h-5 w-5 text-yellow-500 mr-3 flex-shrink-0" />
+              <span className="text-gray-700 font-medium">{item}</span>
+            </li>
+          ))}
+        </ul>
+
+        <Link
+          to="/download"
+          className="block w-full bg-yellow-500 hover:bg-yellow-600 text-white text-center font-bold py-5 rounded-2xl transition-all shadow-lg hover:shadow-yellow-200 transform hover:-translate-y-1"
+        >
+          OBTENIR MA LICENCE MAINTENANT
+        </Link>
+        
+        <p className="text-center text-xs text-gray-400 mt-6 px-4">
+          Cette offre spéciale de lancement est strictement réservée aux nouvelles inscriptions durant les 15 premiers jours.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* About Section */}
       <section id="about" className="py-24 bg-white">
