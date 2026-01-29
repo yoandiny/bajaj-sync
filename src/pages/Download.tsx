@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const DownloadPage = () => {
-  const githubURL = "https://mega.nz/file/o2oDVJ4J#-WHTJxlrwX7h1kr5h2VdG89JnBhgwKpozT_4bQvKYcA";
+  const githubURL = "https://mega.nz/file/U2ZXkTYD#dfAXmLELiKjNjCrSSgAC5aToNGD7xgBPV97AOwSysYI";
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
