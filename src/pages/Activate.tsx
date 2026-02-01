@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, CheckCircle2, AlertCircle, Info, User, Clock, Check, X } from 'lucide-react';
+import { Phone, CheckCircle2, AlertCircle, Info, User, Clock, Check, X, Home } from 'lucide-react'; // Ajout de Home
 import axios from 'axios';
 
 const Activate = () => {
@@ -24,7 +24,6 @@ const Activate = () => {
     
     try {
       const res = await axios.get(`http://localhost:1000/check/${phone}`);
-      console.log(res.data);
       
       if(res.data.status === 'active') {
         setStep('active');
@@ -49,7 +48,6 @@ const Activate = () => {
 
       setIsSubmitting(true);
 
-      // Modification : URL avec ${phone} et ajout de paymentMethod dans le body
       const res = await axios.post(`http://localhost:1000/confirm/${phone}`, { 
         paymentPhone, 
         reference,
@@ -81,22 +79,6 @@ const Activate = () => {
     <div className="min-h-screen pt-32 pb-20 bg-gray-50 flex justify-center px-4 font-sans">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-xl w-full">
         
-        {/* Système d'Alertes */}
-        <AnimatePresence>
-          {alert && (
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-              className={`mb-4 p-4 rounded-2xl flex items-center gap-3 border shadow-sm ${
-                alert.type === 'success' ? 'bg-green-50 border-green-100 text-green-800' : 'bg-red-50 border-red-100 text-red-800'
-              }`}
-            >
-              {alert.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-              <p className="text-sm font-bold flex-1">{alert.message}</p>
-              <button onClick={() => setAlert(null)}><X size={18} /></button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <div className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-gray-100">
           <div className="bg-yellow-500 p-8 text-white text-center">
             <h1 className="text-3xl font-bold tracking-tight">BajajSync</h1>
@@ -127,7 +109,7 @@ const Activate = () => {
             <AnimatePresence mode="wait">
               {/* CARD UTILISATEUR */}
               {step !== 'check' && (
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-8 p-5 rounded-3xl bg-gray-50 border border-gray-100 flex items-center gap-4">
+                <motion.div key="user-card" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mt-8 p-5 rounded-3xl bg-gray-50 border border-gray-100 flex items-center gap-4">
                   <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm text-yellow-600">
                     <User size={28} />
                   </div>
@@ -145,7 +127,7 @@ const Activate = () => {
 
               {/* CONTENU : DÉJÀ ACTIF */}
               {step === 'active' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 text-center py-6 space-y-4">
+                <motion.div key="active-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 text-center py-6 space-y-4">
                   <div className="inline-flex p-4 bg-green-100 text-green-600 rounded-full"><Check size={32} /></div>
                   <p className="text-gray-600 font-medium px-4">Votre licence est déjà activée. Vous pouvez utiliser toutes les fonctionnalités.</p>
                   <button onClick={() => {setStep('check'); setPhone(''); setAlert(null);}} className="text-yellow-600 font-bold text-sm">Vérifier un autre numéro</button>
@@ -154,7 +136,7 @@ const Activate = () => {
 
               {/* CONTENU : PAIEMENT */}
               {step === 'payment' && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 space-y-6">
+                <motion.div key="payment-content" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 space-y-6">
                   <div className="h-px bg-gray-100 w-full" />
                   
                   <div className="space-y-4">
@@ -201,6 +183,34 @@ const Activate = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Système d'Alertes - EN BAS */}
+            <AnimatePresence>
+              {alert && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                  className={`mt-6 p-4 rounded-2xl flex items-center gap-3 border shadow-sm ${
+                    alert.type === 'success' ? 'bg-green-50 border-green-100 text-green-800' : 'bg-red-50 border-red-100 text-red-800'
+                  }`}
+                >
+                  {alert.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+                  <p className="text-sm font-bold flex-1">{alert.message}</p>
+                  <button onClick={() => setAlert(null)}><X size={18} /></button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* BOUTON RETOUR ACCUEIL */}
+            <div className="mt-8 pt-6 border-t border-gray-100 flex justify-center">
+              <button 
+                onClick={() => window.location.href = '/'} 
+                className="flex items-center gap-2 text-gray-400 hover:text-yellow-600 transition-all text-xs font-bold uppercase tracking-widest"
+              >
+                <Home size={14} />
+                Retour à l'accueil
+              </button>
+            </div>
+
           </div>
         </div>
       </motion.div>

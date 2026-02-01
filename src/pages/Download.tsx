@@ -1,9 +1,10 @@
-import { Download, AlertTriangle, CreditCard, Smartphone, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Download, AlertTriangle, CreditCard, Smartphone, ArrowLeft, CheckCircle, ExternalLink, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const DownloadPage = () => {
-  const githubURL = "https://mega.nz/file/U2ZXkTYD#dfAXmLELiKjNjCrSSgAC5aToNGD7xgBPV97AOwSysYI";
+  const megaURL = "https://mega.nz/file/U2ZXkTYD#dfAXmLELiKjNjCrSSgAC5aToNGD7xgBPV97AOwSysYI";
+  const facebookURL = "https://web.facebook.com/yotech14"; // Lien à ajuster si besoin
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
@@ -29,7 +30,7 @@ const DownloadPage = () => {
                 Télécharger BajajSync
                 </h1>
                 <p className="text-yellow-50 font-medium text-lg">
-                Version 1.0.2 • Android
+                Version 1.1.2 • Android
                 </p>
             </div>
           </div>
@@ -38,7 +39,7 @@ const DownloadPage = () => {
             
             {/* Download Action */}
             <div className="text-center">
-              <a href={githubURL}>
+              <a href={megaURL} target="_blank" rel="noopener noreferrer">
                 <button className="w-full sm:w-auto px-10 py-4 bg-gray-900 text-white rounded-xl font-bold text-lg shadow-xl hover:bg-gray-800 transition-all transform hover:-translate-y-1 flex items-center justify-center mx-auto gap-3">
                 <Download className="h-6 w-6" />
                 Télécharger l'APK
@@ -64,7 +65,7 @@ const DownloadPage = () => {
                         </div>
                         <div className="ml-4">
                             <h3 className="text-lg font-medium text-gray-900">Installation & Inscription</h3>
-                            <p className="mt-1 text-gray-600">Installez l'application et créez votre compte directement depuis l'interface d'accueil.</p>
+                            <p className="mt-1 text-gray-600">Installez l'application et créez votre compte directement depuis l'interface d'accueil sur votre mobile.</p>
                         </div>
                     </div>
                     <div className="flex">
@@ -72,11 +73,34 @@ const DownloadPage = () => {
                             <div className="flex items-center justify-center h-10 w-10 rounded-full bg-yellow-100 text-yellow-600 font-bold">2</div>
                         </div>
                         <div className="ml-4">
-                            <h3 className="text-lg font-medium text-gray-900">Paiement de la licence</h3>
-                            <p className="mt-1 text-gray-600">Contactez YoTech pour finaliser votre inscription via le paiement de la licence d'utilisation.</p>
+                            <h3 className="text-lg font-medium text-gray-900">Activation de la licence</h3>
+                            <p className="mt-1 text-gray-600">
+                              Utilisez notre portail d'activation en ligne ou contactez directement YoTech pour valider votre accès.
+                            </p>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* DEUX CHOIX D'ACTIVATION */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link to="/activate" className="group p-6 bg-yellow-50 border-2 border-yellow-200 rounded-2xl hover:border-yellow-500 transition-all">
+                <ShieldCheck className="h-8 w-8 text-yellow-600 mb-3" />
+                <h4 className="font-bold text-gray-900 mb-1 text-lg">Activation en ligne</h4>
+                <p className="text-sm text-yellow-800/80 mb-4">Validez votre licence instantanément via notre formulaire sécurisé.</p>
+                <span className="text-yellow-700 font-bold text-sm inline-flex items-center gap-2 group-hover:gap-3 transition-all">
+                  Accéder au portail <ArrowLeft className="h-4 w-4 rotate-180" />
+                </span>
+              </Link>
+
+              <a href={facebookURL} target="_blank" rel="noopener noreferrer" className="group p-6 bg-blue-50 border-2 border-blue-100 rounded-2xl hover:border-blue-400 transition-all">
+                <Smartphone className="h-8 w-8 text-blue-600 mb-3" />
+                <h4 className="font-bold text-gray-900 mb-1 text-lg">Contacter YoTech</h4>
+                <p className="text-sm text-blue-800/80 mb-4">Besoin d'aide ou paiement direct ? Envoyez un message à YoTech.</p>
+                <span className="text-blue-700 font-bold text-sm inline-flex items-center gap-2">
+                  Ouvrir la page YoTech <ExternalLink className="h-4 w-4" />
+                </span>
+              </a>
             </div>
 
             {/* Critical Warning */}
@@ -93,25 +117,22 @@ const DownloadPage = () => {
                     </p>
                     <p>
                         Votre compte sera <strong>définitivement lié à l'identifiant unique de cet appareil</strong>. 
-                        Pour changer d'appareil ultérieurement, vous devrez soumettre une demande administrative spécifique auprès de YoTech.
+                        Pour changer d'appareil, une demande spécifique auprès de YoTech sera nécessaire.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Contact Info */}
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Besoin d'aide pour l'activation ?</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex items-center text-gray-600">
-                        <CreditCard className="h-5 w-5 mr-3 text-gray-400" />
-                        <span>Paiement Mobile Money disponible</span>
-                    </div>
-                    <div className="flex items-center text-gray-600">
-                        <Smartphone className="h-5 w-5 mr-3 text-gray-400" />
-                        <span>Support: +261 38 22 093 67</span>
-                    </div>
+            {/* Support Info */}
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center text-gray-600">
+                    <CreditCard className="h-5 w-5 mr-3 text-gray-400" />
+                    <span className="text-sm font-medium">Orange Money disponible</span>
+                </div>
+                <div className="flex items-center text-gray-600 font-bold">
+                    <Smartphone className="h-5 w-5 mr-3 text-yellow-600" />
+                    <span>Assistance : +261 38 22 093 67</span>
                 </div>
             </div>
 
