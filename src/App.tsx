@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import DownloadPage from './pages/Download';
 import Footer from './components/Footer';
+import Activate from './pages/Activate';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             </>
           } />
           <Route path="/download" element={<DownloadPage />} />
+          <Route path="/activate" element={<Activate />} />
         </Routes>
       </div>
     </Router>

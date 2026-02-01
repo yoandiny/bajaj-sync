@@ -37,9 +37,9 @@ const Navbar = () => {
           {/* Logo */}
           <div 
             className="flex-shrink-0 flex items-center align-middle cursor-pointer gap-2" 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => navigate('/')}
           >
-           <img className="h-11 w-11" src={Logo} alt="BajajSync Logo" />
+            <img className="h-11 w-11" src={Logo} alt="BajajSync Logo" />
             <span className="font-bold text-2xl tracking-tight text-gray-900">BajajSync</span>
           </div>
 
@@ -54,6 +54,17 @@ const Navbar = () => {
                 {link.name}
               </button>
             ))}
+
+            {/* Nouveau lien Activation */}
+            <Link
+              to="/activate"
+              className={`font-medium transition-colors duration-200 ${
+                location.pathname === '/activate' ? 'text-yellow-600' : 'text-gray-600 hover:text-yellow-600'
+              }`}
+            >
+              Activer
+            </Link>
+
             <Link
               to="/download"
               className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2.5 rounded-full font-semibold transition-all duration-300 shadow-lg shadow-yellow-500/30 transform hover:-translate-y-0.5"
@@ -91,6 +102,16 @@ const Navbar = () => {
                 {link.name}
               </button>
             ))}
+            
+            {/* Nouveau lien Activation Mobile */}
+            <Link
+              to="/activate"
+              onClick={() => setIsOpen(false)}
+              className="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:text-yellow-600 hover:bg-gray-50 rounded-md"
+            >
+              Activer ma licence
+            </Link>
+
             <div className="pt-4">
               <Link
                 to="/download"
