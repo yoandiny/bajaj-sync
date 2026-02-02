@@ -23,7 +23,7 @@ const Activate = () => {
     setAlert(null);
     
     try {
-      const res = await axios.get(`http://localhost:1000/check/${phone}`);
+      const res = await axios.get(`https://bajaj-app.yotech.mg/check/${phone}`);
       
       if(res.data.status === 'active') {
         setStep('active');
@@ -48,7 +48,7 @@ const Activate = () => {
 
       setIsSubmitting(true);
 
-      const res = await axios.post(`http://localhost:1000/confirm/${phone}`, { 
+      const res = await axios.post(`https://bajaj-app.yotech.mg/confirm/${phone}`, { 
         paymentPhone, 
         reference,
         paymentMethod: 'Orange Money' 
