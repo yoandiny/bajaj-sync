@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogIn } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Logo from '../assets/logo.png';
 
@@ -55,7 +55,6 @@ const Navbar = () => {
               </button>
             ))}
 
-            {/* Nouveau lien Activation */}
             <Link
               to="/activate"
               className={`font-medium transition-colors duration-200 ${
@@ -65,11 +64,21 @@ const Navbar = () => {
               Activer
             </Link>
 
+            <div className="h-6 w-px bg-gray-200 mx-2"></div>
+
+            <Link
+                to="/login"
+                className="flex items-center gap-2 text-gray-900 font-bold hover:text-yellow-600 transition-colors"
+            >
+                <LogIn size={18} />
+                Connexion
+            </Link>
+
             <Link
               to="/download"
               className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2.5 rounded-full font-semibold transition-all duration-300 shadow-lg shadow-yellow-500/30 transform hover:-translate-y-0.5"
             >
-              Télécharger l'app
+              Télécharger
             </Link>
           </div>
 
@@ -103,7 +112,6 @@ const Navbar = () => {
               </button>
             ))}
             
-            {/* Nouveau lien Activation Mobile */}
             <Link
               to="/activate"
               onClick={() => setIsOpen(false)}
@@ -112,7 +120,18 @@ const Navbar = () => {
               Activer ma licence
             </Link>
 
-            <div className="pt-4">
+            <hr className="border-gray-100 my-2" />
+
+            <Link
+              to="/login"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 w-full text-left px-3 py-3 text-base font-bold text-gray-900 hover:bg-gray-50 rounded-md"
+            >
+                <LogIn size={18} />
+                Espace Client
+            </Link>
+
+            <div className="pt-2">
               <Link
                 to="/download"
                 onClick={() => setIsOpen(false)}

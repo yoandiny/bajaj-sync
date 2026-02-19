@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Users, Car, Wallet, BarChart3, Mail, Phone, CheckCircle2 } from 'lucide-react'; // Remplacement de Truck par Car
+import { Users, Car, Wallet, BarChart3, Mail, Phone, CheckCircle2, Laptop, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import FeatureCard from '../components/FeatureCard';
 import Logo from '../assets/logo.png';
@@ -76,25 +76,90 @@ const Home = () => {
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6">
               Bajaj<span className="text-yellow-500">Sync</span>
             </h1>
-            <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
-              La solution complète pour la gestion de votre flotte de transport. 
-              Taxis, Bajaj ou Motos : optimisez vos opérations et sécurisez vos revenus.
+            <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 leading-relaxed">
+              La solution complète <span className="font-bold text-gray-900">Mobile & Web</span> pour la gestion de votre flotte de transport. 
+              Centralisez vos opérations, du chauffeur au bureau.
             </p>
-            <div className="mt-10 flex justify-center gap-4">
+            
+            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-sm font-bold text-gray-600 uppercase tracking-widest">
+                <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                    <Smartphone size={18} className="text-yellow-500" />
+                    App Android
+                </div>
+                <div className="hidden sm:block text-gray-300">•</div>
+                <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                    <Laptop size={18} className="text-yellow-500" />
+                    Plateforme Web SaaS
+                </div>
+            </div>
+
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
               <Link
                 to="/download"
                 className="px-8 py-4 bg-yellow-500 text-white rounded-full font-bold text-lg shadow-xl hover:bg-yellow-600 transition-all transform hover:-translate-y-1"
               >
-                Commencer maintenant
+                Télécharger l'App
               </Link>
-              <button 
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-full font-bold text-lg hover:bg-gray-50 transition-all"
+              <Link
+                to="/login"
+                className="px-8 py-4 bg-gray-900 text-white rounded-full font-bold text-lg shadow-xl hover:bg-black transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"
               >
-                En savoir plus
-              </button>
+                Accès Gérant
+              </Link>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Web Platform Promo Section */}
+      <section className="py-20 bg-gray-900 text-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-yellow-500 rounded-full opacity-10 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-blue-500 rounded-full opacity-10 blur-3xl"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+                <div className="mb-10 lg:mb-0">
+                    <h2 className="text-3xl font-extrabold sm:text-4xl mb-6">
+                        Nouveau : Gérez tout depuis votre bureau
+                    </h2>
+                    <p className="text-lg text-gray-300 mb-6 leading-relaxed">
+                        Pour les propriétaires de flotte et les gérants, découvrez notre nouvelle interface web. 
+                        Plus besoin de votre téléphone pour tout contrôler.
+                    </p>
+                    <ul className="space-y-4 mb-8">
+                        {[
+                            'Gestion multi-sites et bureaux',
+                            'Création de comptes Managers',
+                            'Vue d\'ensemble sur grand écran',
+                            'Export des rapports financiers',
+                            'Suivi GPS en temps réel (Bientôt)'
+                        ].map((item, i) => (
+                            <li key={i} className="flex items-center">
+                                <div className="bg-yellow-500 rounded-full p-1 mr-3">
+                                    <CheckCircle2 size={14} className="text-gray-900" />
+                                </div>
+                                <span className="font-medium">{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                    <Link to="/login" className="inline-flex items-center text-yellow-400 font-bold hover:text-yellow-300 transition-colors">
+                        Accéder à la démo <Laptop size={18} className="ml-2" />
+                    </Link>
+                </div>
+                <div className="relative">
+                     {/* Abstract Browser Window */}
+                    <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+                        <div className="bg-gray-700 px-4 py-3 flex items-center gap-2 border-b border-gray-600">
+                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div className="p-1">
+                            <img src={Dashboard} alt="Interface Web" className="w-full rounded-lg opacity-90" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
       </section>
 
