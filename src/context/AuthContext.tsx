@@ -30,12 +30,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
         // In real app, send to backend. Here we check mock users.
-        // For demo purposes, any password works if user exists.
         const foundUser = MOCK_USERS.find(u => 
           (u.email === identifier || u.phone === identifier)
         );
 
         if (foundUser) {
+          if (foundUser.status === 'REVOKED') {
+            reject(new Error('Ce compte a été désactivé. Contactez le support.'));
+            return;
+          }
           setUser(foundUser);
           localStorage.setItem('bajajsync_user', JSON.stringify(foundUser));
           resolve();

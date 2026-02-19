@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 import Logo from '../assets/logo.png';
+import { MOCK_USERS } from '../data/mock'; // Import mock users to check role before navigation
 
 const Login = () => {
   const [identifier, setIdentifier] = useState('');
@@ -19,9 +20,18 @@ const Login = () => {
 
     try {
       await login(identifier, password);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Identifiant ou mot de passe incorrect.');
+      
+      // Check role to redirect correctly (using mock data logic since login returns void)
+      // In a real app, login would return the user object
+      const user = MOCK_USERS.find(u => u.email === identifier || u.phone === identifier);
+      
+      if (user?.role === 'SUPER_ADMIN') {
+        navigate('/platform');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Identifiant ou mot de passe incorrect.');
     } finally {
       setLoading(false);
     }
@@ -34,8 +44,8 @@ const Login = () => {
           <div className="inline-block p-3 bg-white rounded-2xl shadow-lg mb-4">
             <img src={Logo} alt="Logo" className="w-12 h-12" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Connexion Admin</h1>
-          <p className="text-yellow-100 text-sm mt-1">Gérez votre flotte en toute simplicité</p>
+          <h1 className="text-2xl font-bold text-white">Connexion</h1>
+          <p className="text-yellow-100 text-sm mt-1">Accès Sécurisé BajajSync</p>
         </div>
 
         <div className="p-8">
