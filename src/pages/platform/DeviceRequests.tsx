@@ -1,26 +1,44 @@
-import { useState } from 'react';
-import { Smartphone, Check, X, AlertTriangle } from 'lucide-react';
-import { MOCK_DEVICE_REQUESTS } from '../../data/mock';
+import { useState, useEffect } from 'react';
+import { Smartphone, Check, X } from 'lucide-react';
 import { DeviceRequest } from '../../types';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
+import { platformService } from '../../services/platform.service';
 
 const DeviceRequests = () => {
-  const [requests, setRequests] = useState<DeviceRequest[]>(MOCK_DEVICE_REQUESTS);
+  const [requests, setRequests] = useState<DeviceRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState<DeviceRequest | null>(null);
   const [modalAction, setModalAction] = useState<'APPROVE' | 'REJECT' | null>(null);
+
+  useEffect(() => {
+    platformService.getDeviceRequests()
+      .then(setRequests)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleAction = (request: DeviceRequest, action: 'APPROVE' | 'REJECT') => {
     setSelectedRequest(request);
     setModalAction(action);
   };
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (!selectedRequest || !modalAction) return;
     const newStatus = modalAction === 'APPROVE' ? 'APPROVED' : 'REJECTED';
-    setRequests(requests.map(r => r.id === selectedRequest.id ? { ...r, status: newStatus } : r));
-    setSelectedRequest(null);
-    setModalAction(null);
+    try {
+      await platformService.processDeviceRequest(selectedRequest.id, newStatus);
+      setRequests(requests.map(r => r.id === selectedRequest.id ? { ...r, status: newStatus } : r));
+    } catch (err) {
+      console.error('Erreur traitement demande appareil', err);
+    } finally {
+      setSelectedRequest(null);
+      setModalAction(null);
+    }
   };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-400 font-medium">Chargement...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -62,7 +80,7 @@ const DeviceRequests = () => {
               </tr>
             ))}
             {requests.length === 0 && (
-                <tr><td colSpan={5} className="p-8 text-center text-gray-500">Aucune demande en attente.</td></tr>
+              <tr><td colSpan={5} className="p-8 text-center text-gray-500">Aucune demande en attente.</td></tr>
             )}
           </tbody>
         </table>
@@ -73,9 +91,9 @@ const DeviceRequests = () => {
         onClose={() => setSelectedRequest(null)}
         onConfirm={confirmAction}
         title="Confirmation de changement"
-        message={modalAction === 'APPROVE' 
-            ? "Cela dissociera l'ancien appareil et permettra à l'utilisateur de se connecter sur un nouveau téléphone." 
-            : "Refuser cette demande empêchera l'utilisateur de changer d'appareil."}
+        message={modalAction === 'APPROVE'
+          ? "Cela dissociera l'ancien appareil et permettra à l'utilisateur de se connecter sur un nouveau téléphone."
+          : "Refuser cette demande empêchera l'utilisateur de changer d'appareil."}
         confirmText={modalAction === 'APPROVE' ? "Autoriser le changement" : "Refuser"}
         type={modalAction === 'APPROVE' ? 'warning' : 'danger'}
       />

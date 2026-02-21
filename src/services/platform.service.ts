@@ -1,43 +1,53 @@
 import api from '../lib/axios';
 import { User, LicenseRequest, DeviceRequest, Feedback } from '../types';
 
+interface PlatformStats {
+  totalUsers: number;
+  activeUsers: number;
+  pendingLicenses: number;
+  totalFeedbacks: number;
+}
+
 export const platformService = {
-  // --- Dashboard Super Admin ---
-  getStats: async () => {
-    return api.get('/admin/stats');
+  // Stats
+  getStats: async (): Promise<PlatformStats> => {
+    const response = await api.get<PlatformStats>('/admin/stats');
+    return response.data;
   },
 
-  // --- Gestion Utilisateurs ---
-  getUsers: async (search?: string) => {
-    return api.get<User[]>('/admin/users', { params: { search } });
-  },
-  
-  // Action: 'REVOKE' | 'ACTIVATE'
-  updateUserStatus: async (userId: string, status: 'ACTIVE' | 'REVOKED') => {
-    return api.put(`/admin/users/${userId}/status`, { status });
+  // Users
+  getUsers: async (search?: string): Promise<User[]> => {
+    const response = await api.get<User[]>('/admin/users', { params: { search } });
+    return response.data;
   },
 
-  // --- Gestion Licences ---
-  getLicenseRequests: async () => {
-    return api.get<LicenseRequest[]>('/admin/licenses');
-  },
-  
-  // Action: 'APPROVE' | 'REJECT'
-  processLicenseRequest: async (requestId: string, status: 'APPROVED' | 'REJECTED') => {
-    return api.put(`/admin/licenses/${requestId}/status`, { status });
+  updateUserStatus: async (userId: string, status: 'ACTIVE' | 'REVOKED'): Promise<void> => {
+    await api.put(`/admin/users/${userId}/status`, { status });
   },
 
-  // --- Gestion Appareils (Android ID) ---
-  getDeviceRequests: async () => {
-    return api.get<DeviceRequest[]>('/admin/devices');
-  },
-  
-  processDeviceRequest: async (requestId: string, status: 'APPROVED' | 'REJECTED') => {
-    return api.put(`/admin/devices/${requestId}/status`, { status });
+  // License Requests
+  getLicenseRequests: async (): Promise<LicenseRequest[]> => {
+    const response = await api.get<LicenseRequest[]>('/admin/licenses');
+    return response.data;
   },
 
-  // --- Feedbacks Globaux ---
-  getAllFeedbacks: async () => {
-    return api.get<Feedback[]>('/admin/feedbacks');
+  processLicenseRequest: async (requestId: string, status: 'APPROVED' | 'REJECTED'): Promise<void> => {
+    await api.put(`/admin/licenses/${requestId}/status`, { status });
+  },
+
+  // Device Requests
+  getDeviceRequests: async (): Promise<DeviceRequest[]> => {
+    const response = await api.get<DeviceRequest[]>('/admin/devices');
+    return response.data;
+  },
+
+  processDeviceRequest: async (requestId: string, status: 'APPROVED' | 'REJECTED'): Promise<void> => {
+    await api.put(`/admin/devices/${requestId}/status`, { status });
+  },
+
+  // Feedbacks
+  getFeedbacks: async (): Promise<Feedback[]> => {
+    const response = await api.get<Feedback[]>('/admin/feedbacks');
+    return response.data;
   }
 };

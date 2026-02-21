@@ -1,28 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Check, X, Clock, CreditCard } from 'lucide-react';
-import { MOCK_LICENSE_REQUESTS } from '../../data/mock';
 import { LicenseRequest } from '../../types';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
+import { platformService } from '../../services/platform.service';
 
 const LicenseRequests = () => {
-  const [requests, setRequests] = useState<LicenseRequest[]>(MOCK_LICENSE_REQUESTS);
+  const [requests, setRequests] = useState<LicenseRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState<LicenseRequest | null>(null);
   const [modalAction, setModalAction] = useState<'APPROVE' | 'REJECT' | null>(null);
+
+  useEffect(() => {
+    platformService.getLicenseRequests()
+      .then(setRequests)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleAction = (request: LicenseRequest, action: 'APPROVE' | 'REJECT') => {
     setSelectedRequest(request);
     setModalAction(action);
   };
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (!selectedRequest || !modalAction) return;
-
     const newStatus = modalAction === 'APPROVE' ? 'APPROVED' : 'REJECTED';
-    setRequests(requests.map(r => r.id === selectedRequest.id ? { ...r, status: newStatus } : r));
-    
-    setSelectedRequest(null);
-    setModalAction(null);
+    try {
+      await platformService.processLicenseRequest(selectedRequest.id, newStatus);
+      setRequests(requests.map(r => r.id === selectedRequest.id ? { ...r, status: newStatus } : r));
+    } catch (err) {
+      console.error('Erreur lors du traitement de la demande', err);
+    } finally {
+      setSelectedRequest(null);
+      setModalAction(null);
+    }
   };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-400 font-medium">Chargement...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -55,51 +71,30 @@ const LicenseRequests = () => {
                   <div className="flex items-center gap-2">
                     <CreditCard size={16} className="text-gray-400" />
                     <div>
-                        <p className="text-sm font-medium text-gray-700">{req.paymentMethod}</p>
-                        <p className="text-xs text-gray-500 font-mono">Ref: {req.reference}</p>
+                      <p className="text-sm font-medium text-gray-700">{req.paymentMethod}</p>
+                      <p className="text-xs text-gray-500 font-mono">Ref: {req.reference}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 font-bold text-gray-900">{req.amount.toLocaleString()} Ar</td>
                 <td className="px-6 py-4">
-                  {req.status === 'PENDING' && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
-                      <Clock size={12} /> En attente
-                    </span>
-                  )}
-                  {req.status === 'APPROVED' && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                      <Check size={12} /> Validé
-                    </span>
-                  )}
-                  {req.status === 'REJECTED' && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
-                      <X size={12} /> Rejeté
-                    </span>
-                  )}
+                  {req.status === 'PENDING' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700"><Clock size={12} /> En attente</span>}
+                  {req.status === 'APPROVED' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700"><Check size={12} /> Validé</span>}
+                  {req.status === 'REJECTED' && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700"><X size={12} /> Rejeté</span>}
                 </td>
                 <td className="px-6 py-4 text-right">
                   {req.status === 'PENDING' && (
                     <div className="flex justify-end gap-2">
-                      <button 
-                        onClick={() => handleAction(req, 'APPROVE')}
-                        className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
-                        title="Valider"
-                      >
-                        <Check size={18} />
-                      </button>
-                      <button 
-                        onClick={() => handleAction(req, 'REJECT')}
-                        className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-                        title="Rejeter"
-                      >
-                        <X size={18} />
-                      </button>
+                      <button onClick={() => handleAction(req, 'APPROVE')} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors" title="Valider"><Check size={18} /></button>
+                      <button onClick={() => handleAction(req, 'REJECT')} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" title="Rejeter"><X size={18} /></button>
                     </div>
                   )}
                 </td>
               </tr>
             ))}
+            {requests.length === 0 && (
+              <tr><td colSpan={5} className="p-8 text-center text-gray-500 italic">Aucune demande de licence.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -109,9 +104,9 @@ const LicenseRequests = () => {
         onClose={() => setSelectedRequest(null)}
         onConfirm={confirmAction}
         title={modalAction === 'APPROVE' ? "Valider la licence" : "Rejeter la demande"}
-        message={modalAction === 'APPROVE' 
-            ? `Êtes-vous sûr de vouloir valider la licence pour ${selectedRequest?.userName} ? Cela activera immédiatement leur accès.` 
-            : `Voulez-vous vraiment rejeter cette demande ? Cette action est irréversible.`
+        message={modalAction === 'APPROVE'
+          ? `Êtes-vous sûr de vouloir valider la licence pour ${selectedRequest?.userName} ? Cela activera immédiatement leur accès.`
+          : `Voulez-vous vraiment rejeter cette demande ? Cette action est irréversible.`
         }
         confirmText={modalAction === 'APPROVE' ? "Valider et Activer" : "Rejeter"}
         type={modalAction === 'APPROVE' ? 'success' : 'danger'}
