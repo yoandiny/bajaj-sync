@@ -25,10 +25,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       try {
-        // Vérifier que le token est encore valide côté serveur
         const currentUser = await authService.me();
         setUser(currentUser);
-      } catch {
+      } catch (err) {
         // Token expiré ou invalide : nettoyer
         localStorage.removeItem('bajajsync_user');
         setUser(null);
@@ -41,14 +40,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (identifier: string, password: string): Promise<void> => {
     const data = await authService.login(identifier, password);
-    // authService.login stocke déjà {token, ...user} dans localStorage
     setUser(data.user);
   };
 
   const logout = () => {
     localStorage.removeItem('bajajsync_user');
     setUser(null);
-    authService.logout().catch(() => { }); // fire-and-forget
+    authService.logout().catch(() => { });
   };
 
   return (

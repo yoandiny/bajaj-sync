@@ -1,6 +1,6 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Smartphone, ShieldCheck, LogOut, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Users, Smartphone, ShieldCheck, LogOut, Settings, MessageSquare } from 'lucide-react';
 import Logo from '../assets/logo.png';
 import { cn } from '../lib/utils';
 
@@ -16,6 +16,8 @@ export const PlatformLayout = () => {
     { name: 'Utilisateurs', path: '/platform/users', icon: Users },
     { name: 'Licences', path: '/platform/licenses', icon: ShieldCheck },
     { name: 'Appareils', path: '/platform/devices', icon: Smartphone },
+    { name: 'Feedbacks', path: '/platform/feedbacks', icon: MessageSquare },
+    { name: 'Paramètres', path: '/platform/settings', icon: Settings },
   ];
 
   return (
@@ -39,8 +41,8 @@ export const PlatformLayout = () => {
                 to={link.path}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium",
-                  isActive 
-                    ? "bg-yellow-500 text-gray-900 shadow-lg shadow-yellow-500/20" 
+                  isActive
+                    ? "bg-yellow-500 text-gray-900 shadow-lg shadow-yellow-500/20"
                     : "text-gray-400 hover:bg-gray-800 hover:text-white"
                 )}
               >
@@ -52,17 +54,17 @@ export const PlatformLayout = () => {
         </div>
 
         <div className="p-4 border-t border-gray-800">
-            <div className="bg-gray-800/50 rounded-xl p-4 mb-3 border border-gray-700">
-                <p className="text-sm font-bold text-white">Super Admin</p>
-                <p className="text-xs text-gray-400 mt-0.5">Gérant de la Plateforme</p>
-            </div>
-            <button 
-                onClick={logout}
-                className="w-full flex items-center justify-center gap-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 py-2.5 rounded-lg transition-colors text-sm font-bold"
-            >
-                <LogOut size={18} />
-                Déconnexion
-            </button>
+          <div className="bg-gray-800/50 rounded-xl p-4 mb-3 border border-gray-700">
+            <p className="text-sm font-bold text-white">Super Admin</p>
+            <p className="text-xs text-gray-400 mt-0.5">Gérant de la Plateforme</p>
+          </div>
+          <button
+            onClick={logout}
+            className="w-full flex items-center justify-center gap-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 py-2.5 rounded-lg transition-colors text-sm font-bold"
+          >
+            <LogOut size={18} />
+            Déconnexion
+          </button>
         </div>
       </div>
 

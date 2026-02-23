@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Car, Users, Wallet, AlertTriangle } from 'lucide-react';
-import { MOCK_VEHICLES, MOCK_DRIVERS } from '../../data/mock';
+import { Car, Users, Wallet, AlertTriangle, Clock, CheckCircle } from 'lucide-react';
+import { fleetService } from '../../services/fleet.service';
 
 const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -23,18 +24,19 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
 
 const DashboardHome = () => {
   const { user } = useAuth();
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Filter data based on role
-  const vehicles = user?.role === 'ADMIN' 
-    ? MOCK_VEHICLES 
-    : MOCK_VEHICLES.filter(v => v.officeId === user?.officeId);
+  useEffect(() => {
+    fleetService.getDashboardStats()
+      .then(setStats)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
-  const drivers = user?.role === 'ADMIN'
-    ? MOCK_DRIVERS
-    : MOCK_DRIVERS.filter(d => d.officeId === user?.officeId);
-
-  const activeVehicles = vehicles.filter(v => v.status === 'ACTIVE').length;
-  const maintenanceVehicles = vehicles.filter(v => v.status === 'MAINTENANCE').length;
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-400 font-medium">Chargement des données...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -44,67 +46,82 @@ const DashboardHome = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Véhicules Actifs" 
-          value={activeVehicles} 
-          icon={Car} 
+        <StatCard
+          title="Véhicules Actifs"
+          value={stats?.activeVehicles || 0}
+          icon={Car}
           color="bg-blue-500"
         />
-        <StatCard 
-          title="Chauffeurs" 
-          value={drivers.length} 
-          icon={Users} 
+        <StatCard
+          title="Chauffeurs"
+          value={stats?.totalDrivers || 0}
+          icon={Users}
           color="bg-yellow-500"
         />
-        <StatCard 
-          title="Recettes du jour" 
-          value="125.000 Ar" 
-          icon={Wallet} 
+        <StatCard
+          title="Recettes du jour"
+          value={`${(stats?.todayRevenue || 0).toLocaleString()} Ar`}
+          icon={Wallet}
           color="bg-green-500"
-          trend="12"
         />
-        <StatCard 
-          title="En Maintenance" 
-          value={maintenanceVehicles} 
-          icon={AlertTriangle} 
+        <StatCard
+          title="Alertes"
+          value={stats?.maintenanceNeeded || 0}
+          icon={AlertTriangle}
           color="bg-red-500"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h3 className="font-bold text-gray-900 mb-4">Derniers versements</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-gray-900 flex items-center gap-2">
+              <Clock size={18} className="text-blue-500" />
+              Derniers versements
+            </h3>
+          </div>
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            {stats?.recentPayments?.length > 0 ? stats.recentPayments.map((p: any) => (
+              <div key={p.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold text-xs">
-                    TB
+                    {p.plate_number?.substring(0, 2).toUpperCase() || 'TX'}
                   </div>
                   <div>
-                    <p className="font-bold text-sm text-gray-900">1234 TBE</p>
-                    <p className="text-xs text-gray-500">Aujourd'hui, 10:30</p>
+                    <p className="font-bold text-sm text-gray-900">{p.plate_number}</p>
+                    <p className="text-xs text-gray-500">{new Date(p.date).toLocaleDateString()} - {p.driver_name}</p>
                   </div>
                 </div>
-                <span className="font-bold text-gray-900">35.000 Ar</span>
+                <span className="font-bold text-gray-900">{p.amount.toLocaleString()} Ar</span>
               </div>
-            ))}
+            )) : (
+              <p className="text-sm text-gray-500 italic text-center py-4">Aucun versement récent.</p>
+            )}
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h3 className="font-bold text-gray-900 mb-4">Alertes Maintenance</h3>
+          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <AlertTriangle size={18} className="text-red-500" />
+            Maintenances requises
+          </h3>
           <div className="space-y-4">
-             {vehicles.filter(v => v.status === 'MAINTENANCE').length > 0 ? (
-                vehicles.filter(v => v.status === 'MAINTENANCE').map(v => (
-                  <div key={v.id} className="flex items-center gap-3 p-3 bg-red-50 text-red-700 rounded-xl border border-red-100">
-                    <AlertTriangle size={18} />
-                    <span className="text-sm font-medium">Véhicule <strong>{v.plate}</strong> en maintenance.</span>
+            {stats?.maintenanceList?.length > 0 ? (
+              stats.maintenanceList.map((v: any) => (
+                <div key={v.id} className="flex items-center gap-3 p-3 bg-red-50 text-red-700 rounded-xl border border-red-100">
+                  <AlertTriangle size={18} className="shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-bold">Véhicule {v.plate_number}</p>
+                    <p className="text-xs opacity-80">Raison : {v.reason || 'Maintenance périodique'}</p>
                   </div>
-                ))
-             ) : (
-               <p className="text-sm text-gray-500 italic">Aucune alerte pour le moment.</p>
-             )}
+                </div>
+              ))
+            ) : (
+              <div className="py-8 flex flex-col items-center justify-center text-gray-400">
+                <CheckCircle size={32} className="mb-2 text-green-500 opacity-50" />
+                <p className="text-sm italic">Tous les véhicules sont opérationnels.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

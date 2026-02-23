@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User } from '../../types';
-import { Ban, CheckCircle, Search } from 'lucide-react';
+import { Ban, CheckCircle, Search, Trash2 } from 'lucide-react';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { platformService } from '../../services/platform.service';
 
@@ -9,13 +9,18 @@ const PlatformUsers = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [actionType, setActionType] = useState<'REVOKE' | 'ACTIVATE' | null>(null);
+  const [actionType, setActionType] = useState<'REVOKE' | 'ACTIVATE' | 'DELETE' | null>(null);
 
-  useEffect(() => {
+  const loadUsers = () => {
+    setLoading(true);
     platformService.getUsers()
       .then(setUsers)
       .catch(console.error)
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadUsers();
   }, []);
 
   const filteredUsers = users.filter(u =>
@@ -25,19 +30,25 @@ const PlatformUsers = () => {
     (u.phone && u.phone.includes(search))
   );
 
-  const handleAction = (user: User, type: 'REVOKE' | 'ACTIVATE') => {
+  const handleAction = (user: User, type: 'REVOKE' | 'ACTIVATE' | 'DELETE') => {
     setSelectedUser(user);
     setActionType(type);
   };
 
   const confirmAction = async () => {
     if (!selectedUser || !actionType) return;
-    const newStatus = actionType === 'REVOKE' ? 'REVOKED' : 'ACTIVE';
     try {
-      await platformService.updateUserStatus(selectedUser.id, newStatus);
-      setUsers(users.map(u => u.id === selectedUser.id ? { ...u, status: newStatus } : u));
+      if (actionType === 'DELETE') {
+        await platformService.deleteUser(selectedUser.id);
+        setUsers(users.filter(u => u.id !== selectedUser.id));
+      } else {
+        const newStatus = actionType === 'REVOKE' ? 'REVOKED' : 'ACTIVE';
+        await platformService.updateUserStatus(selectedUser.id, newStatus);
+        setUsers(users.map(u => u.id === selectedUser.id ? { ...u, status: newStatus } : u));
+      }
     } catch (err) {
-      console.error('Erreur mise à jour statut', err);
+      console.error(`Erreur action ${actionType}`, err);
+      alert('Une erreur est survenue lors de l\'opération.');
     } finally {
       setSelectedUser(null);
       setActionType(null);
@@ -87,27 +98,38 @@ const PlatformUsers = () => {
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-600">{user.email || user.phone}</td>
                 <td className="px-6 py-4">
-                  {user.status === 'ACTIVE'
+                  {user.status === 'ACTIVE' || user.status === 'active'
                     ? <span className="text-green-600 text-xs font-bold bg-green-100 px-2 py-1 rounded-full">Actif</span>
                     : <span className="text-red-600 text-xs font-bold bg-red-100 px-2 py-1 rounded-full">Révoqué</span>
                   }
                 </td>
-                <td className="px-6 py-4 text-right">
-                  {user.status === 'ACTIVE' ? (
+                <td className="px-6 py-4">
+                  <div className="flex items-center justify-end gap-2">
+                    {user.status === 'ACTIVE' || user.status === 'active' ? (
+                      <button
+                        onClick={() => handleAction(user, 'REVOKE')}
+                        className="text-amber-600 hover:bg-amber-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                        title="Révoquer l'accès"
+                      >
+                        <Ban size={14} /> Révoquer
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleAction(user, 'ACTIVATE')}
+                        className="text-green-600 hover:bg-green-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                        title="Réactiver le compte"
+                      >
+                        <CheckCircle size={14} /> Réactiver
+                      </button>
+                    )}
                     <button
-                      onClick={() => handleAction(user, 'REVOKE')}
-                      className="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 ml-auto"
+                      onClick={() => handleAction(user, 'DELETE')}
+                      className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                      title="Supprimer définitivement"
                     >
-                      <Ban size={14} /> Révoquer
+                      <Trash2 size={16} />
                     </button>
-                  ) : (
-                    <button
-                      onClick={() => handleAction(user, 'ACTIVATE')}
-                      className="text-green-600 hover:bg-green-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 ml-auto"
-                    >
-                      <CheckCircle size={14} /> Réactiver
-                    </button>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -120,14 +142,29 @@ const PlatformUsers = () => {
 
       <ConfirmationModal
         isOpen={!!selectedUser}
-        onClose={() => setSelectedUser(null)}
+        onClose={() => {
+          setSelectedUser(null);
+          setActionType(null);
+        }}
         onConfirm={confirmAction}
-        title={actionType === 'REVOKE' ? "Révoquer l'accès" : "Réactiver le compte"}
-        message={actionType === 'REVOKE'
-          ? `Voulez-vous vraiment bloquer l'accès de ${selectedUser?.firstName} ? Il ne pourra plus se connecter à ses tableaux de bord.`
-          : `Voulez-vous rétablir l'accès pour ${selectedUser?.firstName} ?`}
-        confirmText={actionType === 'REVOKE' ? "Révoquer Accès" : "Réactiver"}
-        type={actionType === 'REVOKE' ? 'danger' : 'success'}
+        title={
+          actionType === 'DELETE' ? "Supprimer le compte" :
+            actionType === 'REVOKE' ? "Révoquer l'accès" :
+              "Réactiver le compte"
+        }
+        message={
+          actionType === 'DELETE'
+            ? `⚠️ ATTENTION : Voulez-vous vraiment supprimer DÉFINITIVEMENT le compte de ${selectedUser?.firstName} ? Cette action supprimera également toutes ses données et est irréversible.`
+            : actionType === 'REVOKE'
+              ? `Voulez-vous bloquer l'accès de ${selectedUser?.firstName} ? Il ne pourra plus se connecter.`
+              : `Voulez-vous rétablir l'accès pour ${selectedUser?.firstName} ?`
+        }
+        confirmText={
+          actionType === 'DELETE' ? "Supprimer Définitivement" :
+            actionType === 'REVOKE' ? "Révoquer Accès" :
+              "Réactiver"
+        }
+        type={actionType === 'ACTIVATE' ? 'success' : 'danger'}
       />
     </div>
   );

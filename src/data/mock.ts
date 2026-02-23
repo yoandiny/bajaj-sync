@@ -4,28 +4,28 @@ import { generateUUID } from '../lib/utils';
 // Mock Data for initial state
 
 export const MOCK_OFFICES: Office[] = [
-  { 
-    id: 'off-1', 
-    name: 'Siège Antananarivo', 
-    location: 'Analakely, Tana', 
+  {
+    id: 'off-1',
+    name: 'Siège Antananarivo',
+    location: 'Analakely, Tana',
     managerId: 'usr-2',
     settings: { dailyTargetAmount: 40000, restDay: 0 } // 0 = Sunday
   },
-  { 
-    id: 'off-2', 
-    name: 'Agence Tamatave', 
-    location: 'Bord de mer, Toamasina', 
+  {
+    id: 'off-2',
+    name: 'Agence Tamatave',
+    location: 'Bord de mer, Toamasina',
     managerId: 'usr-3',
     settings: { dailyTargetAmount: 35000, restDay: 0 }
   },
 ];
 
 export const MOCK_USERS: User[] = [
-  { id: 'usr-0', firstName: 'Super', lastName: 'Admin', email: 'admin@bajajsync.mg', role: 'SUPER_ADMIN', status: 'ACTIVE' },
-  { id: 'usr-1', firstName: 'Admin', lastName: 'Principal', phone: '0340000000', role: 'ADMIN', status: 'ACTIVE', joinedDate: '2025-01-15' },
-  { id: 'usr-2', firstName: 'Jean', lastName: 'Rakoto', email: 'jean@bajajsync.mg', role: 'MANAGER', officeId: 'off-1', status: 'ACTIVE', joinedDate: '2025-02-01' },
-  { id: 'usr-3', firstName: 'Marie', lastName: 'Soa', phone: '0321111111', role: 'MANAGER', officeId: 'off-2', status: 'ACTIVE', joinedDate: '2025-02-10' },
-  { id: 'usr-4', firstName: 'Paul', lastName: 'Libre', phone: '0330000000', role: 'MANAGER', officeId: undefined, status: 'REVOKED', joinedDate: '2025-01-20' }, 
+  { id: 'usr-0', firstName: 'Super', lastName: 'Admin', email: 'admin@bajajsync.mg', role: 'SUPER_ADMIN', role_id: 1, status: 'ACTIVE' },
+  { id: 'usr-1', firstName: 'Admin', lastName: 'Principal', phone: '0340000000', role: 'OWNER', role_id: 2, status: 'ACTIVE', joinedDate: '2025-01-15' },
+  { id: 'usr-2', firstName: 'Jean', lastName: 'Rakoto', email: 'jean@bajajsync.mg', role: 'MANAGER', role_id: 3, officeId: 'off-1', status: 'ACTIVE', joinedDate: '2025-02-01' },
+  { id: 'usr-3', firstName: 'Marie', lastName: 'Soa', phone: '0321111111', role: 'MANAGER', role_id: 3, officeId: 'off-2', status: 'ACTIVE', joinedDate: '2025-02-10' },
+  { id: 'usr-4', firstName: 'Paul', lastName: 'Libre', phone: '0330000000', role: 'MANAGER', role_id: 3, officeId: undefined, status: 'REVOKED', joinedDate: '2025-01-20' },
 ];
 
 export const MOCK_DRIVERS: Driver[] = [
@@ -35,8 +35,8 @@ export const MOCK_DRIVERS: Driver[] = [
 ];
 
 export const MOCK_VEHICLES: Vehicle[] = [
-  { id: 'veh-1', plate: '1234 TBE', type: 'BAJAJ', model: 'RE 4S', officeId: 'off-1', titularDriverId: 'drv-1', insuranceExpiry: '2025-12-31', techVisitExpiry: '2025-06-30', status: 'ACTIVE' },
-  { id: 'veh-2', plate: '5678 TBG', type: 'BAJAJ', model: 'Maxima', officeId: 'off-2', titularDriverId: 'drv-3', insuranceExpiry: '2025-10-15', techVisitExpiry: '2025-05-20', status: 'MAINTENANCE' },
+  { id: 'veh-1', plate: '1234 TBE', name: 'Le Flamboyant', model: 'RE 4S', officeId: 'off-1', titularDriverId: 'drv-1', insuranceExpiry: '2025-12-31', techVisitExpiry: '2025-06-30', status: 'ACTIVE' },
+  { id: 'veh-2', plate: '5678 TBG', name: 'Express Noir', model: 'Maxima', officeId: 'off-2', titularDriverId: 'drv-3', insuranceExpiry: '2025-10-15', techVisitExpiry: '2025-05-20', status: 'MAINTENANCE' },
 ];
 
 export const MOCK_PAYMENTS: Payment[] = [
@@ -62,7 +62,7 @@ export const MOCK_DEVICE_REQUESTS: DeviceRequest[] = [
 
 export const MOCK_FEEDBACKS: Feedback[] = [
   { id: 'fb-1', userId: 'usr-2', userName: 'Jean Rakoto', role: 'MANAGER', message: "L'application est super fluide, mais j'aimerais pouvoir exporter en PDF.", rating: 4, date: '2025-04-05' },
-  { id: 'fb-2', userId: 'usr-1', userName: 'Admin Principal', role: 'ADMIN', message: "Rien à signaler, tout fonctionne bien.", rating: 5, date: '2025-04-08' },
+  { id: 'fb-2', userId: 'usr-1', userName: 'Admin Principal', role: 'OWNER', message: "Rien à signaler, tout fonctionne bien.", rating: 5, date: '2025-04-08' },
 ];
 
 export const MOCK_SUBSCRIPTION_TRANSACTIONS: SubscriptionTransaction[] = [

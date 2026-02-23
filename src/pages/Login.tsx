@@ -57,15 +57,15 @@ const Login = () => {
             )}
 
             <div className="space-y-1.5">
-              <label className="text-sm font-bold text-gray-700 ml-1">Email ou Téléphone</label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <label className="text-sm font-bold text-gray-700 ml-1 italic group-focus-within:text-yellow-600 transition-colors">Numéro de téléphone ou Email</label>
+              <div className="relative group">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-yellow-500 transition-colors" size={20} />
                 <input
                   type="text"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all font-medium"
-                  placeholder="ex: 0340000000"
+                  placeholder="ex: 0340000000 ou jean@email.com"
                   required
                 />
               </div>
@@ -99,8 +99,17 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <a href="/" className="text-sm text-gray-400 hover:text-yellow-600 font-medium transition-colors">
+          <div className="mt-8 text-center space-y-4">
+            <p className="text-sm text-gray-500">
+              Pas encore de compte ?{' '}
+              <button
+                onClick={() => navigate('/register')}
+                className="text-yellow-600 font-bold hover:underline"
+              >
+                S'inscrire gratuitement
+              </button>
+            </p>
+            <a href="/" className="block text-xs text-gray-400 hover:text-yellow-600 font-medium transition-colors">
               Retour au site principal
             </a>
           </div>

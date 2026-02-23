@@ -1,4 +1,4 @@
-export type Role = 'ADMIN' | 'MANAGER' | 'SUPER_ADMIN';
+export type Role = 'OWNER' | 'MANAGER' | 'SUPER_ADMIN' | 'DRIVER';
 
 export interface User {
   id: string;
@@ -7,11 +7,15 @@ export interface User {
   email?: string;
   phone?: string;
   role: Role;
-  officeId?: string; // Null if Admin or Unassigned Manager
-  status?: 'ACTIVE' | 'REVOKED'; // Added status for platform management
+  role_id: number;
+  company_id?: string;
+  officeId?: string;
+  officeName?: string;
+  status: 'active' | 'waiting' | 'pending' | 'ACTIVE' | 'REVOKED';
   subscriptionPlan?: 'TRIAL' | 'PREMIUM';
   joinedDate?: string;
 }
+
 
 export interface OfficeSettings {
   dailyTargetAmount: number;
@@ -23,6 +27,7 @@ export interface Office {
   name: string;
   location: string;
   managerId: string;
+  companyId?: string;
   settings?: OfficeSettings;
 }
 
@@ -39,9 +44,10 @@ export interface Driver {
 export interface Vehicle {
   id: string;
   plate: string;
-  type: 'BAJAJ' | 'TAXI' | 'MOTO';
+  name: string;
   model: string;
   officeId: string;
+  companyId?: string;
   titularDriverId?: string;
   replacementDriverId?: string;
   insuranceExpiry: string;

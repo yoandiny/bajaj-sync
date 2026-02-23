@@ -20,7 +20,25 @@ api.interceptors.request.use(
       // Supposons que l'objet user contient un champ 'token'
       if (user.token) {
         config.headers.Authorization = `Bearer ${user.token}`;
+
+        // 🔍 DIAGNOSTIC: Décoder le token JWT pour voir son contenu
+        try {
+          const payload = JSON.parse(atob(user.token.split('.')[1]));
+          console.log('[AUTH] Token payload (décodé):', payload);
+          console.log('[AUTH] office_id dans le token:', payload.office_id);
+          console.log('[AUTH] company_id dans le token:', payload.company_id);
+          console.log('[AUTH] role_id dans le token:', payload.role_id);
+        } catch (e) {
+          console.error('[AUTH] Impossible de décoder le token:', e);
+        }
+
+        console.log('[AUTH] Header Authorization envoyé:', config.method?.toUpperCase(), config.url);
+      } else {
+        console.warn('[AUTH] ⚠️ Pas de token dans localStorage bajajsync_user');
+        console.log('[AUTH] Contenu de bajajsync_user:', user);
       }
+    } else {
+      console.warn('[AUTH] ⚠️ bajajsync_user absent du localStorage');
     }
     return config;
   },

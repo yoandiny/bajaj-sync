@@ -25,6 +25,10 @@ export const platformService = {
     await api.put(`/admin/users/${userId}/status`, { status });
   },
 
+  deleteUser: async (userId: string): Promise<void> => {
+    await api.delete(`/admin/users/${userId}`);
+  },
+
   // License Requests
   getLicenseRequests: async (): Promise<LicenseRequest[]> => {
     const response = await api.get<LicenseRequest[]>('/admin/licenses');
