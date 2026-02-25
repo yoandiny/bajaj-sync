@@ -119,4 +119,17 @@ export const fleetService = {
     const response = await api.post<User>('/fleet/managers', data);
     return response.data;
   },
+  updateProfile: async (data: any): Promise<void> => {
+    await api.put('/user/profile', data);
+  },
+  uploadFile: async (file: File, folder: string): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post<{ url: string }>(`/upload/${folder}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.url;
+  },
 };

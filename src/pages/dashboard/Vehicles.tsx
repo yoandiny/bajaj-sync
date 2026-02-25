@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { fleetService } from '../../services/fleet.service';
 import { Vehicle, Driver, Office } from '../../types';
-import { Plus, Edit2, CheckCircle2, FileText, Loader2, Star, RefreshCw } from 'lucide-react';
+import { Plus, Edit2, CheckCircle2, FileText, Loader2, Star, RefreshCw, Upload, FileCheck, X } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 
 const Vehicles = () => {
@@ -25,7 +25,8 @@ const Vehicles = () => {
     insuranceExpiry: '',
     techVisitExpiry: '',
     titularDriverId: '',
-    replacementDriverId: ''
+    replacementDriverId: '',
+    type: 'BAJAJ'
   });
 
   const loadData = async () => {
@@ -68,7 +69,8 @@ const Vehicles = () => {
         insuranceExpiry: '',
         techVisitExpiry: '',
         titularDriverId: '',
-        replacementDriverId: ''
+        replacementDriverId: '',
+        type: 'BAJAJ'
       });
     }
     setError(null);
@@ -158,7 +160,7 @@ const Vehicles = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-yellow-50 flex items-center justify-center font-bold text-yellow-600">
-                          🛺
+                          {vehicle.type === 'MOTO' ? '🏍️' : vehicle.type === 'BUS' ? '🚐' : '🛺'}
                         </div>
                         <div>
                           <p className="font-bold text-gray-900 leading-tight">{vehicle.name || 'Sans nom'}</p>
@@ -307,6 +309,20 @@ const Vehicles = () => {
             </div>
           </div>
 
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">Type de véhicule</label>
+            <select
+              value={formData.type}
+              onChange={e => setFormData({ ...formData, type: e.target.value as any })}
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500 font-bold"
+            >
+              <option value="BAJAJ">Bajaj / Rickshaw</option>
+              <option value="MOTO">Moto / Scooter</option>
+              <option value="BUS">Taxi-Brousse / Van</option>
+              <option value="OTHER">Autre</option>
+            </select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Assurance expire le</label>
@@ -337,6 +353,70 @@ const Vehicles = () => {
               <option value="MAINTENANCE">En Maintenance</option>
               <option value="STOPPED">À l'arrêt / Panne</option>
             </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Document Assurance <span className="text-[10px] font-normal lowercase">(Optionnel)</span></label>
+              <div className="flex items-center gap-2">
+                <label className={`flex-1 flex items-center justify-between px-4 py-3 border-2 border-dashed rounded-xl cursor-pointer transition-all ${formData.insuranceUrl ? 'bg-green-50 border-green-200 text-green-700' : 'bg-gray-50 border-gray-200 hover:border-yellow-400'}`}>
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    {formData.insuranceUrl ? <FileCheck size={18} /> : <FileText size={18} className="text-gray-400" />}
+                    <span className="text-sm font-bold truncate">
+                      {formData.insuranceUrl ? 'Assurance chargée' : 'Séléctionner PDF/Image'}
+                    </span>
+                  </div>
+                  <Upload size={16} className={formData.insuranceUrl ? 'hidden' : 'text-gray-400'} />
+                  <input
+                    type="file" className="hidden" accept="image/*,.pdf"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          setSubmitting(true);
+                          const url = await fleetService.uploadFile(file, 'vehicles/insurance');
+                          setFormData({ ...formData, insuranceUrl: url });
+                        } catch (err) { alert("Erreur upload"); } finally { setSubmitting(false); }
+                      }
+                    }}
+                  />
+                </label>
+                {formData.insuranceUrl && (
+                  <button type="button" onClick={() => setFormData({ ...formData, insuranceUrl: '' })} className="p-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200"><X size={18} /></button>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Carte Grise / Papiers <span className="text-[10px] font-normal lowercase">(Optionnel)</span></label>
+              <div className="flex items-center gap-2">
+                <label className={`flex-1 flex items-center justify-between px-4 py-3 border-2 border-dashed rounded-xl cursor-pointer transition-all ${formData.registrationUrl ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-gray-50 border-gray-200 hover:border-yellow-400'}`}>
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    {formData.registrationUrl ? <FileCheck size={18} /> : <FileText size={18} className="text-gray-400" />}
+                    <span className="text-sm font-bold truncate">
+                      {formData.registrationUrl ? 'Document chargé' : 'Séléctionner PDF/Image'}
+                    </span>
+                  </div>
+                  <Upload size={16} className={formData.registrationUrl ? 'hidden' : 'text-gray-400'} />
+                  <input
+                    type="file" className="hidden" accept="image/*,.pdf"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          setSubmitting(true);
+                          const url = await fleetService.uploadFile(file, 'vehicles/registration');
+                          setFormData({ ...formData, registrationUrl: url });
+                        } catch (err) { alert("Erreur upload"); } finally { setSubmitting(false); }
+                      }
+                    }}
+                  />
+                </label>
+                {formData.registrationUrl && (
+                  <button type="button" onClick={() => setFormData({ ...formData, registrationUrl: '' })} className="p-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200"><X size={18} /></button>
+                )}
+              </div>
+            </div>
           </div>
 
           <button

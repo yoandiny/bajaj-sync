@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { fleetService } from '../../services/fleet.service';
 import { Expense, Vehicle, Driver, ExpenseScope } from '../../types';
 import { Plus, Filter, Receipt, CheckCircle2, ShoppingCart, Settings, CreditCard, Loader2, User } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 
 const Expenses = () => {
+  const { user } = useAuth();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
@@ -137,6 +139,9 @@ const Expenses = () => {
             <thead className="bg-gray-50/50 border-b border-gray-100">
               <tr>
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Date</th>
+                {user?.role === 'OWNER' && (
+                  <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Bureau</th>
+                )}
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Concerne</th>
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Justification</th>
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Montant</th>
@@ -146,6 +151,13 @@ const Expenses = () => {
               {filteredExpenses.map((expense) => (
                 <tr key={expense.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4 font-bold text-gray-900">{new Date(expense.date).toLocaleDateString()}</td>
+                  {user?.role === 'OWNER' && (
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-lg">
+                        {expense.officeName || '---'}
+                      </span>
+                    </td>
+                  )}
                   <td className="px-6 py-4 text-sm font-bold text-gray-600">{getScopeLabel(expense)}</td>
                   <td className="px-6 py-4 text-sm text-gray-500 italic max-w-xs truncate">
                     {expense.description || <span className="text-gray-300">—</span>}

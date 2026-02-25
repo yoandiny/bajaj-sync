@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User, SubscriptionTransaction } from '../../types';
 import { MOCK_SUBSCRIPTION_TRANSACTIONS } from '../../data/mock';
-import { User as UserIcon, Lock, CreditCard, Save, AlertTriangle, Calendar, CheckCircle2, History, PauseCircle } from 'lucide-react';
+import { User as UserIcon, Lock, CreditCard, Save, AlertTriangle, Calendar, CheckCircle2, History, PauseCircle, Upload, X, Loader2 } from 'lucide-react';
+import { fleetService } from '../../services/fleet.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { generateUUID } from '../../lib/utils';
@@ -17,6 +18,7 @@ const Profile = () => {
         lastName: user?.lastName || '',
         phone: user?.phone || '',
         email: user?.email || '',
+        photoUrl: user?.photoUrl || '',
     });
 
     // Password State
@@ -40,12 +42,20 @@ const Profile = () => {
     // Modals
     const [showSuspendModal, setShowSuspendModal] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
-    const handleProfileUpdate = (e: React.FormEvent) => {
+    const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        // API Call would go here
-        setSuccessMsg('Informations mises à jour avec succès.');
-        setTimeout(() => setSuccessMsg(''), 3000);
+        try {
+            setSubmitting(true);
+            await fleetService.updateProfile(profileData);
+            setSuccessMsg('Informations mises à jour avec succès.');
+            setTimeout(() => setSuccessMsg(''), 3000);
+        } catch (err) {
+            alert("Erreur lors de la mise à jour du profil");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const handlePasswordUpdate = (e: React.FormEvent) => {
@@ -108,8 +118,8 @@ const Profile = () => {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
-                                ? 'bg-white text-gray-900 shadow-sm'
-                                : 'text-gray-500 hover:text-gray-700'
+                            ? 'bg-white text-gray-900 shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
                             }`}
                     >
                         <tab.icon size={16} />
@@ -135,42 +145,92 @@ const Profile = () => {
 
                 {/* INFO TAB */}
                 {activeTab === 'info' && (
-                    <form onSubmit={handleProfileUpdate} className="space-y-6 max-w-lg">
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-8">
+                        {/* Section Photo */}
+                        <div className="flex items-center gap-6 pb-6 border-b border-gray-50">
+                            <div className="relative">
+                                <div className="w-24 h-24 rounded-3xl bg-gray-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden">
+                                    {profileData.photoUrl ? (
+                                        <img src={profileData.photoUrl} alt="Profil" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <UserIcon size={40} className="text-gray-300" />
+                                    )}
+                                </div>
+                                <label className="absolute -bottom-2 -right-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-xl cursor-pointer shadow-lg transition-transform hover:scale-110">
+                                    <Upload size={16} />
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                try {
+                                                    setSubmitting(true);
+                                                    const url = await fleetService.uploadFile(file, 'profiles');
+                                                    setProfileData({ ...profileData, photoUrl: url });
+                                                } catch (err) {
+                                                    alert("Erreur lors de l'upload");
+                                                } finally {
+                                                    setSubmitting(false);
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </label>
+                                {profileData.photoUrl && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setProfileData({ ...profileData, photoUrl: '' })}
+                                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 p-1 rounded-lg hover:bg-red-200 transition-colors"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                )}
+                            </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Prénom</label>
+                                <h3 className="text-lg font-bold text-gray-900">Photo de profil</h3>
+                                <p className="text-sm text-gray-500">Personnalisez votre avatar pour l'application.</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleProfileUpdate} className="space-y-6 max-w-lg">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Prénom</label>
+                                    <input
+                                        type="text" value={profileData.firstName} onChange={e => setProfileData({ ...profileData, firstName: e.target.value })}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Nom</label>
+                                    <input
+                                        type="text" value={profileData.lastName} onChange={e => setProfileData({ ...profileData, lastName: e.target.value })}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
                                 <input
-                                    type="text" value={profileData.firstName} onChange={e => setProfileData({ ...profileData, firstName: e.target.value })}
+                                    type="email" value={profileData.email} onChange={e => setProfileData({ ...profileData, email: e.target.value })}
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Nom</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Téléphone</label>
                                 <input
-                                    type="text" value={profileData.lastName} onChange={e => setProfileData({ ...profileData, lastName: e.target.value })}
+                                    type="tel" value={profileData.phone} onChange={e => setProfileData({ ...profileData, phone: e.target.value })}
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
                                 />
                             </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
-                            <input
-                                type="email" value={profileData.email} onChange={e => setProfileData({ ...profileData, email: e.target.value })}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Téléphone</label>
-                            <input
-                                type="tel" value={profileData.phone} onChange={e => setProfileData({ ...profileData, phone: e.target.value })}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                            />
-                        </div>
-                        <button type="submit" className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors flex items-center gap-2">
-                            <Save size={18} />
-                            Enregistrer
-                        </button>
-                    </form>
+                            <button type="submit" disabled={submitting} className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-gray-900/10 disabled:opacity-50 active:scale-95">
+                                {submitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+                                Mettre à jour mon profil
+                            </button>
+                        </form>
+                    </div>
                 )}
 
                 {/* SECURITY TAB */}
@@ -262,8 +322,8 @@ const Profile = () => {
                                                 type="button"
                                                 onClick={() => setPaymentForm({ ...paymentForm, method: 'ORANGE_MONEY' })}
                                                 className={`py-3 px-2 rounded-xl border-2 text-xs font-bold transition-all ${paymentForm.method === 'ORANGE_MONEY'
-                                                        ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
-                                                        : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                                                    ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
+                                                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
                                                     }`}
                                             >
                                                 Orange Money
@@ -272,8 +332,8 @@ const Profile = () => {
                                                 type="button"
                                                 onClick={() => setPaymentForm({ ...paymentForm, method: 'MVOLA' })}
                                                 className={`py-3 px-2 rounded-xl border-2 text-xs font-bold transition-all ${paymentForm.method === 'MVOLA'
-                                                        ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
-                                                        : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                                                    ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
+                                                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
                                                     }`}
                                             >
                                                 Mvola
@@ -314,7 +374,7 @@ const Profile = () => {
                                                 <div className="text-right">
                                                     <p className="font-bold text-sm text-gray-900">{tx.amount.toLocaleString()} Ar</p>
                                                     <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${tx.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                                                            tx.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                                        tx.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
                                                         }`}>
                                                         {tx.status === 'APPROVED' ? 'Validé' : tx.status === 'PENDING' ? 'En attente' : 'Rejeté'}
                                                     </span>

@@ -2,18 +2,20 @@ export type Role = 'OWNER' | 'MANAGER' | 'SUPER_ADMIN' | 'DRIVER';
 
 export interface User {
   id: string;
+  identifier: string;
   firstName: string;
   lastName: string;
   email?: string;
   phone?: string;
   role: Role;
   role_id: number;
-  company_id?: string;
+  company_id: string;
+  office_id?: string;
   officeId?: string;
-  officeName?: string;
   status: 'active' | 'waiting' | 'pending' | 'ACTIVE' | 'REVOKED';
   subscriptionPlan?: 'TRIAL' | 'PREMIUM';
   joinedDate?: string;
+  photoUrl?: string;
 }
 
 
@@ -37,22 +39,32 @@ export interface Driver {
   lastName: string;
   phone: string;
   licenseNumber: string;
+  cin?: string;
   officeId: string;
+  vehicleId?: string;
+  vehicleName?: string;
+  vehiclePlate?: string;
+  vehicleRole?: string;
   status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+  debt: number;
+  photoUrl?: string;
 }
 
 export interface Vehicle {
   id: string;
   plate: string;
-  name: string;
+  name?: string;
   model: string;
+  type: 'BAJAJ' | 'MOTO' | 'BUS' | 'OTHER';
+  status: 'ACTIVE' | 'MAINTENANCE' | 'STOPPED';
   officeId: string;
   companyId?: string;
   titularDriverId?: string;
   replacementDriverId?: string;
   insuranceExpiry: string;
   techVisitExpiry: string;
-  status: 'ACTIVE' | 'MAINTENANCE' | 'STOPPED';
+  insuranceUrl?: string;
+  registrationUrl?: string;
 }
 
 export interface Payment {
@@ -62,6 +74,7 @@ export interface Payment {
   vehicleId: string;
   driverId: string;
   officeId: string;
+  officeName?: string;
   isRestDay: boolean;
   notes?: string;
 }
@@ -77,6 +90,7 @@ export interface Expense {
   vehicleId?: string;
   driverId?: string;
   officeId: string;
+  officeName?: string;
   description?: string;
 }
 

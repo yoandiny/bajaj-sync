@@ -120,7 +120,6 @@ const Payments = () => {
 
   const handleDelete = async (payment: Payment) => {
     const vehicle = vehicles.find(v => v.id === payment.vehicleId);
-    const driver = drivers.find(d => d.id === payment.driverId);
     const label = `${new Date(payment.date).toLocaleDateString()} — ${vehicle?.name || vehicle?.plate} — ${payment.amount.toLocaleString()} Ar`;
 
     if (!window.confirm(`⚠️ Confirmer la suppression du versement :\n\n${label}\n\nCette action est irréversible.`)) return;
@@ -185,6 +184,9 @@ const Payments = () => {
             <thead className="bg-gray-50/50 border-b border-gray-100">
               <tr>
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Date & Infos</th>
+                {user?.role === 'OWNER' && (
+                  <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Bureau</th>
+                )}
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Véhicule</th>
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest">Chauffeur</th>
                 <th className="px-6 py-5 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Montant</th>
@@ -211,6 +213,13 @@ const Payments = () => {
                         <p className="text-[11px] text-gray-400 italic mt-0.5 pl-5">{payment.notes}</p>
                       )}
                     </td>
+                    {user?.role === 'OWNER' && (
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded-lg">
+                          {payment.officeName || '---'}
+                        </span>
+                      </td>
+                    )}
                     <td className="px-6 py-4">
                       <p className="font-extrabold text-blue-600 leading-tight">{vehicle?.name || vehicle?.plate || '---'}</p>
                       {vehicle?.name && <p className="text-[10px] text-gray-400 font-mono uppercase">{vehicle.plate}</p>}

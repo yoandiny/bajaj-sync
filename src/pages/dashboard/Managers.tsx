@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fleetService } from '../../services/fleet.service';
 import { User as UserType, Office } from '../../types';
-import { Plus, Mail, Phone, Lock, User, ShieldCheck, MailWarning, PhoneCall, Loader2, Search, Building2 } from 'lucide-react';
+import { Plus, Mail, Phone, Lock, User, ShieldCheck, MailWarning, PhoneCall, Loader2, Search, Building2, Upload, X } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 
 const Managers = () => {
@@ -18,7 +18,8 @@ const Managers = () => {
         phone: '',
         email: '',
         password: '',
-        officeId: ''
+        officeId: '',
+        photoUrl: ''
     });
 
     const loadData = async () => {
@@ -53,7 +54,7 @@ const Managers = () => {
             await fleetService.createManager(formData);
             await loadData();
             setIsModalOpen(false);
-            setFormData({ firstName: '', lastName: '', phone: '', email: '', password: '', officeId: '' });
+            setFormData({ firstName: '', lastName: '', phone: '', email: '', password: '', officeId: '', photoUrl: '' });
         } catch (err: any) {
             console.error('Erreur création manager', err);
             alert(err.response?.data?.message || 'Erreur lors de la création du manager.');
@@ -112,8 +113,12 @@ const Managers = () => {
                         </div>
 
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-14 h-14 rounded-2xl bg-gray-900 flex items-center justify-center text-yellow-500 font-black text-xl shadow-lg">
-                                {m.firstName.charAt(0)}{m.lastName.charAt(0)}
+                            <div className="w-14 h-14 rounded-2xl bg-gray-900 flex items-center justify-center text-yellow-500 font-black text-xl shadow-lg overflow-hidden">
+                                {m.photoUrl ? (
+                                    <img src={m.photoUrl} alt="Photo" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span>{m.firstName.charAt(0)}{m.lastName.charAt(0)}</span>
+                                )}
                             </div>
                             <div>
                                 <h3 className="text-lg font-extrabold text-gray-900 leading-tight">{m.firstName} {m.lastName}</h3>
@@ -165,98 +170,145 @@ const Managers = () => {
                 onClose={() => setIsModalOpen(false)}
                 title="Ajouter un Gérant"
             >
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Prénom</label>
-                            <div className="relative">
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <div className="space-y-6">
+                    {/* Photo Upload Section */}
+                    <div className="flex flex-col items-center gap-3 py-2">
+                        <div className="relative group">
+                            <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center border-4 border-white shadow-lg overflow-hidden group-hover:border-yellow-100 transition-colors">
+                                {formData.photoUrl ? (
+                                    <img src={formData.photoUrl} alt="Avatar" className="w-full h-full object-cover" />
+                                ) : (
+                                    <User size={32} className="text-gray-300" />
+                                )}
+                            </div>
+                            <label className="absolute -bottom-1 -right-1 bg-yellow-500 hover:bg-yellow-600 text-white p-1.5 rounded-lg cursor-pointer shadow-md transition-transform hover:scale-110">
+                                <Upload size={14} />
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            try {
+                                                setSaving(true);
+                                                const url = await fleetService.uploadFile(file, 'managers');
+                                                setFormData({ ...formData, photoUrl: url });
+                                            } catch (err) {
+                                                alert("Erreur lors de l'upload de la photo");
+                                            } finally {
+                                                setSaving(false);
+                                            }
+                                        }
+                                    }}
+                                />
+                            </label>
+                            {formData.photoUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, photoUrl: '' })}
+                                    className="absolute -top-1 -right-1 bg-red-100 text-red-600 p-1 rounded-md hover:bg-red-200 transition-colors"
+                                >
+                                    <X size={12} />
+                                </button>
+                            )}
+                        </div>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Photo de profil <span className="font-normal lowercase">(Facultatif)</span></p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Prénom</label>
+                                <div className="relative">
+                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type="text" required
+                                        value={formData.firstName} onChange={e => setFormData({ ...formData, firstName: e.target.value })}
+                                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
+                                        placeholder="Jean"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Nom</label>
                                 <input
                                     type="text" required
-                                    value={formData.firstName} onChange={e => setFormData({ ...formData, firstName: e.target.value })}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
-                                    placeholder="Jean"
+                                    value={formData.lastName} onChange={e => setFormData({ ...formData, lastName: e.target.value })}
+                                    className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
+                                    placeholder="Rakoto"
                                 />
                             </div>
                         </div>
+
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Nom</label>
-                            <input
-                                type="text" required
-                                value={formData.lastName} onChange={e => setFormData({ ...formData, lastName: e.target.value })}
-                                className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
-                                placeholder="Rakoto"
-                            />
+                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Numéro de téléphone</label>
+                            <div className="relative">
+                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <input
+                                    type="tel"
+                                    value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
+                                    placeholder="034 00 000 00"
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Numéro de téléphone</label>
-                        <div className="relative">
-                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
-                                type="tel"
-                                value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
-                                placeholder="034 00 000 00"
-                            />
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Adresse Email</label>
+                            <div className="relative">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <input
+                                    type="email"
+                                    value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
+                                    placeholder="jean@email.com"
+                                />
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-1 italic">* Au moins un identifiant (téléphone ou email) est requis pour la connexion.</p>
                         </div>
-                    </div>
 
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Adresse Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
-                                type="email"
-                                value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
-                                placeholder="jean@email.com"
-                            />
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Agence de rattachement</label>
+                            <div className="relative">
+                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <select
+                                    required
+                                    value={formData.officeId}
+                                    onChange={e => setFormData({ ...formData, officeId: e.target.value })}
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold appearance-none"
+                                >
+                                    <option value="">Choisir une agence...</option>
+                                    {offices.map(o => (
+                                        <option key={o.id} value={o.id}>{o.name}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
-                        <p className="text-[10px] text-gray-400 mt-1 italic">* Au moins un identifiant (téléphone ou email) est requis pour la connexion.</p>
-                    </div>
 
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Agence de rattachement</label>
-                        <div className="relative">
-                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <select
-                                required
-                                value={formData.officeId}
-                                onChange={e => setFormData({ ...formData, officeId: e.target.value })}
-                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold appearance-none"
-                            >
-                                <option value="">Choisir une agence...</option>
-                                {offices.map(o => (
-                                    <option key={o.id} value={o.id}>{o.name}</option>
-                                ))}
-                            </select>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Mot de passe provisoire</label>
+                            <div className="relative">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <input
+                                    type="password" required
+                                    value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
+                                    placeholder="••••••••"
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="space-y-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Mot de passe provisoire</label>
-                        <div className="relative">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
-                                type="password" required
-                                value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
-                                placeholder="••••••••"
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={saving}
-                        className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-black mt-4 shadow-lg shadow-gray-900/10 transition-all flex items-center justify-center gap-2"
-                    >
-                        {saving ? <Loader2 className="animate-spin" size={20} /> : <ShieldCheck size={20} />}
-                        Créer le compte Gérant
-                    </button>
-                </form>
+                        <button
+                            type="submit"
+                            disabled={saving}
+                            className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-black mt-4 shadow-lg shadow-gray-900/10 transition-all flex items-center justify-center gap-2"
+                        >
+                            {saving ? <Loader2 className="animate-spin" size={20} /> : <ShieldCheck size={20} />}
+                            Créer le compte Gérant
+                        </button>
+                    </form>
+                </div>
             </Modal>
         </div>
     );
