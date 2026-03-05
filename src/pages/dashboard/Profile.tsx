@@ -1,313 +1,408 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { User, SubscriptionPayment } from '../../types';
-import { UserCircle, CreditCard, Save, Lock, AlertTriangle, CheckCircle2, XCircle, History } from 'lucide-react';
+import { User, SubscriptionTransaction } from '../../types';
+import { MOCK_SUBSCRIPTION_TRANSACTIONS } from '../../data/mock';
+import { User as UserIcon, Lock, CreditCard, Save, AlertTriangle, Calendar, CheckCircle2, History, PauseCircle, Upload, X, Loader2 } from 'lucide-react';
+import { fleetService } from '../../services/fleet.service';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { generateUUID } from '../../lib/utils';
 
 const Profile = () => {
-  const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'profile' | 'billing'>('profile');
-  
-  // Profile State
-  const [profileData, setProfileData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [profileSuccess, setProfileSuccess] = useState(false);
+    const { user } = useAuth();
+    const [activeTab, setActiveTab] = useState<'info' | 'security' | 'billing'>('info');
 
-  // Billing State
-  const [payments, setPayments] = useState<SubscriptionPayment[]>([
-    { id: 'sub-1', date: '2025-01-05', month: 'Janvier 2025', amount: 50000, method: 'ORANGE_MONEY', reference: 'OM123456', status: 'CONFIRMED' },
-    { id: 'sub-2', date: '2025-02-05', month: 'Février 2025', amount: 50000, method: 'MVOLA', reference: 'MV987654', status: 'CONFIRMED' },
-  ]);
-  
-  const [billingForm, setBillingForm] = useState({
-    month: '',
-    method: 'ORANGE_MONEY',
-    reference: ''
-  });
-  const [showSuspendConfirm, setShowSuspendConfirm] = useState(false);
+    // Profile State
+    const [profileData, setProfileData] = useState({
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        phone: user?.phone || '',
+        email: user?.email || '',
+        photoUrl: user?.photoUrl || '',
+    });
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulate API call
-    setProfileSuccess(true);
-    setTimeout(() => setProfileSuccess(false), 3000);
-  };
+    // Password State
+    const [passwordData, setPasswordData] = useState({
+        current: '',
+        new: '',
+        confirm: ''
+    });
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newPayment: SubscriptionPayment = {
-        id: generateUUID(),
-        date: new Date().toISOString().split('T')[0],
-        month: billingForm.month,
-        amount: 50000,
-        method: billingForm.method as any,
-        reference: billingForm.reference,
-        status: 'PENDING'
+    // Billing State
+    const [transactions, setTransactions] = useState<SubscriptionTransaction[]>(
+        MOCK_SUBSCRIPTION_TRANSACTIONS.filter(t => t.userId === user?.id)
+    );
+    const [isSubscribed, setIsSubscribed] = useState(true); // Mock status
+    const [paymentForm, setPaymentForm] = useState({
+        method: 'ORANGE_MONEY',
+        reference: '',
+        amount: 50000
+    });
+
+    // Modals
+    const [showSuspendModal, setShowSuspendModal] = useState(false);
+    const [successMsg, setSuccessMsg] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleProfileUpdate = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            setSubmitting(true);
+            await fleetService.updateProfile(profileData);
+            setSuccessMsg('Informations mises à jour avec succès.');
+            setTimeout(() => setSuccessMsg(''), 3000);
+        } catch (err) {
+            alert("Erreur lors de la mise à jour du profil");
+        } finally {
+            setSubmitting(false);
+        }
     };
-    setPayments([newPayment, ...payments]);
-    setBillingForm({ month: '', method: 'ORANGE_MONEY', reference: '' });
-  };
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center text-2xl font-bold text-white">
-            {user?.firstName.charAt(0)}{user?.lastName.charAt(0)}
-        </div>
-        <div>
-            <h1 className="text-2xl font-bold text-gray-900">{user?.firstName} {user?.lastName}</h1>
-            <p className="text-gray-500">{user?.role === 'ADMIN' ? 'Administrateur Principal' : 'Gérant de Bureau'}</p>
-        </div>
-      </div>
+    const handlePasswordUpdate = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (passwordData.new !== passwordData.confirm) {
+            alert("Les mots de passe ne correspondent pas.");
+            return;
+        }
+        // API Call
+        setSuccessMsg('Mot de passe modifié.');
+        setPasswordData({ current: '', new: '', confirm: '' });
+        setTimeout(() => setSuccessMsg(''), 3000);
+    };
 
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200">
-        <button
-          onClick={() => setActiveTab('profile')}
-          className={`px-6 py-3 font-bold text-sm transition-colors border-b-2 ${
-            activeTab === 'profile' 
-              ? 'border-yellow-500 text-yellow-600' 
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-            <div className="flex items-center gap-2">
-                <UserCircle size={18} /> Mon Profil
+    const handlePaymentSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const newTx: SubscriptionTransaction = {
+            id: generateUUID(),
+            userId: user?.id || '',
+            date: new Date().toISOString().split('T')[0],
+            amount: paymentForm.amount,
+            method: paymentForm.method as any,
+            reference: paymentForm.reference,
+            period: new Date().toLocaleString('fr-FR', { month: 'long', year: 'numeric' }),
+            status: 'PENDING'
+        };
+        setTransactions([newTx, ...transactions]);
+        setPaymentForm({ ...paymentForm, reference: '' });
+        setSuccessMsg('Paiement déclaré ! En attente de validation.');
+        setTimeout(() => setSuccessMsg(''), 3000);
+    };
+
+    const handleSuspend = () => {
+        setIsSubscribed(false);
+        setShowSuspendModal(false);
+        setSuccessMsg('Abonnement suspendu.');
+        setTimeout(() => setSuccessMsg(''), 3000);
+    };
+
+    // Calculate Next Billing Date (Mock)
+    const nextBillingDate = new Date();
+    nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
+    const formattedNextDate = nextBillingDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    return (
+        <div className="max-w-4xl mx-auto space-y-8">
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900">Mon Profil</h1>
+                <p className="text-gray-500">Gérez vos informations personnelles et votre abonnement.</p>
             </div>
-        </button>
-        {user?.role === 'ADMIN' && (
-            <button
-            onClick={() => setActiveTab('billing')}
-            className={`px-6 py-3 font-bold text-sm transition-colors border-b-2 ${
-                activeTab === 'billing' 
-                ? 'border-yellow-500 text-yellow-600' 
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-            >
-                <div className="flex items-center gap-2">
-                    <CreditCard size={18} /> Facturation & Abonnement
-                </div>
-            </button>
-        )}
-      </div>
 
-      {/* Profile Tab */}
-      {activeTab === 'profile' && (
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-            <form onSubmit={handleProfileUpdate} className="space-y-6 max-w-2xl">
-                <div className="grid grid-cols-2 gap-6">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Prénom</label>
-                        <input 
-                            type="text" value={profileData.firstName} onChange={e => setProfileData({...profileData, firstName: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Nom</label>
-                        <input 
-                            type="text" value={profileData.lastName} onChange={e => setProfileData({...profileData, lastName: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-6">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
-                        <input 
-                            type="email" value={profileData.email} onChange={e => setProfileData({...profileData, email: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Téléphone</label>
-                        <input 
-                            type="tel" value={profileData.phone} onChange={e => setProfileData({...profileData, phone: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                        />
-                    </div>
-                </div>
-
-                <hr className="border-gray-100" />
-
-                <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <Lock size={20} className="text-gray-400" /> Sécurité
-                    </h3>
-                    <div className="grid grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Nouveau mot de passe</label>
-                            <input 
-                                type="password" value={profileData.password} onChange={e => setProfileData({...profileData, password: e.target.value})}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                                placeholder="Laisser vide si inchangé"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Confirmer mot de passe</label>
-                            <input 
-                                type="password" value={profileData.confirmPassword} onChange={e => setProfileData({...profileData, confirmPassword: e.target.value})}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                                placeholder="Confirmer"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="pt-4">
-                    <button type="submit" className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg">
-                        <Save size={18} />
-                        {profileSuccess ? 'Enregistré !' : 'Mettre à jour mon profil'}
+            {/* Tabs */}
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl w-fit">
+                {[
+                    { id: 'info', label: 'Informations', icon: UserIcon },
+                    { id: 'security', label: 'Sécurité', icon: Lock },
+                    ...(user?.role === 'OWNER' ? [{ id: 'billing', label: 'Facturation & Abo', icon: CreditCard }] : [])
+                ].map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
+                            ? 'bg-white text-gray-900 shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                    >
+                        <tab.icon size={16} />
+                        {tab.label}
                     </button>
-                </div>
-            </form>
-        </div>
-      )}
-
-      {/* Billing Tab */}
-      {activeTab === 'billing' && user?.role === 'ADMIN' && (
-        <div className="space-y-8">
-            {/* Payment Form */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Payer mon abonnement</h3>
-                <form onSubmit={handlePaymentSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Mois de l'abonnement</label>
-                        <select 
-                            required
-                            value={billingForm.month} onChange={e => setBillingForm({...billingForm, month: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                        >
-                            <option value="">Sélectionner un mois</option>
-                            <option value="Mars 2025">Mars 2025</option>
-                            <option value="Avril 2025">Avril 2025</option>
-                            <option value="Mai 2025">Mai 2025</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Moyen de paiement</label>
-                        <select 
-                            required
-                            value={billingForm.method} onChange={e => setBillingForm({...billingForm, method: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                        >
-                            <option value="ORANGE_MONEY">Orange Money</option>
-                            <option value="MVOLA">Mvola</option>
-                            <option value="BANK_TRANSFER" disabled>Virement Bancaire (Indisponible)</option>
-                        </select>
-                    </div>
-
-                    <div className="md:col-span-2">
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Référence de transaction</label>
-                        <input 
-                            type="text" required
-                            value={billingForm.reference} onChange={e => setBillingForm({...billingForm, reference: e.target.value})}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
-                            placeholder="ex: OM12345678"
-                        />
-                         <p className="text-xs text-gray-500 mt-2">
-                            Veuillez effectuer le transfert de <strong>50.000 Ar</strong> au <strong>034 00 000 00</strong> avant de valider.
-                        </p>
-                    </div>
-
-                    <div className="md:col-span-2">
-                        <button type="submit" className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-yellow-500/20">
-                            Enregistrer le paiement
-                        </button>
-                    </div>
-                </form>
+                ))}
             </div>
 
-            {/* History */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <History size={20} /> Historique des paiements
-                </h3>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b border-gray-100">
-                            <tr>
-                                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Date</th>
-                                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Mois</th>
-                                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Méthode</th>
-                                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Réf.</th>
-                                <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {payments.map(p => (
-                                <tr key={p.id}>
-                                    <td className="px-4 py-3 text-sm text-gray-600">{p.date}</td>
-                                    <td className="px-4 py-3 font-bold text-gray-900">{p.month}</td>
-                                    <td className="px-4 py-3 text-xs font-bold text-gray-500">{p.method.replace('_', ' ')}</td>
-                                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{p.reference}</td>
-                                    <td className="px-4 py-3">
-                                        {p.status === 'CONFIRMED' ? (
-                                            <span className="inline-flex items-center gap-1 text-green-600 text-xs font-bold bg-green-50 px-2 py-1 rounded-full">
-                                                <CheckCircle2 size={12} /> Confirmé
-                                            </span>
-                                        ) : (
-                                            <span className="inline-flex items-center gap-1 text-yellow-600 text-xs font-bold bg-yellow-50 px-2 py-1 rounded-full">
-                                                <History size={12} /> En attente
-                                            </span>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Success Message */}
+            <AnimatePresence>
+                {successMsg && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className="bg-green-50 text-green-700 px-4 py-3 rounded-xl border border-green-100 flex items-center gap-2 font-medium"
+                    >
+                        <CheckCircle2 size={18} />
+                        {successMsg}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {/* Danger Zone */}
-            <div className="bg-red-50 rounded-2xl p-8 border border-red-100">
-                <div className="flex items-start gap-4">
-                    <div className="p-3 bg-red-100 text-red-600 rounded-xl">
-                        <AlertTriangle size={24} />
-                    </div>
-                    <div className="flex-1">
-                        <h3 className="text-lg font-bold text-red-900">Zone de Danger</h3>
-                        <p className="text-red-700 text-sm mt-1">
-                            Suspendre votre abonnement arrêtera immédiatement l'accès à la plateforme pour tous vos utilisateurs.
-                        </p>
-                        
-                        {!showSuspendConfirm ? (
-                            <button 
-                                onClick={() => setShowSuspendConfirm(true)}
-                                className="mt-4 px-4 py-2 bg-white border border-red-200 text-red-600 font-bold rounded-lg hover:bg-red-100 transition-colors text-sm"
-                            >
-                                Suspendre l'abonnement
-                            </button>
-                        ) : (
-                            <div className="mt-4 p-4 bg-white rounded-xl border border-red-200">
-                                <p className="text-sm font-bold text-gray-900 mb-3">Êtes-vous vraiment sûr ?</p>
-                                <div className="flex gap-2">
-                                    <button className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 text-sm">
-                                        Oui, suspendre
-                                    </button>
-                                    <button 
-                                        onClick={() => setShowSuspendConfirm(false)}
-                                        className="px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 text-sm"
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+
+                {/* INFO TAB */}
+                {activeTab === 'info' && (
+                    <div className="space-y-8">
+                        {/* Section Photo */}
+                        <div className="flex items-center gap-6 pb-6 border-b border-gray-50">
+                            <div className="relative">
+                                <div className="w-24 h-24 rounded-3xl bg-gray-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden">
+                                    {profileData.photoUrl ? (
+                                        <img src={profileData.photoUrl} alt="Profil" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <UserIcon size={40} className="text-gray-300" />
+                                    )}
+                                </div>
+                                <label className="absolute -bottom-2 -right-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-xl cursor-pointer shadow-lg transition-transform hover:scale-110">
+                                    <Upload size={16} />
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                try {
+                                                    setSubmitting(true);
+                                                    const url = await fleetService.uploadFile(file, 'profiles');
+                                                    setProfileData({ ...profileData, photoUrl: url });
+                                                } catch (err) {
+                                                    alert("Erreur lors de l'upload");
+                                                } finally {
+                                                    setSubmitting(false);
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </label>
+                                {profileData.photoUrl && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setProfileData({ ...profileData, photoUrl: '' })}
+                                        className="absolute -top-2 -right-2 bg-red-100 text-red-600 p-1 rounded-lg hover:bg-red-200 transition-colors"
                                     >
-                                        Annuler
+                                        <X size={14} />
                                     </button>
+                                )}
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900">Photo de profil</h3>
+                                <p className="text-sm text-gray-500">Personnalisez votre avatar pour l'application.</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleProfileUpdate} className="space-y-6 max-w-lg">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Prénom</label>
+                                    <input
+                                        type="text" value={profileData.firstName} onChange={e => setProfileData({ ...profileData, firstName: e.target.value })}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Nom</label>
+                                    <input
+                                        type="text" value={profileData.lastName} onChange={e => setProfileData({ ...profileData, lastName: e.target.value })}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                    />
                                 </div>
                             </div>
-                        )}
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
+                                <input
+                                    type="email" value={profileData.email} onChange={e => setProfileData({ ...profileData, email: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Téléphone</label>
+                                <input
+                                    type="tel" value={profileData.phone} onChange={e => setProfileData({ ...profileData, phone: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                />
+                            </div>
+                            <button type="submit" disabled={submitting} className="bg-gray-900 text-white px-8 py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center gap-2 shadow-lg shadow-gray-900/10 disabled:opacity-50 active:scale-95">
+                                {submitting ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+                                Mettre à jour mon profil
+                            </button>
+                        </form>
                     </div>
-                </div>
+                )}
+
+                {/* SECURITY TAB */}
+                {activeTab === 'security' && (
+                    <form onSubmit={handlePasswordUpdate} className="space-y-6 max-lg">
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Mot de passe actuel</label>
+                            <input
+                                type="password" required
+                                value={passwordData.current} onChange={e => setPasswordData({ ...passwordData, current: e.target.value })}
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Nouveau mot de passe</label>
+                            <input
+                                type="password" required
+                                value={passwordData.new} onChange={e => setPasswordData({ ...passwordData, new: e.target.value })}
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Confirmer le mot de passe</label>
+                            <input
+                                type="password" required
+                                value={passwordData.confirm} onChange={e => setPasswordData({ ...passwordData, confirm: e.target.value })}
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                            />
+                        </div>
+                        <button type="submit" className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors flex items-center gap-2">
+                            <Save size={18} />
+                            Mettre à jour
+                        </button>
+                    </form>
+                )}
+
+                {/* BILLING TAB */}
+                {activeTab === 'billing' && user?.role === 'OWNER' && (
+                    <div className="space-y-8">
+                        {/* Status Card */}
+                        <div className={`p-6 rounded-2xl border ${isSubscribed ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                            <div className="flex justify-between items-start">
+                                <div className="flex gap-4">
+                                    <div className={`p-3 rounded-xl ${isSubscribed ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
+                                        <CreditCard size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className={`text-lg font-bold ${isSubscribed ? 'text-green-800' : 'text-red-800'}`}>
+                                            {isSubscribed ? 'Abonnement Actif' : 'Abonnement Suspendu'}
+                                        </h3>
+                                        <p className={`text-sm ${isSubscribed ? 'text-green-600' : 'text-red-600'}`}>
+                                            {isSubscribed
+                                                ? `Prochaine échéance le ${formattedNextDate}`
+                                                : 'Votre accès est limité. Réactivez votre compte pour continuer.'}
+                                        </p>
+                                    </div>
+                                </div>
+                                {isSubscribed && (
+                                    <button
+                                        onClick={() => setShowSuspendModal(true)}
+                                        className="text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                                    >
+                                        <PauseCircle size={14} /> Suspendre
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Payment Form */}
+                            <div>
+                                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <CreditCard size={20} className="text-yellow-500" />
+                                    Déclarer un paiement
+                                </h3>
+                                <form onSubmit={handlePaymentSubmit} className="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Mois concerné</label>
+                                        <div className="flex items-center gap-2 bg-white px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium">
+                                            <Calendar size={18} className="text-gray-400" />
+                                            {new Date().toLocaleString('fr-FR', { month: 'long', year: 'numeric' })}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Méthode de paiement</label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setPaymentForm({ ...paymentForm, method: 'ORANGE_MONEY' })}
+                                                className={`py-3 px-2 rounded-xl border-2 text-xs font-bold transition-all ${paymentForm.method === 'ORANGE_MONEY'
+                                                    ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
+                                                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                                                    }`}
+                                            >
+                                                Orange Money
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setPaymentForm({ ...paymentForm, method: 'MVOLA' })}
+                                                className={`py-3 px-2 rounded-xl border-2 text-xs font-bold transition-all ${paymentForm.method === 'MVOLA'
+                                                    ? 'border-yellow-500 bg-yellow-50 text-yellow-800'
+                                                    : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                                                    }`}
+                                            >
+                                                Mvola
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Référence Transaction</label>
+                                        <input
+                                            type="text" required
+                                            value={paymentForm.reference} onChange={e => setPaymentForm({ ...paymentForm, reference: e.target.value })}
+                                            placeholder="ex: TX12345678"
+                                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500"
+                                        />
+                                    </div>
+
+                                    <button type="submit" className="w-full bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-black transition-colors shadow-lg">
+                                        Confirmer le paiement
+                                    </button>
+                                </form>
+                            </div>
+
+                            {/* History */}
+                            <div>
+                                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                    <History size={20} className="text-gray-400" />
+                                    Historique
+                                </h3>
+                                <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
+                                    <div className="max-h-[300px] overflow-y-auto divide-y divide-gray-100">
+                                        {transactions.map((tx) => (
+                                            <div key={tx.id} className="p-4 hover:bg-gray-50 transition-colors flex justify-between items-center">
+                                                <div>
+                                                    <p className="font-bold text-sm text-gray-900">{tx.period}</p>
+                                                    <p className="text-xs text-gray-500">{tx.date} • {tx.method === 'ORANGE_MONEY' ? 'OM' : 'Mvola'}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="font-bold text-sm text-gray-900">{tx.amount.toLocaleString()} Ar</p>
+                                                    <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${tx.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
+                                                        tx.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                                        }`}>
+                                                        {tx.status === 'APPROVED' ? 'Validé' : tx.status === 'PENDING' ? 'En attente' : 'Rejeté'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {transactions.length === 0 && (
+                                            <div className="p-6 text-center text-gray-400 text-sm italic">Aucun historique disponible.</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
+
+            <ConfirmationModal
+                isOpen={showSuspendModal}
+                onClose={() => setShowSuspendModal(false)}
+                onConfirm={handleSuspend}
+                title="Suspendre l'abonnement"
+                message="Êtes-vous sûr de vouloir suspendre votre abonnement ? L'accès à vos données sera restreint jusqu'à la réactivation."
+                confirmText="Confirmer la suspension"
+                type="danger"
+            />
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default Profile;

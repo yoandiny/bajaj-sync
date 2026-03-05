@@ -71,26 +71,26 @@ const Home = () => {
             transition={{ duration: 0.8 }}
           >
             <div className="inline-block p-4 rounded-full bg-yellow-50 mb-6">
-                <img className="h-20 w-20 md:h-24 md:w-24" src={Logo} alt="BajajSync Logo" />
+              <img className="h-20 w-20 md:h-24 md:w-24" src={Logo} alt="BajajSync Logo" />
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6">
               Bajaj<span className="text-yellow-500">Sync</span>
             </h1>
             <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 leading-relaxed">
-              La solution complète <span className="font-bold text-gray-900">Mobile & Web</span> pour la gestion de votre flotte de transport. 
+              La solution complète <span className="font-bold text-gray-900">Mobile & Web</span> pour la gestion de votre flotte de transport.
               Centralisez vos opérations, du chauffeur au bureau.
             </p>
-            
+
             <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-sm font-bold text-gray-600 uppercase tracking-widest">
-                <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                    <Smartphone size={18} className="text-yellow-500" />
-                    App Android
-                </div>
-                <div className="hidden sm:block text-gray-300">•</div>
-                <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                    <Laptop size={18} className="text-yellow-500" />
-                    Plateforme Web SaaS
-                </div>
+              <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                <Smartphone size={18} className="text-yellow-500" />
+                App Android
+              </div>
+              <div className="hidden sm:block text-gray-300">•</div>
+              <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+                <Laptop size={18} className="text-yellow-500" />
+                Plateforme Web SaaS
+              </div>
             </div>
 
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
@@ -115,51 +115,51 @@ const Home = () => {
       <section className="py-20 bg-gray-900 text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-yellow-500 rounded-full opacity-10 blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-blue-500 rounded-full opacity-10 blur-3xl"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
-                <div className="mb-10 lg:mb-0">
-                    <h2 className="text-3xl font-extrabold sm:text-4xl mb-6">
-                        Nouveau : Gérez tout depuis votre bureau
-                    </h2>
-                    <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                        Pour les propriétaires de flotte et les gérants, découvrez notre nouvelle interface web. 
-                        Plus besoin de votre téléphone pour tout contrôler.
-                    </p>
-                    <ul className="space-y-4 mb-8">
-                        {[
-                            'Gestion multi-sites et bureaux',
-                            'Création de comptes Managers',
-                            'Vue d\'ensemble sur grand écran',
-                            'Export des rapports financiers',
-                            'Suivi GPS en temps réel (Bientôt)'
-                        ].map((item, i) => (
-                            <li key={i} className="flex items-center">
-                                <div className="bg-yellow-500 rounded-full p-1 mr-3">
-                                    <CheckCircle2 size={14} className="text-gray-900" />
-                                </div>
-                                <span className="font-medium">{item}</span>
-                            </li>
-                        ))}
-                    </ul>
-                    <Link to="/login" className="inline-flex items-center text-yellow-400 font-bold hover:text-yellow-300 transition-colors">
-                        Accéder à la démo <Laptop size={18} className="ml-2" />
-                    </Link>
-                </div>
-                <div className="relative">
-                     {/* Abstract Browser Window */}
-                    <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
-                        <div className="bg-gray-700 px-4 py-3 flex items-center gap-2 border-b border-gray-600">
-                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                        <div className="p-1">
-                            <img src={Dashboard} alt="Interface Web" className="w-full rounded-lg opacity-90" />
-                        </div>
+          <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+            <div className="mb-10 lg:mb-0">
+              <h2 className="text-3xl font-extrabold sm:text-4xl mb-6">
+                Nouveau : Gérez tout depuis votre bureau
+              </h2>
+              <p className="text-lg text-gray-300 mb-6 leading-relaxed">
+                Pour les propriétaires de flotte et les gérants, découvrez notre nouvelle interface web.
+                Plus besoin de votre téléphone pour tout contrôler.
+              </p>
+              <ul className="space-y-4 mb-8">
+                {[
+                  'Gestion multi-sites et bureaux',
+                  'Création de comptes Managers',
+                  'Vue d\'ensemble sur grand écran',
+                  'Export des rapports financiers',
+                  'Suivi GPS en temps réel (Bientôt)'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center">
+                    <div className="bg-yellow-500 rounded-full p-1 mr-3">
+                      <CheckCircle2 size={14} className="text-gray-900" />
                     </div>
-                </div>
+                    <span className="font-medium">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/login" className="inline-flex items-center text-yellow-400 font-bold hover:text-yellow-300 transition-colors">
+                Accéder à la démo <Laptop size={18} className="ml-2" />
+              </Link>
             </div>
+            <div className="relative">
+              {/* Abstract Browser Window */}
+              <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+                <div className="bg-gray-700 px-4 py-3 flex items-center gap-2 border-b border-gray-600">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div className="p-1">
+                  <img src={Dashboard} alt="Interface Web" className="w-full rounded-lg opacity-90" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -194,54 +194,104 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="max-w-lg mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-yellow-500 relative">
-            <div className="absolute top-5 right-[-35px] bg-red-600 text-white font-bold py-1 px-12 rotate-45 shadow-md">
-              OFFRE LIMITÉE
-            </div>
-
-            <div className="px-6 py-10 bg-gray-900 text-center">
-              <span className="px-4 py-1 bg-yellow-500 text-gray-900 text-xs font-black rounded-full uppercase tracking-widest">
-                Lancement YoTech
-              </span>
-              <h3 className="text-3xl font-bold text-white mt-4">Licence Complète</h3>
-              <p className="mt-2 text-gray-400">Accès illimité à tous les outils de gestion</p>
-            </div>
-
-            <div className="px-6 py-10">
-              <div className="text-center mb-8">
-                <div className="inline-block bg-red-50 text-red-700 text-sm font-bold px-4 py-2 rounded-lg mb-4 border border-red-100">
-                  ⏱️ Expire dans les 15 prochains jours
-                </div>
-                <div className="flex justify-center items-center">
-                  <span className="text-6xl font-extrabold text-gray-900">50.000 Ar</span>
-                </div>
-                <p className="text-gray-500 mt-4 italic">
-                  Tarif unique sans abonnement mensuel
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* BajajSync App - Licence Complète */}
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-yellow-500 relative flex flex-col">
+              <div className="absolute top-5 right-[-35px] bg-red-600 text-white font-bold py-1 px-12 rotate-45 shadow-md text-xs">
+                OFFRE LIMITÉE
               </div>
-              
-              <ul className="space-y-4 mb-10">
-                {[
-                  'Gestion illimitée de véhicules et chauffeurs',
-                  'Suivi précis des versements quotidiens',
-                  'Contrôle total des dépenses et maintenance',
-                  'Tableaux de bord et Statistiques avancées',
-                  'Support prioritaire YoTech 7j/7',
-                  'Mises à jour incluses'
-                ].map((item) => (
-                  <li key={item} className="flex items-center">
-                    <CheckCircle2 className="h-5 w-5 text-yellow-500 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 font-medium">{item}</span>
-                  </li>
-                ))}
-              </ul>
 
-              <Link
-                to="/download"
-                className="block w-full bg-yellow-500 hover:bg-yellow-600 text-white text-center font-bold py-5 rounded-2xl transition-all shadow-lg hover:shadow-yellow-200 transform hover:-translate-y-1"
-              >
-                OBTENIR MA LICENCE MAINTENANT
-              </Link>
+              <div className="px-6 py-10 bg-gray-900 text-center">
+                <span className="px-4 py-1 bg-yellow-500 text-gray-900 text-xs font-black rounded-full uppercase tracking-widest">
+                  BajajSync App
+                </span>
+                <h3 className="text-3xl font-bold text-white mt-4">Licence Complète</h3>
+                <p className="mt-2 text-gray-400">Application Android & Bureau</p>
+              </div>
+
+              <div className="px-6 py-10 flex-grow flex flex-col">
+                <div className="text-center mb-8">
+                  <div className="flex justify-center items-center">
+                    <span className="text-6xl font-extrabold text-gray-900">50.000 Ar</span>
+                  </div>
+                  <p className="text-gray-500 mt-4 italic text-sm">
+                    Paiement unique à l'activation
+                  </p>
+                </div>
+
+                <ul className="space-y-4 mb-10 flex-grow">
+                  {[
+                    'Gestion illimitée de véhicules',
+                    'Suivi des versements quotidiens',
+                    'Contrôle des dépenses',
+                    'Tableaux de bord & Statistiques',
+                    'Support YoTech 7j/7',
+                    'Mises à jour incluses'
+                  ].map((item) => (
+                    <li key={item} className="flex items-center text-sm">
+                      <CheckCircle2 className="h-4 w-4 text-yellow-500 mr-3 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to="/download"
+                  className="block w-full bg-yellow-500 hover:bg-yellow-600 text-white text-center font-bold py-4 rounded-2xl transition-all shadow-lg hover:shadow-yellow-200"
+                >
+                  TÉLÉCHARGER L'APP
+                </Link>
+              </div>
+            </div>
+
+            {/* BajajSync Online - Abonnement */}
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-100 relative flex flex-col">
+              <div className="absolute top-5 right-5 bg-blue-600 text-white font-bold py-1 px-4 rounded-full shadow-md text-xs">
+                RECOMMANDÉ
+              </div>
+
+              <div className="px-6 py-10 bg-blue-900 text-center">
+                <span className="px-4 py-1 bg-blue-400 text-white text-xs font-black rounded-full uppercase tracking-widest">
+                  BajajSync Online
+                </span>
+                <h3 className="text-3xl font-bold text-white mt-4">Version Cloud</h3>
+                <p className="mt-2 text-blue-100">Accès multi-utilisateurs & Web</p>
+              </div>
+
+              <div className="px-6 py-10 flex-grow flex flex-col">
+                <div className="text-center mb-8">
+                  <div className="flex justify-center items-center">
+                    <span className="text-6xl font-extrabold text-gray-900">40.000 Ar</span>
+                    <span className="text-gray-400 font-bold ml-2">/ mois</span>
+                  </div>
+                  <p className="text-gray-500 mt-4 italic text-sm">
+                    Abonnement mensuel sans engagement
+                  </p>
+                </div>
+
+                <ul className="space-y-4 mb-10 flex-grow">
+                  {[
+                    'Tout ce qu\'il y a dans BajajSync App',
+                    'Accès Web multi-comptes',
+                    'Synchronisation Cloud temps réel',
+                    'Sauvegarde automatique des données',
+                    'Exportation de rapports PDF/Excel',
+                    'Support prioritaire & Formation'
+                  ].map((item) => (
+                    <li key={item} className="flex items-center text-sm">
+                      <CheckCircle2 className="h-4 w-4 text-blue-500 mr-3 flex-shrink-0" />
+                      <span className="text-gray-700 font-medium">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to="/register"
+                  className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-4 rounded-2xl transition-all shadow-lg hover:shadow-blue-200"
+                >
+                  PRENDRE UN ABONNEMENT
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -256,24 +306,24 @@ const Home = () => {
                 À propos de BajajSync
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                BajajSync est une solution innovante conçue pour moderniser la gestion du transport urbain. 
-                Que vous possédiez des Bajaj, des taxis ou des motos, notre mission est d'apporter transparence 
+                BajajSync est une solution innovante conçue pour moderniser la gestion du transport urbain.
+                Que vous possédiez des Bajaj, des taxis ou des motos, notre mission est d'apporter transparence
                 et rentabilité à votre activité de versement.
               </p>
               <div className="bg-gray-50 p-6 rounded-xl border-l-4 border-yellow-500">
                 <p className="font-medium text-gray-900">
-                  Développé avec passion par <span className="font-bold text-yellow-600">YoTech</span>, 
+                  Développé avec passion par <span className="font-bold text-yellow-600">YoTech</span>,
                   votre partenaire local en solutions technologiques.
                 </p>
               </div>
             </div>
             <div className="mt-10 lg:mt-0 relative">
-                <div className="absolute inset-0 bg-yellow-200 rounded-3xl transform rotate-3"></div>
-                <img 
-                    src="https://img-wrapper.vercel.app/image?url=https://placehold.co/600x400/1f2937/FFFFFF?text=YoTech+Gestion+Flotte" 
-                    alt="YoTech Team" 
-                    className="relative rounded-3xl shadow-lg w-full object-cover"
-                />
+              <div className="absolute inset-0 bg-yellow-200 rounded-3xl transform rotate-3"></div>
+              <img
+                src="https://img-wrapper.vercel.app/image?url=https://placehold.co/600x400/1f2937/FFFFFF?text=YoTech+Gestion+Flotte"
+                alt="YoTech Team"
+                className="relative rounded-3xl shadow-lg w-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -295,7 +345,7 @@ const Home = () => {
               <h3 className="text-lg font-medium mb-2">Email</h3>
               <a href="mailto:yoan@yotech.mg" className="text-gray-300 hover:text-white">yoan@yotech.mg</a>
             </div>
-            
+
             <div className="bg-gray-800 p-8 rounded-2xl text-center hover:bg-gray-750 transition-colors">
               <Phone className="h-10 w-10 text-yellow-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">Téléphone 1</h3>

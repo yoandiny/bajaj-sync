@@ -1,19 +1,28 @@
-export type Role = 'ADMIN' | 'MANAGER';
+export type Role = 'OWNER' | 'MANAGER' | 'SUPER_ADMIN' | 'DRIVER';
 
 export interface User {
   id: string;
+  identifier: string;
   firstName: string;
   lastName: string;
   email?: string;
   phone?: string;
   role: Role;
-  officeId?: string; // Null if Admin or Unassigned Manager
-  password?: string; // Only for demo/mock purposes
+  role_id: number;
+  company_id: string;
+  office_id?: string;
+  officeId?: string;
+  officeName?: string;
+  status: 'active' | 'waiting' | 'pending' | 'ACTIVE' | 'REVOKED';
+  subscriptionPlan?: 'TRIAL' | 'PREMIUM';
+  joinedDate?: string;
+  photoUrl?: string;
 }
+
 
 export interface OfficeSettings {
   dailyTargetAmount: number;
-  restDay: number; // 0 = Sunday, 1 = Monday, etc.
+  restDay: number | null; // 0 = Sunday, 1 = Monday, ..., null = No rest day
 }
 
 export interface Office {
@@ -21,6 +30,7 @@ export interface Office {
   name: string;
   location: string;
   managerId: string;
+  companyId?: string;
   settings?: OfficeSettings;
 }
 
@@ -30,21 +40,32 @@ export interface Driver {
   lastName: string;
   phone: string;
   licenseNumber: string;
+  cin?: string;
   officeId: string;
+  vehicleId?: string;
+  vehicleName?: string;
+  vehiclePlate?: string;
+  vehicleRole?: string;
   status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+  debt: number;
+  photoUrl?: string;
 }
 
 export interface Vehicle {
   id: string;
   plate: string;
-  type: 'BAJAJ' | 'TAXI' | 'MOTO';
+  name?: string;
   model: string;
+  type: 'BAJAJ' | 'MOTO' | 'BUS' | 'OTHER';
+  status: 'ACTIVE' | 'MAINTENANCE' | 'STOPPED';
   officeId: string;
+  companyId?: string;
   titularDriverId?: string;
   replacementDriverId?: string;
   insuranceExpiry: string;
   techVisitExpiry: string;
-  status: 'ACTIVE' | 'MAINTENANCE' | 'STOPPED';
+  insuranceUrl?: string;
+  registrationUrl?: string;
 }
 
 export interface Payment {
@@ -54,6 +75,7 @@ export interface Payment {
   vehicleId: string;
   driverId: string;
   officeId: string;
+  officeName?: string;
   isRestDay: boolean;
   notes?: string;
 }
@@ -69,15 +91,58 @@ export interface Expense {
   vehicleId?: string;
   driverId?: string;
   officeId: string;
+  officeName?: string;
   description?: string;
 }
 
-export interface SubscriptionPayment {
+// New Types for Platform Admin
+export interface LicenseRequest {
   id: string;
-  date: string;
-  month: string; // e.g., "Mars 2025"
-  amount: number;
-  method: 'ORANGE_MONEY' | 'MVOLA' | 'BANK_TRANSFER';
+  userId: string;
+  userName: string;
+  phone: string;
+  paymentMethod: string;
   reference: string;
-  status: 'PENDING' | 'CONFIRMED' | 'REJECTED';
+  amount: number;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  date: string;
+}
+
+export interface DeviceRequest {
+  id: string;
+  userId: string;
+  userName: string;
+  currentDeviceId: string;
+  reason: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  date: string;
+}
+
+export interface Feedback {
+  id: string;
+  userId: string;
+  userName: string;
+  role: Role;
+  message: string;
+  rating: number; // 1-5
+  date: string;
+}
+
+// Subscription & Billing Types
+export interface SubscriptionTransaction {
+  id: string;
+  userId: string;
+  date: string;
+  amount: number;
+  method: 'ORANGE_MONEY' | 'MVOLA';
+  reference: string;
+  period: string; // e.g. "Avril 2025"
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+}
+
+export interface SubscriptionStatus {
+  isActive: boolean;
+  plan: 'TRIAL' | 'PREMIUM';
+  nextBillingDate: string;
+  amount: number;
 }

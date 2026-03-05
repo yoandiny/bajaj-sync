@@ -5,7 +5,8 @@ import { Menu } from 'lucide-react';
 import { useState } from 'react';
 
 export const DashboardLayout = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   if (isLoading) {
@@ -15,6 +16,7 @@ export const DashboardLayout = () => {
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+
 
   return (
     <div className="min-h-screen bg-gray-50">
