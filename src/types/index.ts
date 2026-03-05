@@ -12,6 +12,7 @@ export interface User {
   company_id: string;
   office_id?: string;
   officeId?: string;
+  officeName?: string;
   status: 'active' | 'waiting' | 'pending' | 'ACTIVE' | 'REVOKED';
   subscriptionPlan?: 'TRIAL' | 'PREMIUM';
   joinedDate?: string;
@@ -21,7 +22,7 @@ export interface User {
 
 export interface OfficeSettings {
   dailyTargetAmount: number;
-  restDay: number; // 0 = Sunday, 1 = Monday, etc.
+  restDay: number | null; // 0 = Sunday, 1 = Monday, ..., null = No rest day
 }
 
 export interface Office {

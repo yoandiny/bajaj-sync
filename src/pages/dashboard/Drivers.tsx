@@ -21,7 +21,8 @@ const Drivers = () => {
     lastName: '',
     phone: '',
     licenseNumber: '',
-    status: 'ACTIVE'
+    status: 'ACTIVE',
+    officeId: ''
   });
 
   const loadData = async () => {
@@ -46,7 +47,10 @@ const Drivers = () => {
   const handleOpenModal = (driver?: Driver) => {
     if (driver) {
       setEditingDriver(driver);
-      setFormData(driver);
+      setFormData({
+        ...driver,
+        officeId: driver.officeId || ''
+      });
     } else {
       setEditingDriver(null);
       setFormData({
@@ -54,7 +58,10 @@ const Drivers = () => {
         lastName: '',
         phone: '',
         licenseNumber: '',
+        cin: '',
         status: 'ACTIVE',
+        debt: 0,
+        photoUrl: '',
         officeId: user?.officeId || (offices.length > 0 ? offices[0].id : '')
       });
     }
@@ -143,7 +150,7 @@ const Drivers = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="w-20 h-20 rounded-2xl bg-gray-50 flex items-center justify-center text-xl font-bold text-gray-600 group-hover:bg-yellow-500 group-hover:text-white transition-colors shadow-inner overflow-hidden border-2 border-white">
                   {driver.photoUrl ? (
-                    <img src={driver.photoUrl} alt="Photo" className="w-full h-full object-cover" />
+                    <img src={driver.photoUrl.startsWith('/') ? `${import.meta.env.VITE_API_URL || 'http://localhost:1000'}${driver.photoUrl}` : driver.photoUrl} alt="Photo" className="w-full h-full object-cover" />
                   ) : (
                     <span>{driver.firstName.charAt(0)}{driver.lastName.charAt(0)}</span>
                   )}
@@ -232,7 +239,7 @@ const Drivers = () => {
             <div className="relative group">
               <div className="w-24 h-24 rounded-3xl bg-gray-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden">
                 {formData.photoUrl ? (
-                  <img src={formData.photoUrl} alt="Aperçu" className="w-full h-full object-cover" />
+                  <img src={formData.photoUrl.startsWith('/') ? `${import.meta.env.VITE_API_URL || 'http://localhost:1000'}${formData.photoUrl}` : formData.photoUrl} alt="Aperçu" className="w-full h-full object-cover" />
                 ) : (
                   <User size={40} className="text-gray-300" />
                 )}
@@ -321,8 +328,8 @@ const Drivers = () => {
                 <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text" required
-                  value={(formData as any).cin || (formData as any).licenseNumber || ''}
-                  onChange={e => setFormData({ ...formData, licenseNumber: e.target.value })}
+                  value={formData.cin || formData.licenseNumber || ''}
+                  onChange={e => setFormData({ ...formData, licenseNumber: e.target.value, cin: e.target.value })}
                   className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
                   placeholder="Référence pièce d'identité"
                 />

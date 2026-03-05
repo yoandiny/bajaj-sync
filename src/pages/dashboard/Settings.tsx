@@ -148,6 +148,15 @@ const Settings = () => {
           <p className="text-sm text-gray-500">Les versements effectués ce jour-là seront marqués comme exceptionnels.</p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button
+              onClick={() => setSettings({ ...settings, restDay: null })}
+              className={`py-3 px-4 rounded-xl text-sm font-bold transition-all ${settings.restDay === null
+                ? 'bg-gray-900 text-white shadow-lg'
+                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                }`}
+            >
+              Aucun
+            </button>
             {days.map((day) => (
               <button
                 key={day.id}

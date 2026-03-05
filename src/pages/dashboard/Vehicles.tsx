@@ -26,7 +26,8 @@ const Vehicles = () => {
     techVisitExpiry: '',
     titularDriverId: '',
     replacementDriverId: '',
-    type: 'BAJAJ'
+    type: 'BAJAJ',
+    officeId: ''
   });
 
   const loadData = async () => {

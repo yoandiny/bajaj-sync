@@ -23,10 +23,10 @@ export const Sidebar = () => {
 
   return (
     <div className="h-screen w-64 bg-gray-900 text-white flex flex-col fixed left-0 top-0 border-r border-gray-800 z-30">
-      <div className="p-6 flex items-center gap-3 border-b border-gray-800">
+      <Link to="/" className="p-6 flex items-center gap-3 border-b border-gray-800 hover:opacity-80 transition-opacity">
         <img src={Logo} alt="Logo" className="w-8 h-8" />
-        <span className="font-bold text-xl tracking-tight">Bajaj<span className="text-yellow-500">Sync</span></span>
-      </div>
+        <span className="font-bold text-xl tracking-tight text-white">Bajaj<span className="text-yellow-500">Sync</span></span>
+      </Link>
 
       <div className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
         {links.filter(link => link.roles.includes(user?.role?.toUpperCase() || '')).map((link) => {
