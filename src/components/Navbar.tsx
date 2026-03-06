@@ -35,8 +35,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           {/* Logo */}
-          <div 
-            className="flex-shrink-0 flex items-center align-middle cursor-pointer gap-2" 
+          <div
+            className="flex-shrink-0 flex items-center align-middle cursor-pointer gap-2"
             onClick={() => navigate('/')}
           >
             <img className="h-11 w-11" src={Logo} alt="BajajSync Logo" />
@@ -57,9 +57,8 @@ const Navbar = () => {
 
             <Link
               to="/activate"
-              className={`font-medium transition-colors duration-200 ${
-                location.pathname === '/activate' ? 'text-yellow-600' : 'text-gray-600 hover:text-yellow-600'
-              }`}
+              className={`font-medium transition-colors duration-200 ${location.pathname === '/app/activate' ? 'text-yellow-600' : 'text-gray-600 hover:text-yellow-600'
+                }`}
             >
               Activer
             </Link>
@@ -67,11 +66,11 @@ const Navbar = () => {
             <div className="h-6 w-px bg-gray-200 mx-2"></div>
 
             <Link
-                to="/login"
-                className="flex items-center gap-2 text-gray-900 font-bold hover:text-yellow-600 transition-colors"
+              to="/login"
+              className="flex items-center gap-2 text-gray-900 font-bold hover:text-yellow-600 transition-colors"
             >
-                <LogIn size={18} />
-                Connexion
+              <LogIn size={18} />
+              Connexion
             </Link>
 
             <Link
@@ -96,7 +95,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden bg-white border-b border-gray-100 absolute w-full"
@@ -111,7 +110,7 @@ const Navbar = () => {
                 {link.name}
               </button>
             ))}
-            
+
             <Link
               to="/activate"
               onClick={() => setIsOpen(false)}
@@ -127,8 +126,8 @@ const Navbar = () => {
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 w-full text-left px-3 py-3 text-base font-bold text-gray-900 hover:bg-gray-50 rounded-md"
             >
-                <LogIn size={18} />
-                Espace Client
+              <LogIn size={18} />
+              Espace Client
             </Link>
 
             <div className="pt-2">
