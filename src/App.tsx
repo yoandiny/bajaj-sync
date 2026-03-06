@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import PaymentDashboard from './pages/PaymentDashboard';
 import WaitingApproval from './pages/WaitingApproval';
+import Activate from './pages/Activate';
 import DashboardHome from './pages/dashboard/DashboardHome';
 import Offices from './pages/dashboard/Offices';
 import Vehicles from './pages/dashboard/Vehicles';
@@ -30,6 +31,7 @@ import PlatformFeedbacks from './pages/platform/PlatformFeedbacks';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { PublicRoute } from './components/auth/PublicRoute';
 
+
 function App() {
   return (
     <AuthProvider>
@@ -48,12 +50,16 @@ function App() {
             } />
             <Route path="/download" element={<DownloadPage />} />
 
+            {/* Route publique - Activation licence application mobile (indépendante du login web) */}
+            <Route path="/app/activate" element={<Activate />} />
+
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
             {/* Routes d'activation et attente - Protégées mais gérées par ProtectedRoute */}
             <Route path="/activate" element={<ProtectedRoute><PaymentDashboard /></ProtectedRoute>} />
             <Route path="/waiting" element={<ProtectedRoute><WaitingApproval /></ProtectedRoute>} />
+
 
             {/* Protected Dashboard Routes (Fleet Managers) */}
             <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['OWNER', 'MANAGER']}><DashboardLayout /></ProtectedRoute>}>
