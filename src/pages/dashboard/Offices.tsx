@@ -101,14 +101,14 @@ const Offices = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gestion des Agences</h1>
           <p className="text-gray-500">Configurez vos points de gestion et assignez des responsables.</p>
         </div>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-yellow-500/20"
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-yellow-500/20 self-start sm:self-auto"
         >
           <Plus size={20} />
           Nouvelle Agence

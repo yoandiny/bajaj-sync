@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Smartphone, Check, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { DeviceRequest } from '../../types';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
 import { platformService } from '../../services/platform.service';
@@ -48,42 +48,44 @@ const DeviceRequests = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Utilisateur</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Raison</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ID Actuel</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Statut</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {requests.map((req) => (
-              <tr key={req.id} className="hover:bg-gray-50/50">
-                <td className="px-6 py-4 font-medium text-gray-900">{req.userName}</td>
-                <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{req.reason}</td>
-                <td className="px-6 py-4 text-xs font-mono text-gray-500">{req.currentDeviceId}</td>
-                <td className="px-6 py-4">
-                  {req.status === 'PENDING' && <span className="text-xs font-bold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">En attente</span>}
-                  {req.status === 'APPROVED' && <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">Approuvé</span>}
-                  {req.status === 'REJECTED' && <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded-full">Rejeté</span>}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  {req.status === 'PENDING' && (
-                    <div className="flex justify-end gap-2">
-                      <button onClick={() => handleAction(req, 'APPROVE')} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100"><Check size={18} /></button>
-                      <button onClick={() => handleAction(req, 'REJECT')} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"><X size={18} /></button>
-                    </div>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[560px]">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Utilisateur</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Raison</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">ID Actuel</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Statut</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
               </tr>
-            ))}
-            {requests.length === 0 && (
-              <tr><td colSpan={5} className="p-8 text-center text-gray-500">Aucune demande en attente.</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {requests.map((req) => (
+                <tr key={req.id} className="hover:bg-gray-50/50">
+                  <td className="px-6 py-4 font-medium text-gray-900">{req.userName}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">{req.reason}</td>
+                  <td className="px-6 py-4 text-xs font-mono text-gray-500">{req.currentDeviceId}</td>
+                  <td className="px-6 py-4">
+                    {req.status === 'PENDING' && <span className="text-xs font-bold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">En attente</span>}
+                    {req.status === 'APPROVED' && <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">Approuvé</span>}
+                    {req.status === 'REJECTED' && <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded-full">Rejeté</span>}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    {req.status === 'PENDING' && (
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => handleAction(req, 'APPROVE')} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100"><Check size={18} /></button>
+                        <button onClick={() => handleAction(req, 'REJECT')} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"><X size={18} /></button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {requests.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-gray-500">Aucune demande en attente.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ConfirmationModal

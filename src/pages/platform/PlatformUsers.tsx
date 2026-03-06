@@ -61,17 +61,17 @@ const PlatformUsers = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Gestion des Utilisateurs</h1>
           <p className="text-gray-500">Liste complète des clients SaaS.</p>
         </div>
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
             placeholder="Rechercher un client..."
-            className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500 w-64"
+            className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500 w-full sm:w-64"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -79,65 +79,67 @@ const PlatformUsers = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Utilisateur</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Rôle</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Contact</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Statut</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50/50">
-                <td className="px-6 py-4 font-medium text-gray-900">{user.firstName} {user.lastName}</td>
-                <td className="px-6 py-4">
-                  <span className="px-2 py-1 bg-gray-100 rounded-md text-xs font-bold text-gray-600">{user.role}</span>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{user.email || user.phone}</td>
-                <td className="px-6 py-4">
-                  {user.status === 'ACTIVE' || user.status === 'active'
-                    ? <span className="text-green-600 text-xs font-bold bg-green-100 px-2 py-1 rounded-full">Actif</span>
-                    : <span className="text-red-600 text-xs font-bold bg-red-100 px-2 py-1 rounded-full">Révoqué</span>
-                  }
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center justify-end gap-2">
-                    {user.status === 'ACTIVE' || user.status === 'active' ? (
-                      <button
-                        onClick={() => handleAction(user, 'REVOKE')}
-                        className="text-amber-600 hover:bg-amber-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
-                        title="Révoquer l'accès"
-                      >
-                        <Ban size={14} /> Révoquer
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleAction(user, 'ACTIVATE')}
-                        className="text-green-600 hover:bg-green-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
-                        title="Réactiver le compte"
-                      >
-                        <CheckCircle size={14} /> Réactiver
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleAction(user, 'DELETE')}
-                      className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
-                      title="Supprimer définitivement"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[600px]">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Utilisateur</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Rôle</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Contact</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Statut</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
               </tr>
-            ))}
-            {filteredUsers.length === 0 && (
-              <tr><td colSpan={5} className="p-8 text-center text-gray-500 italic">Aucun utilisateur trouvé.</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredUsers.map((user) => (
+                <tr key={user.id} className="hover:bg-gray-50/50">
+                  <td className="px-6 py-4 font-medium text-gray-900">{user.firstName} {user.lastName}</td>
+                  <td className="px-6 py-4">
+                    <span className="px-2 py-1 bg-gray-100 rounded-md text-xs font-bold text-gray-600">{user.role}</span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{user.email || user.phone}</td>
+                  <td className="px-6 py-4">
+                    {user.status === 'ACTIVE' || user.status === 'active'
+                      ? <span className="text-green-600 text-xs font-bold bg-green-100 px-2 py-1 rounded-full">Actif</span>
+                      : <span className="text-red-600 text-xs font-bold bg-red-100 px-2 py-1 rounded-full">Révoqué</span>
+                    }
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      {user.status === 'ACTIVE' || user.status === 'active' ? (
+                        <button
+                          onClick={() => handleAction(user, 'REVOKE')}
+                          className="text-amber-600 hover:bg-amber-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                          title="Révoquer l'accès"
+                        >
+                          <Ban size={14} /> Révoquer
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleAction(user, 'ACTIVATE')}
+                          className="text-green-600 hover:bg-green-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                          title="Réactiver le compte"
+                        >
+                          <CheckCircle size={14} /> Réactiver
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleAction(user, 'DELETE')}
+                        className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors"
+                        title="Supprimer définitivement"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {filteredUsers.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-gray-500 italic">Aucun utilisateur trouvé.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <ConfirmationModal
