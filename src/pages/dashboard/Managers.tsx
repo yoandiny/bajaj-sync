@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { fleetService } from '../../services/fleet.service';
-import { User as UserType, Office } from '../../types';
-import { Plus, Mail, Phone, Lock, User, ShieldCheck, MailWarning, PhoneCall, Loader2, Search, Building2, Upload, X, Trash2 } from 'lucide-react';
+import { User as UserType } from '../../types';
+import { Plus, Mail, Phone, Lock, User, ShieldCheck, MailWarning, PhoneCall, Loader2, Search, Upload, X, Trash2 } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
+import { generateTempPassword } from '../../lib/utils';
 
 const Managers = () => {
     const [managers, setManagers] = useState<UserType[]>([]);
-    const [offices, setOffices] = useState<Office[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -25,12 +25,8 @@ const Managers = () => {
     const loadData = async () => {
         try {
             setLoading(true);
-            const [m, o] = await Promise.all([
-                fleetService.getManagers(),
-                fleetService.getOffices()
-            ]);
+            const m = await fleetService.getManagers();
             setManagers(m);
-            setOffices(o);
         } catch (err) {
             console.error('Erreur chargement données managers', err);
         } finally {
@@ -63,7 +59,7 @@ const Managers = () => {
         }
     };
 
-    const filteredManagers = managers.filter(m =>
+    const filteredManagers = managers.filter((m: UserType) =>
         `${m.firstName} ${m.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
         m.phone?.includes(searchQuery) ||
         m.email?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -84,7 +80,10 @@ const Managers = () => {
                     <p className="text-gray-500 font-medium">Créez et gérez les comptes de vos responsables d'agences.</p>
                 </div>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                        setFormData({ ...formData, password: generateTempPassword() });
+                        setIsModalOpen(true);
+                    }}
                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-yellow-500/20 active:scale-95"
                 >
                     <Plus size={20} />
@@ -104,7 +103,7 @@ const Managers = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredManagers.map((m) => (
+                {filteredManagers.map((m: UserType) => (
                     <div key={m.id} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all group relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 flex gap-2">
                             <button
@@ -287,34 +286,15 @@ const Managers = () => {
                             <p className="text-[10px] text-gray-400 mt-1 italic">* Au moins un identifiant (téléphone ou email) est requis pour la connexion.</p>
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Agence de rattachement</label>
-                            <div className="relative">
-                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <select
-                                    required
-                                    value={formData.officeId}
-                                    onChange={e => setFormData({ ...formData, officeId: e.target.value })}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold appearance-none"
-                                >
-                                    <option value="">Choisir une agence...</option>
-                                    {offices.map(o => (
-                                        <option key={o.id} value={o.id}>{o.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Mot de passe provisoire</label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <input
-                                    type="password" required
-                                    value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-bold"
-                                    placeholder="••••••••"
-                                />
+                        <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-100">
+                            <label className="text-xs font-bold text-yellow-800 uppercase ml-1 flex items-center gap-2 mb-2">
+                                <Lock size={14} /> Mot de passe provisoire
+                            </label>
+                            <div className="flex items-center gap-3">
+                                <code className="bg-white px-4 py-2 rounded-xl border border-yellow-200 font-mono text-lg font-bold text-gray-800 shadow-sm">
+                                    {formData.password}
+                                </code>
+                                <span className="text-xs font-bold text-yellow-700">À communiquer au gérant</span>
                             </div>
                         </div>
 
