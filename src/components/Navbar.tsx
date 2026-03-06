@@ -56,7 +56,7 @@ const Navbar = () => {
             ))}
 
             <Link
-              to="/activate"
+              to="/app/activate"
               className={`font-medium transition-colors duration-200 ${location.pathname === '/app/activate' ? 'text-yellow-600' : 'text-gray-600 hover:text-yellow-600'
                 }`}
             >
