@@ -17,6 +17,7 @@ const PlatformSettings = () => {
         try {
             setLoading(true);
             const data = await authService.getSettings();
+            console.log('[SETTINGS] Reçus du backend:', data);
             setSettings(data);
         } catch (err) {
             setError('Impossible de récupérer les paramètres');
@@ -106,8 +107,8 @@ const PlatformSettings = () => {
                                 <DollarSign size={20} />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-gray-900 capitalize">
-                                    {setting.key === 'licence_monthly_price' ? 'Prix Abonnement Mensuel' : 'Prix Licence Application'}
+                                <p className="text-sm font-bold text-gray-900 uppercase">
+                                    {setting.key === 'licence_monthly_price' ? 'Abonnement Mensuel' : 'Prix de l\'App (BajajSync)'}
                                 </p>
                                 <p className="text-xs text-gray-500">Dernière mise à jour : {new Date(setting.updated_at).toLocaleDateString()}</p>
                             </div>

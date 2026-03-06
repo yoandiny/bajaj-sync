@@ -114,36 +114,62 @@ const DashboardHome = () => {
             </div>
           </div>
 
-          <div className="h-[300px] w-full relative border border-transparent">
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={stats?.history || []}>
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
-                  tickFormatter={(value) => `${value / 1000}k`}
-                />
-                <Tooltip
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
-                />
-                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" />
-                <Area type="monotone" dataKey="expenses" stroke="#f87171" strokeWidth={4} fill="transparent" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="h-[300px] w-full relative min-h-[300px] border border-transparent">
+            {stats?.history && stats.history.length > 0 ? (
+              <ResponsiveContainer width="99.9%" height={300} minWidth={0} key={`area-chart-${stats.history.length}`}>
+                <AreaChart
+                  data={stats.history}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
+                    tickFormatter={(value) => value >= 1000 ? `${value / 1000}k` : value}
+                  />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
+                    isAnimationActive={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#3b82f6"
+                    strokeWidth={4}
+                    fillOpacity={1}
+                    fill="url(#colorRevenue)"
+                    isAnimationActive={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="expenses"
+                    stroke="#f87171"
+                    strokeWidth={4}
+                    fill="transparent"
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full w-full flex flex-col items-center justify-center text-gray-400 gap-2">
+                <BarChart3 size={40} className="opacity-20" />
+                <p className="text-sm font-bold italic">Données en cours de génération...</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -152,21 +178,43 @@ const DashboardHome = () => {
             <TrendingUp size={20} className="text-green-500" />
             Répartition
           </h3>
-          <div className="h-[300px] w-full relative flex-grow min-h-0">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats?.history?.slice(-3) || []}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
-                />
-                <Tooltip cursor={{ fill: '#f8fafc' }} />
-                <Bar dataKey="revenue" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={20} />
-                <Bar dataKey="expenses" fill="#f87171" radius={[6, 6, 0, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="h-[300px] w-full relative flex-grow min-h-[300px]">
+            {stats?.history && stats.history.length > 0 ? (
+              <ResponsiveContainer width="99.9%" height={300} minWidth={0} key={`bar-chart-${stats.history.length}`}>
+                <BarChart
+                  data={stats.history.slice(-3)}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
+                  />
+                  <Tooltip cursor={{ fill: '#f8fafc' }} isAnimationActive={false} />
+                  <Bar
+                    dataKey="revenue"
+                    fill="#3b82f6"
+                    radius={[6, 6, 0, 0]}
+                    barSize={20}
+                    isAnimationActive={false}
+                  />
+                  <Bar
+                    dataKey="expenses"
+                    fill="#f87171"
+                    radius={[6, 6, 0, 0]}
+                    barSize={20}
+                    isAnimationActive={false}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full w-full flex flex-col items-center justify-center text-gray-400 gap-2">
+                <TrendingUp size={40} className="opacity-20" />
+                <p className="text-sm font-bold italic">Calcul en cours...</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
