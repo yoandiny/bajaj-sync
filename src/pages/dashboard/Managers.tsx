@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fleetService } from '../../services/fleet.service';
 import { User as UserType, Office } from '../../types';
-import { Plus, Mail, Phone, Lock, User, ShieldCheck, MailWarning, PhoneCall, Loader2, Search, Building2, Upload, X } from 'lucide-react';
+import { Plus, Mail, Phone, Lock, User, ShieldCheck, MailWarning, PhoneCall, Loader2, Search, Building2, Upload, X, Trash2 } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 
 const Managers = () => {
@@ -106,8 +106,27 @@ const Managers = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredManagers.map((m) => (
                     <div key={m.id} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4">
-                            <div className="bg-green-100 text-green-600 p-1.5 rounded-lg">
+                        <div className="absolute top-0 right-0 p-4 flex gap-2">
+                            <button
+                                onClick={async () => {
+                                    if (window.confirm(`Êtes-vous sûr de vouloir supprimer le gérant ${m.firstName} ${m.lastName} ?`)) {
+                                        try {
+                                            setLoading(true);
+                                            await fleetService.deleteManager(m.id);
+                                            await loadData();
+                                        } catch (err: any) {
+                                            alert(err.response?.data?.message || "Erreur lors de la suppression.");
+                                        } finally {
+                                            setLoading(false);
+                                        }
+                                    }
+                                }}
+                                className="bg-red-50 text-red-500 p-1.5 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                title="Supprimer ce gérant"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                            <div className="bg-green-100 text-green-600 p-1.5 rounded-lg h-fit">
                                 <ShieldCheck size={16} />
                             </div>
                         </div>

@@ -119,6 +119,9 @@ export const fleetService = {
     const response = await api.post<User>('/fleet/managers', data);
     return response.data;
   },
+  deleteManager: async (id: string): Promise<void> => {
+    await api.delete(`/fleet/managers/${id}`);
+  },
   updateProfile: async (data: any): Promise<void> => {
     await api.put('/user/profile', data);
   },

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { User, SubscriptionTransaction } from '../../types';
-import { MOCK_SUBSCRIPTION_TRANSACTIONS } from '../../data/mock';
 import { User as UserIcon, Lock, CreditCard, Save, AlertTriangle, Calendar, CheckCircle2, History, PauseCircle, Upload, X, Loader2 } from 'lucide-react';
 import { fleetService } from '../../services/fleet.service';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,7 +29,7 @@ const Profile = () => {
 
     // Billing State
     const [transactions, setTransactions] = useState<SubscriptionTransaction[]>(
-        MOCK_SUBSCRIPTION_TRANSACTIONS.filter(t => t.userId === user?.id)
+        []
     );
     const [isSubscribed, setIsSubscribed] = useState(true); // Mock status
     const [paymentForm, setPaymentForm] = useState({

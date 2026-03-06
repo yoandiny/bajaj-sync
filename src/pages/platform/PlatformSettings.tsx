@@ -90,7 +90,11 @@ const PlatformSettings = () => {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {settings.map((setting) => (
+                {/* Section Prix de base */}
+                <div className="md:col-span-2 border-b border-gray-100 pb-2">
+                    <h2 className="text-lg font-bold text-gray-800">Tarification de base</h2>
+                </div>
+                {settings.filter(s => ['licence_monthly_price', 'app_price'].includes(s.key)).map((setting) => (
                     <motion.div
                         key={setting.key}
                         initial={{ opacity: 0, y: 10 }}
@@ -99,7 +103,133 @@ const PlatformSettings = () => {
                     >
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-yellow-50 rounded-xl text-yellow-600">
-                                {setting.key === 'licence_monthly_price' ? <DollarSign size={20} /> : <Settings size={20} />}
+                                <DollarSign size={20} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-gray-900 capitalize">
+                                    {setting.key === 'licence_monthly_price' ? 'Prix Abonnement Mensuel' : 'Prix Licence Application'}
+                                </p>
+                                <p className="text-xs text-gray-500">Dernière mise à jour : {new Date(setting.updated_at).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+
+                        <div className="relative">
+                            <input
+                                key={setting.value}
+                                type="number"
+                                defaultValue={setting.value}
+                                onBlur={(e) => handleBlur(e, setting)}
+                                className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl focus:outline-none focus:border-yellow-500 focus:bg-white transition-all font-mono font-bold"
+                            />
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                <span className="text-gray-400 font-bold text-sm">Ar</span>
+                                {saving === setting.key ? (
+                                    <RefreshCcw className="animate-spin text-gray-400" size={16} />
+                                ) : (
+                                    <Save className="text-gray-300" size={16} />
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+
+                {/* Section Promotions */}
+                <div className="md:col-span-2 border-b border-gray-100 pb-2 mt-4">
+                    <h2 className="text-lg font-bold text-gray-800">Gestion des Promotions</h2>
+                </div>
+
+                {/* Promo Abonnement */}
+                <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
+                                <AlertTriangle size={20} />
+                            </div>
+                            <h3 className="font-bold text-gray-900">Promo Abonnement</h3>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                checked={settings.find(s => s.key === 'promo_sub_active')?.value === 'true'}
+                                onChange={(e) => handleUpdate('promo_sub_active', e.target.checked ? 'true' : 'false')}
+                            />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1 text-xs font-bold text-gray-500 uppercase ml-1">Prix Promo</div>
+                        <div className="space-y-1 text-xs font-bold text-gray-500 uppercase ml-1">Date d'expiration</div>
+                        <input
+                            type="number"
+                            defaultValue={settings.find(s => s.key === 'promo_sub_price')?.value}
+                            onBlur={(e) => handleUpdate('promo_sub_price', e.target.value)}
+                            placeholder="Prix"
+                            className="px-4 py-2 bg-gray-50 rounded-xl font-bold"
+                        />
+                        <input
+                            type="date"
+                            defaultValue={settings.find(s => s.key === 'promo_sub_expiry')?.value}
+                            onBlur={(e) => handleUpdate('promo_sub_expiry', e.target.value)}
+                            className="px-4 py-2 bg-gray-50 rounded-xl font-bold"
+                        />
+                    </div>
+                </div>
+
+                {/* Promo Application */}
+                <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-purple-50 rounded-xl text-purple-600">
+                                <AlertTriangle size={20} />
+                            </div>
+                            <h3 className="font-bold text-gray-900">Promo Application</h3>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                checked={settings.find(s => s.key === 'promo_app_active')?.value === 'true'}
+                                onChange={(e) => handleUpdate('promo_app_active', e.target.checked ? 'true' : 'false')}
+                            />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                        </label>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1 text-xs font-bold text-gray-500 uppercase ml-1">Prix Promo</div>
+                        <div className="space-y-1 text-xs font-bold text-gray-500 uppercase ml-1">Date d'expiration</div>
+                        <input
+                            type="number"
+                            defaultValue={settings.find(s => s.key === 'promo_app_price')?.value}
+                            onBlur={(e) => handleUpdate('promo_app_price', e.target.value)}
+                            placeholder="Prix"
+                            className="px-4 py-2 bg-gray-50 rounded-xl font-bold"
+                        />
+                        <input
+                            type="date"
+                            defaultValue={settings.find(s => s.key === 'promo_app_expiry')?.value}
+                            onBlur={(e) => handleUpdate('promo_app_expiry', e.target.value)}
+                            className="px-4 py-2 bg-gray-50 rounded-xl font-bold"
+                        />
+                    </div>
+                </div>
+
+                {/* Autres paramètres */}
+                <div className="md:col-span-2 border-b border-gray-100 pb-2 mt-4">
+                    <h2 className="text-lg font-bold text-gray-800">Autres configurations</h2>
+                </div>
+                {settings.filter(s => !['licence_monthly_price', 'app_price', 'promo_sub_active', 'promo_sub_price', 'promo_sub_expiry', 'promo_app_active', 'promo_app_price', 'promo_app_expiry'].includes(s.key)).map((setting) => (
+                    <motion.div
+                        key={setting.key}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-gray-50 rounded-xl text-gray-600">
+                                <Settings size={20} />
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-gray-900 capitalize">
@@ -125,15 +255,6 @@ const PlatformSettings = () => {
                                 )}
                             </div>
                         </div>
-
-                        {setting.key === 'licence_monthly_price' && (
-                            <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
-                                <AlertTriangle size={14} className="text-amber-500 mt-0.5 shrink-0" />
-                                <p className="text-xs text-amber-700 font-medium">
-                                    Valeur en Ariary. Une confirmation est requise avant toute modification de ce paramètre.
-                                </p>
-                            </div>
-                        )}
                     </motion.div>
                 ))}
             </div>

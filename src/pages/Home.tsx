@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Users, Car, Wallet, BarChart3, Mail, Phone, CheckCircle2, Laptop, Smartphone } from 'lucide-react';
+import { Users, Car, Wallet, BarChart3, Mail, Phone, CheckCircle2, Laptop, Smartphone, Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
 import FeatureCard from '../components/FeatureCard';
+import { authService } from '../services/auth.service';
 import Logo from '../assets/logo.png';
 import Drivers from '../assets/drivers.png';
 import Bajaj from '../assets/bajaj.png';
@@ -12,8 +13,11 @@ import Expense from '../assets/expense.png';
 
 const Home = () => {
   const location = useLocation();
+  const [config, setConfig] = useState<any>(null);
 
   useEffect(() => {
+    authService.getConfig().then(setConfig).catch(console.error);
+
     if (location.state && location.state.scrollTo) {
       const element = document.getElementById(location.state.scrollTo);
       if (element) {
@@ -197,9 +201,15 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* BajajSync App - Licence Complète */}
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-yellow-500 relative flex flex-col">
-              <div className="absolute top-5 right-[-35px] bg-red-600 text-white font-bold py-1 px-12 rotate-45 shadow-md text-xs">
-                OFFRE LIMITÉE
-              </div>
+              {(config?.promo_app_active === 'true' && (!config.promo_app_expiry || new Date(config.promo_app_expiry) >= new Date())) ? (
+                <div className="absolute top-5 right-[-35px] bg-red-600 text-white font-bold py-1 px-12 rotate-45 shadow-md text-xs">
+                  PROMO -{Math.round((1 - Number(config.promo_app_price) / Number(config.app_price)) * 100)}%
+                </div>
+              ) : (
+                <div className="absolute top-5 right-[-35px] bg-red-600 text-white font-bold py-1 px-12 rotate-45 shadow-md text-xs uppercase">
+                  OFFRE LIMITÉE
+                </div>
+              )}
 
               <div className="px-6 py-10 bg-gray-900 text-center">
                 <span className="px-4 py-1 bg-yellow-500 text-gray-900 text-xs font-black rounded-full uppercase tracking-widest">
@@ -211,8 +221,15 @@ const Home = () => {
 
               <div className="px-6 py-10 flex-grow flex flex-col">
                 <div className="text-center mb-8">
-                  <div className="flex justify-center items-center">
-                    <span className="text-6xl font-extrabold text-gray-900">50.000 Ar</span>
+                  <div className="flex flex-col justify-center items-center">
+                    {(config?.promo_app_active === 'true' && (!config.promo_app_expiry || new Date(config.promo_app_expiry) >= new Date())) ? (
+                      <>
+                        <span className="text-xl text-gray-400 line-through font-bold">{(Number(config.app_price) || 50000).toLocaleString()} Ar</span>
+                        <span className="text-6xl font-extrabold text-gray-900">{(Number(config.promo_app_price) || 40000).toLocaleString()} Ar</span>
+                      </>
+                    ) : (
+                      <span className="text-6xl font-extrabold text-gray-900">{(Number(config?.app_price) || 50000).toLocaleString()} Ar</span>
+                    )}
                   </div>
                   <p className="text-gray-500 mt-4 italic text-sm">
                     Paiement unique à l'activation
@@ -246,9 +263,15 @@ const Home = () => {
 
             {/* BajajSync Online - Abonnement */}
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-100 relative flex flex-col">
-              <div className="absolute top-5 right-5 bg-blue-600 text-white font-bold py-1 px-4 rounded-full shadow-md text-xs">
-                RECOMMANDÉ
-              </div>
+              {(config?.promo_sub_active === 'true' && (!config.promo_sub_expiry || new Date(config.promo_sub_expiry) >= new Date())) ? (
+                <div className="absolute top-5 right-5 bg-red-600 text-white font-bold py-1 px-4 rounded-full shadow-md text-xs flex items-center gap-1">
+                  <Gift size={12} /> PROMO ACTIVE
+                </div>
+              ) : (
+                <div className="absolute top-5 right-5 bg-blue-600 text-white font-bold py-1 px-4 rounded-full shadow-md text-xs">
+                  RECOMMANDÉ
+                </div>
+              )}
 
               <div className="px-6 py-10 bg-blue-900 text-center">
                 <span className="px-4 py-1 bg-blue-400 text-white text-xs font-black rounded-full uppercase tracking-widest">
@@ -260,9 +283,21 @@ const Home = () => {
 
               <div className="px-6 py-10 flex-grow flex flex-col">
                 <div className="text-center mb-8">
-                  <div className="flex justify-center items-center">
-                    <span className="text-6xl font-extrabold text-gray-900">40.000 Ar</span>
-                    <span className="text-gray-400 font-bold ml-2">/ mois</span>
+                  <div className="flex flex-col justify-center items-center">
+                    {(config?.promo_sub_active === 'true' && (!config.promo_sub_expiry || new Date(config.promo_sub_expiry) >= new Date())) ? (
+                      <>
+                        <span className="text-xl text-gray-400 line-through font-bold">{(Number(config.licence_monthly_price) || 40000).toLocaleString()} Ar</span>
+                        <div className="flex items-center">
+                          <span className="text-6xl font-extrabold text-gray-900">{(Number(config.promo_sub_price) || 30000).toLocaleString()} Ar</span>
+                          <span className="text-gray-400 font-bold ml-2">/ mois</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex items-center">
+                        <span className="text-6xl font-extrabold text-gray-900">{(Number(config?.licence_monthly_price) || 40000).toLocaleString()} Ar</span>
+                        <span className="text-gray-400 font-bold ml-2">/ mois</span>
+                      </div>
+                    )}
                   </div>
                   <p className="text-gray-500 mt-4 italic text-sm">
                     Abonnement mensuel sans engagement
