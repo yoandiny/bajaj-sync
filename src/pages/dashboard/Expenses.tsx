@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { fleetService } from '../../services/fleet.service';
 import { Expense, Vehicle, Driver, ExpenseScope } from '../../types';
-import { Plus, Filter, Receipt, CheckCircle2, ShoppingCart, Settings, CreditCard, Loader2, User } from 'lucide-react';
+import { Plus, Filter, Receipt, CheckCircle2, ShoppingCart, Settings, CreditCard, Loader2, User, Download, FileSpreadsheet } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Expenses = () => {
   const { user } = useAuth();
@@ -85,6 +88,42 @@ const Expenses = () => {
 
   const totalExpenses = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
 
+  const exportToExcel = () => {
+    const data = filteredExpenses.map(e => ({
+      'Date': new Date(e.date).toLocaleDateString(),
+      'Bureau': e.officeName || '---',
+      'Concerne': getScopeLabel(e),
+      'Justification': e.description || '',
+      'Montant (Ar)': e.amount
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Dépenses');
+    XLSX.writeFile(workbook, `Depenses_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
+  const exportToPdf = () => {
+    const doc = new jsPDF();
+    doc.text('Rapport des Dépenses', 14, 15);
+
+    const tableData = filteredExpenses.map(e => [
+      new Date(e.date).toLocaleDateString(),
+      e.officeName || '---',
+      getScopeLabel(e),
+      e.description || '---',
+      `${e.amount.toLocaleString()} Ar`
+    ]);
+
+    autoTable(doc, {
+      head: [['Date', 'Bureau', 'Concerne', 'Justification', 'Montant']],
+      body: tableData,
+      startY: 20,
+    });
+
+    doc.save(`Depenses_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
   const getScopeLabel = (expense: Expense) => {
     const vehicle = vehicles.find(v => v.id === expense.vehicleId);
     const driver = drivers.find(d => d.id === expense.driverId);
@@ -108,6 +147,22 @@ const Expenses = () => {
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Dépenses</span>
             <span className="font-black text-red-600 text-lg">{totalExpenses.toLocaleString()} Ar</span>
           </div>
+          <button
+            onClick={exportToExcel}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-95"
+            title="Exporter vers Excel"
+          >
+            <FileSpreadsheet size={20} />
+            <span className="hidden md:inline">Excel</span>
+          </button>
+          <button
+            onClick={exportToPdf}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-red-600/20 transition-all hover:scale-[1.02] active:scale-95"
+            title="Exporter vers PDF"
+          >
+            <Download size={20} />
+            <span className="hidden md:inline">PDF</span>
+          </button>
           <button
             onClick={() => { setError(null); setIsModalOpen(true); }}
             className="bg-gray-900 hover:bg-black text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg transition-all hover:scale-[1.02] active:scale-95"

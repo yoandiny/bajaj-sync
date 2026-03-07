@@ -16,8 +16,8 @@ export const PublicRoute = ({ children }: PublicRouteProps) => {
     if (isAuthenticated && user) {
         // Si déjà connecté, rediriger selon le statut
         if (user.role_id === 2) {
-            if (user.status === 'pending') return <Navigate to="/activate" replace />;
-            if (user.status === 'waiting') return <Navigate to="/waiting" replace />;
+            if (user.companyStatus === 'pending') return <Navigate to="/activate" replace />;
+            if (user.companyStatus === 'waiting') return <Navigate to="/waiting" replace />;
             return <Navigate to="/dashboard" replace />;
         }
         if (user.role === 'SUPER_ADMIN') {

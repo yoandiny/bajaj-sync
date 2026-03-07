@@ -16,7 +16,7 @@ const Register = () => {
         companyName: ''
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const { register } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -31,8 +31,8 @@ const Register = () => {
         setLoading(true);
 
         try {
-            await authService.registerWeb(formData);
-            // Après inscription, on est automatiquement "loggé" par authService
+            await register(formData);
+            // Après inscription, on est automatiquement "loggé" par AuthContext
             navigate('/activate');
         } catch (err: any) {
             setError(err.response?.data?.message || err.message || "Erreur lors de l'inscription");

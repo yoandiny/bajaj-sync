@@ -5,6 +5,7 @@ import { authService } from '../services/auth.service';
 interface AuthContextType {
   user: User | null;
   login: (identifier: string, password: string) => Promise<void>;
+  register: (data: any) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -43,6 +44,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(data.user);
   };
 
+  const register = async (data: any): Promise<void> => {
+    const response = await authService.registerWeb(data);
+    setUser(response.user);
+  };
+
   const logout = () => {
     localStorage.removeItem('bajajsync_user');
     setUser(null);
@@ -50,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, isLoading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

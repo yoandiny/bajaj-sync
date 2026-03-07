@@ -21,14 +21,14 @@ export const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) 
 
     // 1. Redirection forcée basée sur le statut de licence pour les gestionnaires (role_id: 2)
     if (user?.role_id === 2) {
-        if (user.status === 'pending' && location.pathname !== '/activate') {
+        if (user.companyStatus === 'pending' && location.pathname !== '/activate') {
             return <Navigate to="/activate" replace />;
         }
-        if (user.status === 'waiting' && location.pathname !== '/waiting') {
+        if (user.companyStatus === 'waiting' && location.pathname !== '/waiting') {
             return <Navigate to="/waiting" replace />;
         }
         // Si actif mais sur une page de "pending/waiting", renvoyer au dashboard
-        if (user.status === 'active' && (location.pathname === '/activate' || location.pathname === '/waiting')) {
+        if (user.companyStatus === 'active' && (location.pathname === '/activate' || location.pathname === '/waiting')) {
             return <Navigate to="/dashboard" replace />;
         }
     }

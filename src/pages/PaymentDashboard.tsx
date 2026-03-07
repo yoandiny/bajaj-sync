@@ -14,7 +14,7 @@ const PaymentDashboard = () => {
     const [reference, setReference] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'OM' | 'MVOLA'>('OM');
     const [loading, setLoading] = useState(false);
-    const [price, setPrice] = useState('50 000');
+    const [price, setPrice] = useState('25 000');
     const [error, setError] = useState('');
     const { logout } = useAuth();
 
@@ -42,7 +42,8 @@ const PaymentDashboard = () => {
             await authService.submitPayment({
                 paymentPhone,
                 reference,
-                paymentMethod: paymentMethod === 'OM' ? 'Orange Money' : 'Mvola'
+                paymentMethod: paymentMethod === 'OM' ? 'Orange Money' : 'Mvola',
+                amount: parseInt(price.replace(/\s/g, ''))
             });
             window.location.href = '/waiting';
         } catch (err: any) {
@@ -137,8 +138,8 @@ const PaymentDashboard = () => {
                                             type="button"
                                             onClick={() => setPaymentMethod('OM')}
                                             className={`p-4 rounded-3xl border-2 transition-all flex flex-col items-center gap-2 ${paymentMethod === 'OM'
-                                                    ? 'border-orange-500 bg-orange-500/10 shadow-lg shadow-orange-500/10'
-                                                    : 'border-white/5 bg-white/5 hover:border-white/20'
+                                                ? 'border-orange-500 bg-orange-500/10 shadow-lg shadow-orange-500/10'
+                                                : 'border-white/5 bg-white/5 hover:border-white/20'
                                                 }`}
                                         >
                                             <div className="h-8 flex items-center">
@@ -152,8 +153,8 @@ const PaymentDashboard = () => {
                                             type="button"
                                             onClick={() => setPaymentMethod('MVOLA')}
                                             className={`p-4 rounded-3xl border-2 transition-all flex flex-col items-center gap-2 ${paymentMethod === 'MVOLA'
-                                                    ? 'border-yellow-500 bg-yellow-500/10 shadow-lg shadow-yellow-500/10'
-                                                    : 'border-white/5 bg-white/5 hover:border-white/20'
+                                                ? 'border-yellow-500 bg-yellow-500/10 shadow-lg shadow-yellow-500/10'
+                                                : 'border-white/5 bg-white/5 hover:border-white/20'
                                                 }`}
                                         >
                                             <div className="h-8 flex items-center">

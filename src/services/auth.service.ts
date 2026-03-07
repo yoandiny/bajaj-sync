@@ -39,8 +39,8 @@ export const authService = {
     return response.data;
   },
 
-  submitPayment: async (data: { paymentPhone: string; reference: string; paymentMethod: string }): Promise<void> => {
-    await api.post('/auth/submit-payment', data);
+  submitPayment: async (data: { paymentPhone: string, reference: string, paymentMethod: string, amount: number }): Promise<any> => {
+    const response = await api.post('/auth/submit-payment', data);
   },
 
   me: async (): Promise<User> => {

@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { fleetService } from '../../services/fleet.service';
 import { Payment, Vehicle, Driver, Office } from '../../types';
-import { Plus, Filter, Calendar, CheckCircle2, Wallet, ReceiptText, Loader2, Edit2, Trash2, Moon } from 'lucide-react';
+import { Plus, Filter, Calendar, CheckCircle2, Wallet, ReceiptText, Loader2, Edit2, Trash2, Moon, Download, FileSpreadsheet } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Payments = () => {
   const { user } = useAuth();
@@ -139,6 +142,51 @@ const Payments = () => {
 
   const totalAmount = filteredPayments.reduce((sum, p) => sum + p.amount, 0);
 
+  const exportToExcel = () => {
+    const data = filteredPayments.map(p => {
+      const vehicle = vehicles.find(v => v.id === p.vehicleId);
+      const driver = drivers.find(d => d.id === p.driverId);
+      return {
+        'Date': new Date(p.date).toLocaleDateString(),
+        'Bureau': p.officeName || '---',
+        'Véhicule': vehicle ? (vehicle.name ? `${vehicle.name} (${vehicle.plate})` : vehicle.plate) : '---',
+        'Chauffeur': driver ? `${driver.firstName} ${driver.lastName}` : '---',
+        'Montant (Ar)': p.amount,
+        'Notes': p.notes || ''
+      };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Versements');
+    XLSX.writeFile(workbook, `Versements_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
+  const exportToPdf = () => {
+    const doc = new jsPDF();
+    doc.text('Rapport des Versements', 14, 15);
+
+    const tableData = filteredPayments.map(p => {
+      const vehicle = vehicles.find(v => v.id === p.vehicleId);
+      const driver = drivers.find(d => d.id === p.driverId);
+      return [
+        new Date(p.date).toLocaleDateString(),
+        p.officeName || '---',
+        vehicle ? (vehicle.name ? `${vehicle.name} (${vehicle.plate})` : vehicle.plate) : '---',
+        driver ? `${driver.firstName} ${driver.lastName}` : '---',
+        `${p.amount.toLocaleString()} Ar`
+      ];
+    });
+
+    autoTable(doc, {
+      head: [['Date', 'Bureau', 'Véhicule', 'Chauffeur', 'Montant']],
+      body: tableData,
+      startY: 20,
+    });
+
+    doc.save(`Versements_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
   if (loading) return <div className="p-8 text-center text-gray-500 font-medium">Chargement des versements...</div>;
 
   return (
@@ -153,6 +201,22 @@ const Payments = () => {
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Période</span>
             <span className="font-black text-green-600 text-lg">{totalAmount.toLocaleString()} Ar</span>
           </div>
+          <button
+            onClick={exportToExcel}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-95"
+            title="Exporter vers Excel"
+          >
+            <FileSpreadsheet size={20} />
+            <span className="hidden md:inline">Excel</span>
+          </button>
+          <button
+            onClick={exportToPdf}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-red-600/20 transition-all hover:scale-[1.02] active:scale-95"
+            title="Exporter vers PDF"
+          >
+            <Download size={20} />
+            <span className="hidden md:inline">PDF</span>
+          </button>
           <button
             onClick={() => handleOpenModal()}
             className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-yellow-500/30 transition-all hover:scale-[1.02] active:scale-95"

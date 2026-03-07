@@ -9,7 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,12 +19,20 @@ const Login = () => {
 
     try {
       await login(identifier, password);
-      // La redirection se base sur le role retourné par le backend
-      // L'objet user est mis à jour par AuthContext après login
+      // La redirection se base sur le rôle et le statut retournés par le backend
       const stored = localStorage.getItem('bajajsync_user');
       const parsedUser = stored ? JSON.parse(stored) : null;
+
       if (parsedUser?.role === 'SUPER_ADMIN') {
         navigate('/platform');
+      } else if (parsedUser?.role_id === 2) {
+        if (parsedUser.companyStatus === 'pending') {
+          navigate('/activate');
+        } else if (parsedUser.companyStatus === 'waiting') {
+          navigate('/waiting');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         navigate('/dashboard');
       }
