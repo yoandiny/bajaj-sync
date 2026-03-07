@@ -105,6 +105,16 @@ const Login = () => {
                 </>
               )}
             </button>
+
+            <div className="flex justify-center mt-2">
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                className="text-sm font-semibold text-gray-500 hover:text-yellow-600 transition-colors"
+              >
+                Mot de passe oublié ?
+              </button>
+            </div>
           </form>
 
           <div className="mt-8 text-center space-y-4">

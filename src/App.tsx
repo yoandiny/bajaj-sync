@@ -11,6 +11,8 @@ import Register from './pages/Register';
 import PaymentDashboard from './pages/PaymentDashboard';
 import WaitingApproval from './pages/WaitingApproval';
 import Activate from './pages/Activate';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import DashboardHome from './pages/dashboard/DashboardHome';
 import Offices from './pages/dashboard/Offices';
 import Vehicles from './pages/dashboard/Vehicles';
@@ -56,6 +58,8 @@ function App() {
 
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+            <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
             {/* Routes d'activation et attente - Protégées mais gérées par ProtectedRoute */}
             <Route path="/activate" element={<ProtectedRoute><PaymentDashboard /></ProtectedRoute>} />
