@@ -1,6 +1,6 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Smartphone, ShieldCheck, LogOut, Settings, MessageSquare, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Smartphone, ShieldCheck, LogOut, Settings, MessageSquare, Menu, X, Building2 } from 'lucide-react';
 import Logo from '../assets/logo.png';
 import { cn } from '../lib/utils';
 import { useState, useEffect } from 'react';
@@ -34,6 +34,7 @@ export const PlatformLayout = () => {
   const links = [
     { name: 'Vue d\'ensemble', path: '/platform', icon: LayoutDashboard },
     { name: 'Utilisateurs', path: '/platform/users', icon: Users },
+    { name: 'Entreprises', path: '/platform/companies', icon: Building2 },
     { name: 'Licences', path: '/platform/licenses', icon: ShieldCheck },
     { name: 'Appareils', path: '/platform/devices', icon: Smartphone },
     { name: 'Feedbacks', path: '/platform/feedbacks', icon: MessageSquare },

@@ -8,6 +8,7 @@ const PlatformUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [actionType, setActionType] = useState<'REVOKE_APP' | 'ACTIVATE_APP' | 'REVOKE_ONLINE' | 'ACTIVATE_ONLINE' | 'DELETE' | null>(null);
 
@@ -23,12 +24,16 @@ const PlatformUsers = () => {
     loadUsers();
   }, []);
 
-  const filteredUsers = users.filter(u =>
-    u.firstName.toLowerCase().includes(search.toLowerCase()) ||
-    u.lastName.toLowerCase().includes(search.toLowerCase()) ||
-    (u.email && u.email.includes(search)) ||
-    (u.phone && u.phone.includes(search))
-  );
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = u.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      u.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      (u.email && u.email.toLowerCase().includes(search.toLowerCase())) ||
+      (u.phone && u.phone.includes(search));
+
+    const roleMatches = roleFilter ? u.role === roleFilter : true;
+
+    return matchesSearch && roleMatches;
+  });
 
   const handleAction = (user: User, type: 'REVOKE_APP' | 'ACTIVATE_APP' | 'REVOKE_ONLINE' | 'ACTIVATE_ONLINE' | 'DELETE') => {
     setSelectedUser(user);
@@ -70,15 +75,28 @@ const PlatformUsers = () => {
           <h1 className="text-2xl font-bold text-gray-900">Gestion des Utilisateurs</h1>
           <p className="text-gray-500">Liste complète des clients SaaS.</p>
         </div>
-        <div className="relative w-full sm:w-auto">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Rechercher un client..."
-            className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:Yellow-500 w-full sm:w-64"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <select
+            className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500 text-sm"
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+          >
+            <option value="">Tous les rôles</option>
+            <option value="OWNER">Propriétaire (Owner)</option>
+            <option value="MANAGER">Gérant (Manager)</option>
+            <option value="OFFICE_MANAGER">Chef de bureau</option>
+            <option value="DRIVER">Chauffeur</option>
+          </select>
+          <div className="relative w-full sm:w-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Rechercher un client..."
+              className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-yellow-500 w-full sm:w-64"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 

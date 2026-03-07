@@ -6,12 +6,33 @@ interface PlatformStats {
   activeUsers: number;
   pendingLicenses: number;
   totalFeedbacks: number;
+  dailyRevenue?: number;
+  monthlyRevenue?: number;
+  adoptionsPie?: { name: string; value: number }[];
+  adoptionTimeline?: { name: string; app: number; cloud: number }[];
+}
+
+export interface PlatformCompany {
+  id: string;
+  name: string;
+  status: string;
+  subscription_until: string;
+  ownerName: string;
+  ownerPhone: string;
+  ownerEmail: string;
+  createdAt: string;
 }
 
 export const platformService = {
   // Stats
   getStats: async (): Promise<PlatformStats> => {
     const response = await api.get<PlatformStats>('/admin/stats');
+    return response.data;
+  },
+
+  // Companies
+  getCompanies: async (): Promise<PlatformCompany[]> => {
+    const response = await api.get<PlatformCompany[]>('/admin/companies');
     return response.data;
   },
 

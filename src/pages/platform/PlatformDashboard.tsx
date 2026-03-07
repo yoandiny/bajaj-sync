@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, ShieldCheck, MessageSquare, TrendingUp, Star } from 'lucide-react';
+import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { platformService } from '../../services/platform.service';
 import { Feedback, LicenseRequest } from '../../types';
 
@@ -23,7 +24,7 @@ const StatCard = ({ title, value, icon: Icon, color, subtext }: any) => (
 );
 
 const PlatformDashboard = () => {
-  const [stats, setStats] = useState({ totalUsers: 0, pendingLicenses: 0, totalFeedbacks: 0, activeUsers: 0 });
+  const [stats, setStats] = useState<any>({ totalUsers: 0, pendingLicenses: 0, totalFeedbacks: 0, activeUsers: 0, dailyRevenue: 0, monthlyRevenue: 0, adoptionsPie: [], adoptionTimeline: [] });
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [recentRequests, setRecentRequests] = useState<LicenseRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,11 +64,57 @@ const PlatformDashboard = () => {
         <p className="text-gray-500 mt-1">Vue d'ensemble des performances de BajajSync.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <StatCard title="Utilisateurs Totaux" value={stats.totalUsers} icon={Users} color="bg-blue-600" subtext={`${stats.activeUsers} actifs`} />
         <StatCard title="Licences en attente" value={stats.pendingLicenses} icon={ShieldCheck} color="bg-yellow-500" subtext="Action requise" />
         <StatCard title="Note Moyenne" value={averageRating} icon={Star} color="bg-green-500" subtext={`Basé sur ${stats.totalFeedbacks} avis`} />
+        <StatCard title="Revenus du Jour" value={`${(stats.dailyRevenue || 0).toLocaleString()} Ar`} icon={TrendingUp} color="bg-indigo-600" />
+        <StatCard title="Revenus du Mois" value={`${(stats.monthlyRevenue || 0).toLocaleString()} Ar`} icon={TrendingUp} color="bg-teal-600" />
         <StatCard title="Feedbacks" value={stats.totalFeedbacks} icon={MessageSquare} color="bg-purple-600" subtext="Total reçus" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
+          <h3 className="font-bold text-gray-900 mb-6">Évolution des Adoptions (6 derniers mois)</h3>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={stats.adoptionTimeline || []}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
+                <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
+                <Line type="monotone" dataKey="app" name="Application" stroke="#3B82F6" strokeWidth={3} activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="cloud" name="Licences Cloud" stroke="#EAB308" strokeWidth={3} activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 className="font-bold text-gray-900 mb-6 text-center">Répartition des Adoptions</h3>
+          <div className="h-64 flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={stats.adoptionsPie || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {(stats.adoptionsPie || []).map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={index === 0 ? '#3B82F6' : '#f59e0b'} />
+                  ))}
+                </Pie>
+                <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Legend iconType="circle" layout="horizontal" verticalAlign="bottom" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -130,8 +177,8 @@ const PlatformDashboard = () => {
                   </div>
                 </div>
                 <span className={`px-2 py-1 text-xs font-bold rounded-full ${req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                    req.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                      'bg-red-100 text-red-700'
+                  req.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
+                    'bg-red-100 text-red-700'
                   }`}>
                   {req.status === 'PENDING' ? 'En attente' : req.status === 'APPROVED' ? 'Validé' : 'Rejeté'}
                 </span>

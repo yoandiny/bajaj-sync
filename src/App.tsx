@@ -24,6 +24,7 @@ import Profile from './pages/dashboard/Profile';
 import Managers from './pages/dashboard/Managers';
 import PlatformDashboard from './pages/platform/PlatformDashboard';
 import PlatformUsers from './pages/platform/PlatformUsers';
+import PlatformCompanies from './pages/platform/PlatformCompanies';
 import LicenseRequests from './pages/platform/LicenseRequests';
 import DeviceRequests from './pages/platform/DeviceRequests';
 import PlatformSettings from './pages/platform/PlatformSettings';
@@ -80,6 +81,7 @@ function App() {
             <Route path="/platform" element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']}><PlatformLayout /></ProtectedRoute>}>
               <Route index element={<PlatformDashboard />} />
               <Route path="users" element={<PlatformUsers />} />
+              <Route path="companies" element={<PlatformCompanies />} />
               <Route path="licenses" element={<LicenseRequests />} />
               <Route path="devices" element={<DeviceRequests />} />
               <Route path="settings" element={<PlatformSettings />} />
