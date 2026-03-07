@@ -9,19 +9,11 @@ import {
 } from 'lucide-react';
 import Logo from '../assets/logo.png';
 
-const PLANS = [
-    { months: 1, label: '1 Mois', discount: 0 },
-    { months: 3, label: '3 Mois', discount: 5 },
-    { months: 6, label: '6 Mois', discount: 10 },
-    { months: 12, label: '12 Mois', discount: 20 },
-];
-
 const PaymentDashboard = () => {
     const { user, logout } = useAuth();
     const [paymentPhone, setPaymentPhone] = useState('');
     const [reference, setReference] = useState('');
     const [paymentMethod, setPaymentMethod] = useState<'OM' | 'MVOLA'>('OM');
-    const [selectedPlan, setSelectedPlan] = useState(PLANS[0]);
     const [loading, setLoading] = useState(false);
     const [pricePerMonth, setPricePerMonth] = useState(25000);
     const [error, setError] = useState('');
@@ -41,7 +33,7 @@ const PaymentDashboard = () => {
         fetchConfig();
     }, []);
 
-    const totalAmount = Math.round(pricePerMonth * selectedPlan.months * (1 - selectedPlan.discount / 100));
+    const totalAmount = pricePerMonth;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -59,7 +51,7 @@ const PaymentDashboard = () => {
                 paymentMethod: paymentMethod === 'OM' ? 'Orange Money' : 'Mvola',
                 amount: totalAmount,
                 period: period,
-                durationMonths: selectedPlan.months
+                durationMonths: 1
             });
             setSuccess(true);
             setTimeout(() => {
@@ -159,37 +151,7 @@ const PaymentDashboard = () => {
                 <div className="lg:col-span-7">
                     <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden h-full">
                         <div className="p-8 md:p-10">
-                            {/* Plan Selection */}
-                            <div className="mb-8">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4 block ml-1">
-                                    1. Choisissez votre forfait
-                                </label>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                    {PLANS.map((plan) => (
-                                        <button
-                                            key={plan.months}
-                                            type="button"
-                                            onClick={() => setSelectedPlan(plan)}
-                                            className={`relative p-4 rounded-2xl border-2 transition-all text-center group ${selectedPlan.months === plan.months
-                                                ? 'border-yellow-500 bg-yellow-500/10'
-                                                : 'border-white/5 bg-white/5 hover:border-white/20'
-                                                }`}
-                                        >
-                                            <div className={`text-xl font-black mb-1 ${selectedPlan.months === plan.months ? 'text-white' : 'text-gray-400'}`}>
-                                                {plan.label}
-                                            </div>
-                                            {plan.discount > 0 && (
-                                                <div className="absolute -top-2 -right-2 bg-green-500 text-[#0f172a] text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
-                                                    -{plan.discount}%
-                                                </div>
-                                            )}
-                                            <div className={`text-[10px] font-bold ${selectedPlan.months === plan.months ? 'text-yellow-500' : 'text-gray-600'}`}>
-                                                {plan.months === 1 ? 'Standard' : 'Économisez'}
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {error && (
@@ -295,7 +257,7 @@ const PaymentDashboard = () => {
                                 <Info size={16} className="text-blue-400 mt-1 shrink-0" />
                                 <div className="text-[10px] text-gray-450 font-medium leading-relaxed">
                                     Envoyez le montant exact au <span className="text-white font-bold">037 68 727 82</span> (DINY Fondàna Yoan).
-                                    Une fois validé, votre accès sera automatiquement étendu de <span className="text-yellow-500 font-bold">{selectedPlan.label}</span>.
+                                    Une fois validé, votre accès sera automatiquement étendu d'<span className="text-yellow-500 font-bold">1 mois</span>.
                                 </div>
                             </div>
 

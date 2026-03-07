@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/auth.service';
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Phone, Mail, Lock, Building, ArrowRight, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
 import Logo from '../assets/logo.png';
@@ -16,6 +16,7 @@ const Register = () => {
         companyName: ''
     });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
 
@@ -83,10 +84,10 @@ const Register = () => {
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, isNewAccount: true })}
-                                    className={`p-4 rounded-2xl border-2 transition-all text-center flex flex-col items-center gap-1 ${formData.isNewAccount
+                                    className={`p - 4 rounded - 2xl border - 2 transition - all text - center flex flex - col items - center gap - 1 ${formData.isNewAccount
                                         ? 'border-yellow-500 bg-yellow-50/50 shadow-lg'
                                         : 'border-gray-100 bg-gray-50'
-                                        }`}
+                                        } `}
                                 >
                                     <Sparkles className={formData.isNewAccount ? 'text-yellow-600' : 'text-gray-400'} size={20} />
                                     <span className="font-bold text-sm text-gray-900">Nouveau</span>
@@ -95,10 +96,10 @@ const Register = () => {
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, isNewAccount: false })}
-                                    className={`p-4 rounded-2xl border-2 transition-all text-center flex flex-col items-center gap-1 ${!formData.isNewAccount
+                                    className={`p - 4 rounded - 2xl border - 2 transition - all text - center flex flex - col items - center gap - 1 ${!formData.isNewAccount
                                         ? 'border-yellow-500 bg-yellow-50/50 shadow-lg'
                                         : 'border-gray-100 bg-gray-50'
-                                        }`}
+                                        } `}
                                 >
                                     <CheckCircle className={!formData.isNewAccount ? 'text-yellow-600' : 'text-gray-400'} size={20} />
                                     <span className="font-bold text-sm text-gray-900">Existant</span>

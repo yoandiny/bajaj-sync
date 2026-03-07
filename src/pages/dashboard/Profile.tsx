@@ -1,23 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/auth.service';
-import { User, SubscriptionTransaction } from '../../types';
 import {
     User as UserIcon, Lock, CreditCard, Save,
     AlertTriangle, Calendar, CheckCircle2, History,
-    PauseCircle, Upload, X, Loader2, Sparkles,
-    Gem, Zap, Phone, Hash, ArrowRight, Clock, TrendingUp
+    PauseCircle, Upload, Loader2, Sparkles,
+    Gem, Zap, Phone, Hash, ArrowRight, TrendingUp
 } from 'lucide-react';
 import { fleetService } from '../../services/fleet.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmationModal } from '../../components/ui/ConfirmationModal';
-
-const PLANS = [
-    { months: 1, label: '1 Mois', discount: 0 },
-    { months: 3, label: '3 Mois', discount: 5 },
-    { months: 6, label: '6 Mois', discount: 10 },
-    { months: 12, label: '12 Mois', discount: 20 },
-];
 
 const Profile = () => {
     const { user } = useAuth();
@@ -41,12 +33,13 @@ const Profile = () => {
 
     // Billing State
     const [transactions, setTransactions] = useState<any[]>([]);
-    const [selectedPlan, setSelectedPlan] = useState(PLANS[0]);
     const [paymentMethod, setPaymentMethod] = useState<'OM' | 'MVOLA'>('OM');
     const [paymentPhone, setPaymentPhone] = useState('');
     const [reference, setReference] = useState('');
     const [pricePerMonth, setPricePerMonth] = useState(25000);
     const [loadingHistory, setLoadingHistory] = useState(false);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // 1-12
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
     // Modals & Feedback
     const [showSuspendModal, setShowSuspendModal] = useState(false);
@@ -84,7 +77,7 @@ const Profile = () => {
         }
     };
 
-    const totalAmount = Math.round(pricePerMonth * selectedPlan.months * (1 - selectedPlan.discount / 100));
+    const totalAmount = pricePerMonth;
 
     const handleProfileUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -119,8 +112,7 @@ const Profile = () => {
         setSubmitting(true);
         setErrorMsg('');
 
-        const now = new Date();
-        const period = `${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
+        const period = `${String(selectedMonth).padStart(2, '0')}-${selectedYear}`;
 
         try {
             await authService.submitPayment({
@@ -129,7 +121,7 @@ const Profile = () => {
                 paymentMethod: paymentMethod === 'OM' ? 'Orange Money' : 'Mvola',
                 amount: totalAmount,
                 period: period,
-                durationMonths: selectedPlan.months
+                durationMonths: 1
             });
             setSuccessMsg('Paiement déclaré ! En attente de validation.');
             setPaymentPhone('');
@@ -394,33 +386,44 @@ const Profile = () => {
                                             <TrendingUp size={24} className="text-yellow-500" />
                                             Renouveler mon accès
                                         </h3>
-                                        <p className="text-gray-500 font-medium">Choisissez votre durée et profitez de réductions.</p>
+                                        <p className="text-gray-500 font-medium">Déclarez votre paiement mensuel pour maintenir l'accès.</p>
                                     </div>
 
                                     <form onSubmit={handlePaymentSubmit} className="space-y-8 bg-gray-50/50 p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
-                                        {/* Plan Grid */}
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                            {PLANS.map((plan) => (
-                                                <button
-                                                    key={plan.months} type="button" onClick={() => setSelectedPlan(plan)}
-                                                    className={`relative p-4 rounded-2xl border-2 transition-all text-center group ${selectedPlan.months === plan.months
-                                                        ? 'border-yellow-500 bg-yellow-50 shadow-md ring-4 ring-yellow-500/5'
-                                                        : 'border-white bg-white hover:border-gray-200'
-                                                        }`}
-                                                >
-                                                    <div className={`text-xl font-black mb-1 ${selectedPlan.months === plan.months ? 'text-gray-900' : 'text-gray-400'}`}>
-                                                        {plan.months}M
-                                                    </div>
-                                                    {plan.discount > 0 && (
-                                                        <div className="absolute -top-2 -right-2 bg-green-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
-                                                            -{plan.discount}%
-                                                        </div>
-                                                    )}
-                                                    <div className={`text-[9px] font-bold uppercase tracking-tighter ${selectedPlan.months === plan.months ? 'text-yellow-600' : 'text-gray-400'}`}>
-                                                        {plan.label}
-                                                    </div>
-                                                </button>
-                                            ))}
+
+
+                                        {/* Month Selector */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Mois concerné</label>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="relative">
+                                                    <select
+                                                        value={selectedMonth}
+                                                        onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                                                        className="w-full px-4 py-4 bg-white border border-gray-100 rounded-2xl focus:outline-none focus:border-yellow-500 transition-all font-bold text-gray-900 shadow-sm appearance-none cursor-pointer"
+                                                    >
+                                                        {[
+                                                            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                                                            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                                                        ].map((m, i) => (
+                                                            <option key={i + 1} value={i + 1}>{m}</option>
+                                                        ))}
+                                                    </select>
+                                                    <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                                                </div>
+                                                <div className="relative">
+                                                    <select
+                                                        value={selectedYear}
+                                                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                                                        className="w-full px-4 py-4 bg-white border border-gray-100 rounded-2xl focus:outline-none focus:border-yellow-500 transition-all font-bold text-gray-900 shadow-sm appearance-none cursor-pointer"
+                                                    >
+                                                        {[new Date().getFullYear() - 1, new Date().getFullYear(), new Date().getFullYear() + 1].map(y => (
+                                                            <option key={y} value={y}>{y}</option>
+                                                        ))}
+                                                    </select>
+                                                    <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                                                </div>
+                                            </div>
                                         </div>
 
                                         {/* Payment Selector */}
@@ -479,7 +482,7 @@ const Profile = () => {
                                         <div className="p-6 bg-yellow-500 rounded-3xl mt-4">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="text-[#0f172a] font-bold text-[10px] uppercase tracking-widest opacity-60">Paiement pour {selectedPlan.label}</p>
+                                                    <p className="text-[#0f172a] font-bold text-[10px] uppercase tracking-widest opacity-60">Paiement mensuel — 1 Mois</p>
                                                     <h4 className="text-2xl font-black text-[#0f172a]">
                                                         {new Intl.NumberFormat('fr-FR').format(totalAmount)} Ar
                                                     </h4>
@@ -522,7 +525,7 @@ const Profile = () => {
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="font-black text-sm text-gray-900">{tx.amount.toLocaleString()} Ar</p>
+                                                        <p className="font-black text-sm text-gray-900">{(tx.amount ?? 0).toLocaleString()} Ar</p>
                                                         <div className={`text-[9px] font-black uppercase mt-1 px-2 py-0.5 rounded-full inline-block ${tx.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
                                                             tx.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
                                                             }`}>
