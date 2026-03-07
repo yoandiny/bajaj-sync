@@ -58,8 +58,8 @@ function App() {
 
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-            <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-            <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Routes d'activation et attente - Protégées mais gérées par ProtectedRoute */}
             <Route path="/activate" element={<ProtectedRoute><PaymentDashboard /></ProtectedRoute>} />
