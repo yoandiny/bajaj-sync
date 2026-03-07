@@ -15,6 +15,7 @@ export interface User {
   officeName?: string;
   status: 'active' | 'waiting' | 'pending' | 'ACTIVE' | 'REVOKED';
   companyStatus: 'active' | 'waiting' | 'pending' | 'suspended';
+  company_status?: 'active' | 'pending' | 'suspended';
   subscriptionPlan?: 'TRIAL' | 'PREMIUM';
   joinedDate?: string;
   photoUrl?: string;

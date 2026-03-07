@@ -25,6 +25,10 @@ export const platformService = {
     await api.put(`/admin/users/${userId}/status`, { status });
   },
 
+  updateCompanyStatus: async (companyId: string, status: 'active' | 'pending' | 'suspended'): Promise<void> => {
+    await api.put(`/admin/companies/${companyId}/status`, { status });
+  },
+
   deleteUser: async (userId: string): Promise<void> => {
     await api.delete(`/admin/users/${userId}`);
   },
