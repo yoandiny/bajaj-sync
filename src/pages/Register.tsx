@@ -84,25 +84,39 @@ const Register = () => {
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, isNewAccount: true })}
-                                    className={`p - 4 rounded - 2xl border - 2 transition - all text - center flex flex - col items - center gap - 1 ${formData.isNewAccount
-                                        ? 'border-yellow-500 bg-yellow-50/50 shadow-lg'
-                                        : 'border-gray-100 bg-gray-50'
-                                        } `}
+                                    className={`relative p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-2 group cursor-pointer ${formData.isNewAccount
+                                        ? 'border-yellow-500 bg-yellow-50 shadow-[0_4px_20px_-4px_rgba(234,179,8,0.3)] scale-[1.02]'
+                                        : 'border-gray-100 bg-white hover:border-yellow-300 hover:bg-yellow-50/40 hover:shadow-md'
+                                        }`}
                                 >
-                                    <Sparkles className={formData.isNewAccount ? 'text-yellow-600' : 'text-gray-400'} size={20} />
-                                    <span className="font-bold text-sm text-gray-900">Nouveau</span>
+                                    <div className={`p-3 rounded-full transition-colors ${formData.isNewAccount ? 'bg-yellow-200/50' : 'bg-gray-50 group-hover:bg-yellow-100/50'}`}>
+                                        <Sparkles className={`transition-colors ${formData.isNewAccount ? 'text-yellow-600' : 'text-gray-400 group-hover:text-yellow-500'}`} size={24} />
+                                    </div>
+                                    <span className={`font-bold text-sm transition-colors ${formData.isNewAccount ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-900'}`}>Nouveau</span>
+                                    {formData.isNewAccount && (
+                                        <div className="absolute top-3 right-3 text-yellow-500">
+                                            <CheckCircle size={18} fill="currentColor" className="text-white" />
+                                        </div>
+                                    )}
                                 </button>
 
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, isNewAccount: false })}
-                                    className={`p - 4 rounded - 2xl border - 2 transition - all text - center flex flex - col items - center gap - 1 ${!formData.isNewAccount
-                                        ? 'border-yellow-500 bg-yellow-50/50 shadow-lg'
-                                        : 'border-gray-100 bg-gray-50'
-                                        } `}
+                                    className={`relative p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-2 group cursor-pointer ${!formData.isNewAccount
+                                        ? 'border-yellow-500 bg-yellow-50 shadow-[0_4px_20px_-4px_rgba(234,179,8,0.3)] scale-[1.02]'
+                                        : 'border-gray-100 bg-white hover:border-yellow-300 hover:bg-yellow-50/40 hover:shadow-md'
+                                        }`}
                                 >
-                                    <CheckCircle className={!formData.isNewAccount ? 'text-yellow-600' : 'text-gray-400'} size={20} />
-                                    <span className="font-bold text-sm text-gray-900">Existant</span>
+                                    <div className={`p-3 rounded-full transition-colors ${!formData.isNewAccount ? 'bg-yellow-200/50' : 'bg-gray-50 group-hover:bg-yellow-100/50'}`}>
+                                        <Building className={`transition-colors ${!formData.isNewAccount ? 'text-yellow-600' : 'text-gray-400 group-hover:text-yellow-500'}`} size={24} />
+                                    </div>
+                                    <span className={`font-bold text-sm transition-colors ${!formData.isNewAccount ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-900'}`}>Existant</span>
+                                    {!formData.isNewAccount && (
+                                        <div className="absolute top-3 right-3 text-yellow-500">
+                                            <CheckCircle size={18} fill="currentColor" className="text-white" />
+                                        </div>
+                                    )}
                                 </button>
                             </div>
                         </div>
