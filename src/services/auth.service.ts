@@ -39,8 +39,21 @@ export const authService = {
     return response.data;
   },
 
-  submitPayment: async (data: { paymentPhone: string, reference: string, paymentMethod: string, amount: number }): Promise<any> => {
+  submitPayment: async (data: {
+    paymentPhone: string,
+    reference: string,
+    paymentMethod: string,
+    amount: number,
+    period?: string,
+    durationMonths?: number
+  }): Promise<any> => {
     const response = await api.post('/auth/submit-payment', data);
+    return response.data;
+  },
+
+  getPaymentHistory: async (): Promise<any[]> => {
+    const response = await api.get('/auth/payment-history');
+    return response.data;
   },
 
   me: async (): Promise<User> => {
