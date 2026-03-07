@@ -13,8 +13,8 @@ const ResetPassword = () => {
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
-    const token = searchParams.get('token');
-    const userId = searchParams.get('id');
+    const token = searchParams.get('t') || searchParams.get('token');
+    const userId = searchParams.get('i') || searchParams.get('id');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
