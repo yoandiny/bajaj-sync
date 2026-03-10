@@ -1,4 +1,5 @@
 import { Truck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -15,7 +16,7 @@ const Footer = () => {
           <div className="flex space-x-6 text-sm text-gray-400">
             <span>© {new Date().getFullYear()} BajajSync.</span>
             <span className="hidden md:inline">|</span>
-            <span>Powered by <span className="text-yellow-500 font-semibold">YoTech</span></span>
+            <span>Powered by <span className="text-yellow-500 font-semibold"><Link to="https://yotech.mg" target="_blank" rel="noopener noreferrer">YoTech</Link></span></span>
           </div>
         </div>
       </div>

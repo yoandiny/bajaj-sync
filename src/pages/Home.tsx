@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Users, Car, Wallet, BarChart3, Mail, Phone, CheckCircle2, Laptop, Smartphone, Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
 import FeatureCard from '../components/FeatureCard';
 import { authService } from '../services/auth.service';
+import YoTechLogo from '../assets/yotech.jpg';
 import Logo from '../assets/logo.png';
 import Drivers from '../assets/drivers.png';
 import Bajaj from '../assets/bajaj.png';
 import Income from '../assets/income.png';
 import Dashboard from '../assets/dashboard.png';
+import DashboardWeb from '../assets/web.png';
 import Expense from '../assets/expense.png';
 
 const Home = () => {
@@ -146,9 +148,7 @@ const Home = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/login" className="inline-flex items-center text-yellow-400 font-bold hover:text-yellow-300 transition-colors">
-                Accéder à la démo <Laptop size={18} className="ml-2" />
-              </Link>
+              
             </div>
             <div className="relative">
               {/* Abstract Browser Window */}
@@ -159,7 +159,7 @@ const Home = () => {
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
                 <div className="p-1">
-                  <img src={Dashboard} alt="Interface Web" className="w-full rounded-lg opacity-90" />
+                  <img src={DashboardWeb} alt="Interface Web" className="w-full rounded-lg opacity-90" />
                 </div>
               </div>
             </div>
@@ -347,7 +347,7 @@ const Home = () => {
               </p>
               <div className="bg-gray-50 p-6 rounded-xl border-l-4 border-yellow-500">
                 <p className="font-medium text-gray-900">
-                  Développé avec passion par <span className="font-bold text-yellow-600">YoTech</span>,
+                  Développé avec passion par <span className="font-bold text-yellow-600"><Link to="https://yotech.mg" target="_blank" rel="noopener noreferrer">YoTech</Link></span>,
                   votre partenaire local en solutions technologiques.
                 </p>
               </div>
@@ -355,7 +355,7 @@ const Home = () => {
             <div className="mt-10 lg:mt-0 relative">
               <div className="absolute inset-0 bg-yellow-200 rounded-3xl transform rotate-3"></div>
               <img
-                src="https://img-wrapper.vercel.app/image?url=https://placehold.co/600x400/1f2937/FFFFFF?text=YoTech+Gestion+Flotte"
+                src={YoTechLogo}
                 alt="YoTech Team"
                 className="relative rounded-3xl shadow-lg w-full object-cover"
               />
