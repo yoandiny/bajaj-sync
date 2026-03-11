@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Users, ShieldCheck, MessageSquare, TrendingUp, Star } from 'lucide-react';
-import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Users, ShieldCheck, MessageSquare, TrendingUp, Star, Map } from 'lucide-react';
+import { PieChart, Pie, Cell, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { platformService } from '../../services/platform.service';
 import { Feedback, LicenseRequest } from '../../types';
 
@@ -24,7 +24,7 @@ const StatCard = ({ title, value, icon: Icon, color, subtext }: any) => (
 );
 
 const PlatformDashboard = () => {
-  const [stats, setStats] = useState<any>({ totalUsers: 0, pendingLicenses: 0, totalFeedbacks: 0, activeUsers: 0, dailyRevenue: 0, monthlyRevenue: 0, adoptionsPie: [], adoptionTimeline: [] });
+  const [stats, setStats] = useState<any>({ totalUsers: 0, pendingLicenses: 0, totalFeedbacks: 0, activeUsers: 0, dailyRevenue: 0, monthlyRevenue: 0, adoptionsPie: [], adoptionTimeline: [], totalCities: 0, cityStats: [] });
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [recentRequests, setRecentRequests] = useState<LicenseRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,6 +68,7 @@ const PlatformDashboard = () => {
         <StatCard title="Utilisateurs Totaux" value={stats.totalUsers} icon={Users} color="bg-blue-600" subtext={`${stats.activeUsers} actifs`} />
         <StatCard title="Licences en attente" value={stats.pendingLicenses} icon={ShieldCheck} color="bg-yellow-500" subtext="Action requise" />
         <StatCard title="Note Moyenne" value={averageRating} icon={Star} color="bg-green-500" subtext={`Basé sur ${stats.totalFeedbacks} avis`} />
+        <StatCard title="Villes Couvertes" value={stats.totalCities} icon={Map} color="bg-orange-500" subtext="Expansion BajajSync" />
         <StatCard title="Revenus du Jour" value={`${(stats.dailyRevenue || 0).toLocaleString()} Ar`} icon={TrendingUp} color="bg-indigo-600" />
         <StatCard title="Revenus du Mois" value={`${(stats.monthlyRevenue || 0).toLocaleString()} Ar`} icon={TrendingUp} color="bg-teal-600" />
         <StatCard title="Feedbacks" value={stats.totalFeedbacks} icon={MessageSquare} color="bg-purple-600" subtext="Total reçus" />
@@ -77,7 +78,7 @@ const PlatformDashboard = () => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
           <h3 className="font-bold text-gray-900 mb-6">Évolution des Adoptions (6 derniers mois)</h3>
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <LineChart data={stats.adoptionTimeline || []}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} dy={10} />
@@ -94,7 +95,7 @@ const PlatformDashboard = () => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <h3 className="font-bold text-gray-900 mb-6 text-center">Répartition des Adoptions</h3>
           <div className="h-64 flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <PieChart>
                 <Pie
                   data={stats.adoptionsPie || []}
@@ -102,10 +103,10 @@ const PlatformDashboard = () => {
                   cy="50%"
                   innerRadius={60}
                   outerRadius={80}
-                  paddingAngle={5}
+                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {(stats.adoptionsPie || []).map((entry: any, index: number) => (
+                  {(stats.adoptionsPie || []).map((_entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={index === 0 ? '#3B82F6' : '#f59e0b'} />
                   ))}
                 </Pie>
@@ -114,6 +115,24 @@ const PlatformDashboard = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
+        <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <Map size={20} className="text-orange-500" />
+          Couverture Géographique (Nombre d'agences par ville)
+        </h3>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+            <BarChart data={stats.cityStats || []}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+              <XAxis dataKey="city" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
+              <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              <Bar dataKey="count" name="Agences" fill="#F97316" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

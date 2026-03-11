@@ -8,6 +8,13 @@ interface PlatformStats {
   totalFeedbacks: number;
   dailyRevenue?: number;
   monthlyRevenue?: number;
+  totalCities?: number;
+  cityStats?: { city: string; count: number }[];
+  vehicleStats?: {
+    total: number;
+    byStatus: { status: string; count: number }[];
+    byType: { type: string; count: number }[];
+  };
   adoptionsPie?: { name: string; value: number }[];
   adoptionTimeline?: { name: string; app: number; cloud: number }[];
 }
