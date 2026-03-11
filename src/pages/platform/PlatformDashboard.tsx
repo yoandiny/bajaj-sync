@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, ShieldCheck, MessageSquare, TrendingUp, Star, Map } from 'lucide-react';
+import { Users, ShieldCheck, MessageSquare, TrendingUp, Star, Map, Bike } from 'lucide-react';
 import { PieChart, Pie, Cell, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 import { platformService } from '../../services/platform.service';
 import { Feedback, LicenseRequest } from '../../types';
@@ -24,7 +24,7 @@ const StatCard = ({ title, value, icon: Icon, color, subtext }: any) => (
 );
 
 const PlatformDashboard = () => {
-  const [stats, setStats] = useState<any>({ totalUsers: 0, pendingLicenses: 0, totalFeedbacks: 0, activeUsers: 0, dailyRevenue: 0, monthlyRevenue: 0, adoptionsPie: [], adoptionTimeline: [], totalCities: 0, cityStats: [] });
+  const [stats, setStats] = useState<any>({ totalUsers: 0, pendingLicenses: 0, totalFeedbacks: 0, activeUsers: 0, dailyRevenue: 0, monthlyRevenue: 0, adoptionsPie: [], adoptionTimeline: [], totalCities: 0, cityStats: [], vehicleStats: { total: 0, byStatus: [], byType: [] } });
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [recentRequests, setRecentRequests] = useState<LicenseRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,7 @@ const PlatformDashboard = () => {
         <StatCard title="Licences en attente" value={stats.pendingLicenses} icon={ShieldCheck} color="bg-yellow-500" subtext="Action requise" />
         <StatCard title="Note Moyenne" value={averageRating} icon={Star} color="bg-green-500" subtext={`Basé sur ${stats.totalFeedbacks} avis`} />
         <StatCard title="Villes Couvertes" value={stats.totalCities} icon={Map} color="bg-orange-500" subtext="Expansion BajajSync" />
+        <StatCard title="Véhicules" value={stats.vehicleStats?.total} icon={Bike} color="bg-red-500" subtext="Total enregistrés" />
         <StatCard title="Revenus du Jour" value={`${(stats.dailyRevenue || 0).toLocaleString()} Ar`} icon={TrendingUp} color="bg-indigo-600" />
         <StatCard title="Revenus du Mois" value={`${(stats.monthlyRevenue || 0).toLocaleString()} Ar`} icon={TrendingUp} color="bg-teal-600" />
         <StatCard title="Feedbacks" value={stats.totalFeedbacks} icon={MessageSquare} color="bg-purple-600" subtext="Total reçus" />
@@ -133,6 +134,66 @@ const PlatformDashboard = () => {
               <Bar dataKey="count" name="Agences" fill="#F97316" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Bike size={20} className="text-red-500" />
+            Types de Véhicules
+          </h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+              <PieChart>
+                <Pie
+                  data={stats.vehicleStats?.byType || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="count"
+                  nameKey="type"
+                >
+                  {(stats.vehicleStats?.byType || []).map((_entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={['#EF4444', '#3B82F6', '#10B981', '#F59E0B'][index % 4]} />
+                  ))}
+                </Pie>
+                <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Legend iconType="circle" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 className="font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <ShieldCheck size={20} className="text-green-500" />
+            État de la Flotte
+          </h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+              <PieChart>
+                <Pie
+                  data={stats.vehicleStats?.byStatus || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="count"
+                  nameKey="status"
+                >
+                  {(stats.vehicleStats?.byStatus || []).map((_entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={_entry.status === 'ACTIVE' ? '#10B981' : '#F59E0B'} />
+                  ))}
+                </Pie>
+                <RechartsTooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Legend iconType="circle" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
