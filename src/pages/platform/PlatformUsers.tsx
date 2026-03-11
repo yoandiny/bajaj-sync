@@ -119,6 +119,7 @@ const PlatformUsers = () => {
                     <div className="font-medium text-gray-900">{user.firstName} {user.lastName}</div>
                     <div className="text-xs text-gray-500">{user.email || user.phone}</div>
                   </td>
+                  
                   <td className="px-6 py-4">
                     <span className="px-2 py-1 bg-gray-100 rounded-md text-xs font-bold text-gray-600">{user.role}</span>
                   </td>
@@ -136,6 +137,11 @@ const PlatformUsers = () => {
                         : <span className="text-red-600 text-[10px] font-bold bg-red-100 px-2 py-0.5 rounded-full">Suspendue</span>
                     }
                   </td>
+
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-gray-900">{user.joinedDate}</div>
+                  </td>
+
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
                       {/* App Actions */}
