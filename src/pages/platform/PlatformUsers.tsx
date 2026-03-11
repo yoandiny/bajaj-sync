@@ -109,6 +109,7 @@ const PlatformUsers = () => {
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Rôle</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">Accès App</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">Licence Online</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">Date d'inscription</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
               </tr>
             </thead>
@@ -139,7 +140,7 @@ const PlatformUsers = () => {
                   </td>
 
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{user.joinedDate}</div>
+                    <div className="font-medium text-gray-900">{new Date(user.joinedDate).toLocaleDateString()}</div>
                   </td>
 
                   <td className="px-6 py-4">
