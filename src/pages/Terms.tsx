@@ -28,7 +28,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">3. Description des services</h2>
               <p>
-                BajajSync est un écosystème de gestion de flotte comprenant une application mobile pour les chauffeurs (collecte de données, paiements) et un dashboard en ligne pour les propriétaires/gestionnaires (suivi, statistiques, gestion des dettes).
+                BajajSync est un écosystème de gestion de flotte comprenant une application mobile (collecte de données, paiements) et un dashboard en ligne pour les propriétaires/gestionnaires (suivi, statistiques, gestion des dettes).
               </p>
             </section>
 
