@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { fleetService } from '../../services/fleet.service';
 import { Payment, Vehicle, Driver, Office } from '../../types';
-import { Plus, Filter, Calendar, CheckCircle2, Wallet, ReceiptText, Loader2, Edit2, Trash2, Moon, Download, FileSpreadsheet } from 'lucide-react';
+import { Plus, Filter, Calendar, CheckCircle2, Wallet, ReceiptText, Loader2, Edit2, Trash2, Moon, Download, FileSpreadsheet, Repeat } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -10,6 +11,9 @@ import autoTable from 'jspdf-autotable';
 
 const Payments = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const driverIdParam = searchParams.get('driverId');
+  
   const [payments, setPayments] = useState<Payment[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
@@ -88,10 +92,17 @@ const Payments = () => {
 
   const handleVehicleChange = (vehicleId: string) => {
     const vehicle = vehicles.find(v => v.id === vehicleId);
+    if (!vehicle) return;
+
+    // Trouver les paramètres du bureau de ce véhicule
+    const office = offices.find(o => o.id === vehicle.officeId);
+    const targetAmount = office?.settings?.paymentMode === 'VARIABLE' ? 0 : (office?.settings?.dailyTargetAmount || 30000);
+
     setFormData(prev => ({
       ...prev,
       vehicleId,
-      driverId: (vehicle as any).principal_driver || (vehicle as any).titularDriverId || prev.driverId
+      driverId: (vehicle as any).principal_driver || (vehicle as any).titularDriverId || prev.driverId,
+      amount: String(targetAmount)
     }));
   };
 
@@ -137,8 +148,11 @@ const Payments = () => {
 
   const filteredPayments = payments.filter(p => {
     if (filterDate && p.date !== filterDate) return false;
+    if (driverIdParam && p.driverId !== driverIdParam) return false;
     return true;
   });
+
+  const selectedDriver = drivers.find(d => d.id === driverIdParam);
 
   const totalAmount = filteredPayments.reduce((sum, p) => sum + p.amount, 0);
 
@@ -226,6 +240,33 @@ const Payments = () => {
           </button>
         </div>
       </div>
+
+      <div className="bg-white p-4 rounded-3xl border border-gray-100 flex items-center gap-4 shadow-sm">
+        <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white rounded-xl border border-gray-100 text-xs font-bold text-gray-400 uppercase tracking-widest shadow-sm">
+          <Moon size={14} className="text-blue-500" />
+          {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </div>
+      </div>
+
+      {driverIdParam && (
+        <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+              {selectedDriver?.firstName?.charAt(0)}
+            </div>
+            <div>
+              <p className="text-sm font-black text-blue-900">Filtré par chauffeur : {selectedDriver ? `${selectedDriver.firstName} ${selectedDriver.lastName}` : 'Chargement...'}</p>
+              <p className="text-xs font-bold text-blue-600 uppercase tracking-widest">Affichage de l'historique complet</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setSearchParams({})}
+            className="px-4 py-2 bg-white text-blue-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-blue-100 transition-all border border-blue-100"
+          >
+            Effacer le filtre
+          </button>
+        </div>
+      )}
 
       <div className="bg-white p-4 rounded-3xl border border-gray-100 flex items-center gap-4 shadow-sm">
         <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
@@ -377,7 +418,27 @@ const Payments = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Montant versé (Ar)</label>
+            <label className="text-xs font-bold text-gray-500 uppercase ml-1 flex justify-between items-center flex-wrap gap-1">
+              <span>Montant versé (Ar)</span>
+              {formData.vehicleId && (() => {
+                const v = vehicles.find(veh => veh.id === formData.vehicleId);
+                const o = offices.find(off => off.id === v?.officeId);
+                const cycleLabel = o?.settings?.paymentCycle === 'WEEKLY' ? 'Hebdo' : o?.settings?.paymentCycle === 'MONTHLY' ? 'Mensuel' : 'Quotidien';
+                const cycleColor = o?.settings?.paymentCycle === 'WEEKLY' ? 'bg-purple-100 text-purple-600' : o?.settings?.paymentCycle === 'MONTHLY' ? 'bg-blue-100 text-blue-600' : 'bg-yellow-100 text-yellow-600';
+                return (
+                  <span className="flex items-center gap-2 normal-case">
+                    <span className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${cycleColor}`}>
+                      <Repeat size={9} />
+                      {cycleLabel}
+                    </span>
+                    {o?.settings?.paymentMode === 'VARIABLE'
+                      ? <span className="text-blue-500">Mode Libre</span>
+                      : <span className="text-yellow-600">Objectif: {o?.settings?.dailyTargetAmount?.toLocaleString() || '30,000'} Ar</span>
+                    }
+                  </span>
+                );
+              })()}
+            </label>
             <div className="relative">
               <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input

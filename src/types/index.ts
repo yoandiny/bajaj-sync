@@ -18,7 +18,7 @@ export interface User {
   company_status?: 'active' | 'pending' | 'suspended';
   subscriptionPlan?: 'TRIAL' | 'PREMIUM';
   subscriptionUntil?: string;
-  joinedDate?: string;
+  joinedDate?: string | Date | number;
   photoUrl?: string;
 }
 
@@ -26,6 +26,8 @@ export interface User {
 export interface OfficeSettings {
   dailyTargetAmount: number;
   restDay: number | null; // 0 = Sunday, 1 = Monday, ..., null = No rest day
+  paymentCycle?: 'DAILY' | 'WEEKLY' | 'MONTHLY';
+  paymentMode?: 'FIXED' | 'VARIABLE';
 }
 
 export interface Office {

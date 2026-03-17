@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building2, Car, Users, Settings, LogOut, Wallet, Receipt, Map, MessageSquare, X } from 'lucide-react';
+import { LayoutDashboard, Building2, Car, Users, Settings, LogOut, Wallet, Receipt, Map, MessageSquare, X, BarChart3 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Logo from '../../assets/logo.png';
 import { cn } from '../../lib/utils';
@@ -15,6 +15,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const links = [
     { name: 'Tableau de bord', path: '/dashboard', icon: LayoutDashboard, roles: ['OWNER', 'MANAGER'] },
     { name: 'Suivi GPS', path: '/dashboard/tracking', icon: Map, roles: ['OWNER', 'MANAGER'] },
+    { name: 'Dettes', path: '/dashboard/debts', icon: BarChart3, roles: ['OWNER', 'MANAGER'] },
     { name: 'Gérants', path: '/dashboard/managers', icon: Users, roles: ['OWNER'] },
     { name: 'Bureaux', path: '/dashboard/offices', icon: Building2, roles: ['OWNER'] },
     { name: 'Véhicules', path: '/dashboard/vehicles', icon: Car, roles: ['OWNER', 'MANAGER'] },

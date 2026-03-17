@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Car, Users, Wallet, AlertTriangle, Clock, CheckCircle, BarChart3, TrendingUp } from 'lucide-react';
+import { Car, Users, Wallet, AlertTriangle, Clock, CheckCircle, BarChart3, TrendingUp, Repeat, Infinity as InfinityIcon } from 'lucide-react';
 import { fleetService } from '../../services/fleet.service';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Link } from 'react-router-dom';
 
 const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
@@ -91,7 +91,76 @@ const DashboardHome = () => {
         />
       </div>
 
-      {/* Charts Section */}
+      {/* Barre de progression de l'objectif */}
+      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
+              <TrendingUp size={20} className="text-yellow-500" />
+              Objectif du jour
+            </h3>
+            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
+              {stats?.paymentMode === 'VARIABLE' ? 'Mode Libre — Aucun objectif cible' : `Cible : ${(stats?.dailyTarget || 0).toLocaleString()} Ar`}
+            </p>
+          </div>
+          {/* Badge cycle de paiement */}
+          <div className="flex items-center gap-2">
+            <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+              stats?.paymentCycle === 'WEEKLY' ? 'bg-purple-100 text-purple-700' :
+              stats?.paymentCycle === 'MONTHLY' ? 'bg-blue-100 text-blue-700' :
+              'bg-yellow-100 text-yellow-700'
+            }`}>
+              <Repeat size={12} />
+              {stats?.paymentCycle === 'WEEKLY' ? 'Hebdomadaire' : stats?.paymentCycle === 'MONTHLY' ? 'Mensuel' : 'Quotidien'}
+            </span>
+            {stats?.paymentMode === 'VARIABLE' ? (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-indigo-100 text-indigo-700">
+                <InfinityIcon size={12} />
+                Mode Libre
+              </span>
+            ) : (
+              <div className="text-right">
+                <span className="text-2xl font-black text-gray-900">
+                  {Math.min(100, Math.round(((stats?.dailyRevenue || 0) / (stats?.dailyTarget || 40000)) * 100))}%
+                </span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-2">Atteint</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {stats?.paymentMode === 'VARIABLE' ? (
+          /* Mode VARIABLE — afficher les recettes sans objectif fixe */
+          <div className="flex items-center gap-4 bg-indigo-50 border border-indigo-100 rounded-2xl p-4">
+            <div className="p-3 bg-white rounded-xl text-indigo-500 shadow-sm">
+              <Wallet size={22} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-indigo-600 uppercase tracking-widest">Recettes aujourd'hui</p>
+              <p className="text-2xl font-black text-gray-900">{(stats?.dailyRevenue || 0).toLocaleString()} <span className="text-sm font-bold text-gray-400">Ar</span></p>
+            </div>
+          </div>
+        ) : (
+          /* Mode FIXED — barre de progression */
+          <>
+            <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner p-1">
+              <div
+                className={`h-full rounded-full transition-all duration-1000 ease-out shadow-sm ${
+                  ((stats?.dailyRevenue || 0) / (stats?.dailyTarget || 40000)) >= 1
+                    ? 'bg-gradient-to-r from-green-400 to-green-600'
+                    : 'bg-gradient-to-r from-yellow-400 to-yellow-600'
+                }`}
+                style={{ width: `${Math.min(100, Math.round(((stats?.dailyRevenue || 0) / (stats?.dailyTarget || 40000)) * 100))}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between mt-3 px-1">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">0 Ar</span>
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">{(stats?.dailyTarget || 40000).toLocaleString()} Ar</span>
+            </div>
+          </>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-8">
@@ -114,13 +183,10 @@ const DashboardHome = () => {
             </div>
           </div>
 
-          <div className="h-[300px] w-full relative min-h-[300px] border border-transparent">
+          <div className="h-[300px] w-full relative min-h-[300px]">
             {stats?.history && stats.history.length > 0 ? (
-              <ResponsiveContainer width="99.9%" height={300} minWidth={0} key={`area-chart-${stats.history.length}`}>
-                <AreaChart
-                  data={stats.history}
-                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                >
+              <ResponsiveContainer width="99.9%" height={300}>
+                <AreaChart data={stats.history}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
@@ -128,40 +194,11 @@ const DashboardHome = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
-                    dy={10}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
-                    tickFormatter={(value) => value >= 1000 ? `${value / 1000}k` : value}
-                  />
-                  <Tooltip
-                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
-                    isAnimationActive={false}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#3b82f6"
-                    strokeWidth={4}
-                    fillOpacity={1}
-                    fill="url(#colorRevenue)"
-                    isAnimationActive={false}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="expenses"
-                    stroke="#f87171"
-                    strokeWidth={4}
-                    fill="transparent"
-                    isAnimationActive={false}
-                  />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }} tickFormatter={(value) => value >= 1000 ? `${value / 1000}k` : value} />
+                  <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }} />
+                  <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" />
+                  <Area type="monotone" dataKey="expenses" stroke="#f87171" strokeWidth={4} fill="transparent" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -178,35 +215,15 @@ const DashboardHome = () => {
             <TrendingUp size={20} className="text-green-500" />
             Répartition
           </h3>
-          <div className="h-[300px] w-full relative flex-grow min-h-[300px]">
+          <div className="h-[300px] w-full relative flex-grow">
             {stats?.history && stats.history.length > 0 ? (
-              <ResponsiveContainer width="99.9%" height={300} minWidth={0} key={`bar-chart-${stats.history.length}`}>
-                <BarChart
-                  data={stats.history.slice(-3)}
-                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                >
+              <ResponsiveContainer width="99.9%" height={300}>
+                <BarChart data={stats.history.slice(-3)}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis
-                    dataKey="name"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }}
-                  />
-                  <Tooltip cursor={{ fill: '#f8fafc' }} isAnimationActive={false} />
-                  <Bar
-                    dataKey="revenue"
-                    fill="#3b82f6"
-                    radius={[6, 6, 0, 0]}
-                    barSize={20}
-                    isAnimationActive={false}
-                  />
-                  <Bar
-                    dataKey="expenses"
-                    fill="#f87171"
-                    radius={[6, 6, 0, 0]}
-                    barSize={20}
-                    isAnimationActive={false}
-                  />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontWeight: 700, fontSize: 10 }} />
+                  <Tooltip cursor={{ fill: '#f8fafc' }} />
+                  <Bar dataKey="revenue" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={20} />
+                  <Bar dataKey="expenses" fill="#f87171" radius={[6, 6, 0, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -222,12 +239,10 @@ const DashboardHome = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-8">
-            <div>
-              <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
-                <Clock size={20} className="text-blue-500" />
-                Derniers versements
-              </h3>
-            </div>
+            <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
+              <Clock size={20} className="text-blue-500" />
+              Derniers versements
+            </h3>
             <Link to="/dashboard/payments" className="text-xs font-black text-blue-500 hover:text-blue-700 uppercase tracking-widest">Voir tout</Link>
           </div>
           <div className="space-y-4">
@@ -253,16 +268,14 @@ const DashboardHome = () => {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
-              <AlertTriangle size={20} className="text-red-500" />
-              Maintenances critiques
-            </h3>
-          </div>
+          <h3 className="text-lg font-black text-gray-900 mb-8 flex items-center gap-2">
+            <AlertTriangle size={20} className="text-red-500" />
+            Maintenances critiques
+          </h3>
           <div className="space-y-4">
             {stats?.maintenanceList?.length > 0 ? (
               stats.maintenanceList.map((v: any) => (
-                <div key={v.id} className="flex items-center gap-4 p-4 bg-red-50 text-red-700 rounded-2xl border border-red-100 shadow-sm shadow-red-500/5">
+                <div key={v.id} className="flex items-center gap-4 p-4 bg-red-50 text-red-700 rounded-2xl border border-red-100">
                   <div className="p-3 bg-white rounded-xl text-red-500 shadow-sm">
                     <AlertTriangle size={20} />
                   </div>
@@ -278,6 +291,66 @@ const DashboardHome = () => {
                 <p className="text-sm font-bold italic tracking-wide">Flotte 100% opérationnelle.</p>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
+            <Car size={20} className="text-blue-500" />
+            Répartition par Status
+          </h3>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={stats?.vehicleStats?.byStatus || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="count"
+                  nameKey="status"
+                >
+                  {(stats?.vehicleStats?.byStatus || []).map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={entry.status === 'ACTIVE' ? '#10B981' : '#F59E0B'} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-black text-gray-900 mb-6 flex items-center gap-2">
+            <BarChart3 size={20} className="text-purple-500" />
+            Répartition par Type
+          </h3>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={stats?.vehicleStats?.byType || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="count"
+                  nameKey="type"
+                >
+                  {(stats?.vehicleStats?.byType || []).map((_entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B'][index % 4]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

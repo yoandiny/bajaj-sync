@@ -8,6 +8,8 @@ import DownloadPage from './pages/Download';
 import Footer from './components/Footer';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Legal from './pages/Legal';
+import Terms from './pages/Terms';
 import PaymentDashboard from './pages/PaymentDashboard';
 import WaitingApproval from './pages/WaitingApproval';
 import Activate from './pages/Activate';
@@ -24,6 +26,7 @@ import Tracking from './pages/dashboard/Tracking';
 import Feedback from './pages/dashboard/Feedback';
 import Profile from './pages/dashboard/Profile';
 import Managers from './pages/dashboard/Managers';
+import Debts from './pages/dashboard/Debts';
 import PlatformDashboard from './pages/platform/PlatformDashboard';
 import PlatformUsers from './pages/platform/PlatformUsers';
 import PlatformCompanies from './pages/platform/PlatformCompanies';
@@ -61,6 +64,9 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
+            <Route path="/mentions-legales" element={<Legal />} />
+            <Route path="/cgu-cgv" element={<Terms />} />
+
             {/* Routes d'activation et attente - Protégées mais gérées par ProtectedRoute */}
             <Route path="/activate" element={<ProtectedRoute><PaymentDashboard /></ProtectedRoute>} />
             <Route path="/waiting" element={<ProtectedRoute><WaitingApproval /></ProtectedRoute>} />
@@ -79,6 +85,7 @@ function App() {
               <Route path="feedback" element={<Feedback />} />
               <Route path="profile" element={<Profile />} />
               <Route path="managers" element={<Managers />} />
+              <Route path="debts" element={<Debts />} />
             </Route>
 
             {/* Platform Admin Routes (Super Admin) - Protégées par rôle */}

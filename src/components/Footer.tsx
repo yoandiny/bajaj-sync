@@ -13,9 +13,10 @@ const Footer = () => {
             <span className="text-xl font-bold text-white">BajajSync</span>
           </div>
           
-          <div className="flex space-x-6 text-sm text-gray-400">
+          <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 text-sm text-gray-400">
             <span>© {new Date().getFullYear()} BajajSync.</span>
-            <span className="hidden md:inline">|</span>
+            <Link to="/mentions-legales" className="hover:text-yellow-500 transition-colors">Mentions légales</Link>
+            <Link to="/cgu-cgv" className="hover:text-yellow-500 transition-colors">CGU/CGV</Link>
             <span>Powered by <span className="text-yellow-500 font-semibold"><Link to="https://yotech.mg" target="_blank" rel="noopener noreferrer">YoTech</Link></span></span>
           </div>
         </div>
